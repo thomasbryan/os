@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="favicon.ico" rel="icon" type="image/x-icon">
+  <title>OS</title>
+  <meta charset="utf-8">
+  <style>
+    body { padding-top: 70px; }
+    .navbar-brand { text-transform: uppercase; cursor: pointer;}
+  </style>
+  <script src="js/jquery.min.js"></script>
+	<script>
+		function startTime() {
+			var d = new Date()
+			  , h = d.getHours()
+			  , m = d.getMinutes()
+			  , o = (60 - d.getSeconds())*1000
+			  , m = checkTime(m)
+			  , t = setTimeout(startTime, o)
+        , c = (h < 13 ? h : h - 12 ) + ":" + m + " " + (h < 12 ? "AM" : "PM" )
+        ;
+      $("#clock").html(c);
+      document.title = c;
+		}
+		function checkTime(i) { return (i < 10 ? i = "0" + i : i); }
+    $(document).ready(function() {
+      var app = {
+        "audio": {"h":"audio.php","i":"music"},
+      };
+      startTime();
+      $.each(app,function(k,v) {
+        var html = "<li><a href='"+v.h+"' target='_blank' class='navbar-brand'>"
+          + "<span class='glyphicon glyphicon-"+v.i+"'></span> "
+          + k 
+          ;
+        $(".navbar .nav").append(html);
+      });
+    });
+	</script>
+</head>
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <ul class="nav navbar-nav"></ul>
+    </div>
+  </nav>
+  <div class="jumbotron">
+    <div class="container">
+      <h1 id="clock"></h1>
+    </div>
+  </div>
+</body></html>
