@@ -219,7 +219,7 @@
       $(document).on("click","#r .l",function(e) {
         if($(this).data("l")) {
           app.l = $(this).data("l");
-          localStorage.app = JSON.stringify(app);
+          localStorage.audio = JSON.stringify(app);
           reset();
           ui();
         }
@@ -270,7 +270,7 @@
         app.f = req.f;
         app.n = req.n;
         app.t = req.t;
-        localStorage.app = JSON.stringify(app);
+        localStorage.audio = JSON.stringify(app);
         playlist();
         audio();
         ui();
@@ -317,7 +317,7 @@
       }
       function ra() {
         app.s = (app.s ? false : true);
-        localStorage.app = JSON.stringify(app);
+        localStorage.audio = JSON.stringify(app);
         ui();
       }
       function dn() {
@@ -412,7 +412,7 @@
       }
       function bookmark() {
         app.t = $("#a").get(0).currentTime;
-        localStorage.app = JSON.stringify(app);
+        localStorage.audio = JSON.stringify(app);
       }
       $(document).on("click", "#tl",function(e){
         var percent = e.pageX / $(window).width();
@@ -434,7 +434,7 @@
           if(e.keyCode == 27) {$("input").blur();e.preventDefault();}
         }
       });
-      var app = localStorage.app;
+      var app = localStorage.audio;
       $(document).ready(function() {
         if(app == null) {
           app = {"f":"","l":"Library","n":"","p":false,"s":false,"t":0,"v":0.5};
@@ -519,9 +519,6 @@
       $res = $this->refresh();
     }
     return $res;
-  }
-  private function install() {
-    // ../install.sh
   }
   private function edit($n='',$f='') {
     $res = false;
