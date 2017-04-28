@@ -15,7 +15,10 @@
   </style>
   <script src="js/jquery.min.js"></script>
 	<script>
-    var app = localStorage.index;
+    var app = localStorage.index
+      , mon = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+      , day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+      ;
 		function startTime() {
 			var d = new Date()
         , h = d.getHours()
@@ -25,43 +28,44 @@
 			  , t = setTimeout(startTime, o)
         , c = (h < 13 ? h : h - 12 ) + ":" + m + " " + (h < 12 ? "AM" : "PM" )
         ;
+      $("#date").html(day[d.getDay()]+", "+mon[d.getMonth()]+" "+d.getDate()+" "+d.getFullYear());
+      today(d);
       $("#clock").html(c);
       document.title = c;
 		}
 		function checkTime(i) { return (i < 10 ? i = "0" + i : i); }
     function buildCal() {
       if(app == null) {
-			  var today = new Date();
-        app = {"m":today.getMonth(),"y":today.getFullYear()};
+			  var t = new Date();
+        app = {"m":t.getMonth(),"y":t.getFullYear()};
         localStorage.index = JSON.stringify(app);
       }else{
         if(typeof app === 'string') app = JSON.parse(app);
       }
-      var mon = ["January","February","March","April","May","June","July","August","September","October","November","December"]
-        , first = new Date(app.y, app.m, 1).getDay()
+      var first = new Date(app.y, app.m, 1).getDay()
         , last = new Date(app.y, app.m+1, 0).getDate()
         , html = "<tr>"
-        , day = 0
+        , c = 0
         ;
       $("#title").html(mon[app.m]+" "+app.y);
       for(i=0;i<first;i++) {
         html+= "<td></td>";
-        day++;
+        c++;
       }
       for(i=1;i<=last;i++) {
-        if(day%7==0) {
+        if(c%7==0) {
           html+="</tr><tr>";
         }
-        html+= "<td>"+i+"</td>";
-        day++;
+        html+= "<td id='day-"+app.y+"-"+app.m+"-"+i+"'>"+i+"</td>";
+        c++;
       }
       for(i=0;i<6;i++) {
-        if(day%7==0) {
+        if(c%7==0) {
           html+="</tr>";
           continue;
         }
         html+= "<td></td>";
-        day++;
+        c++;
       }
       $("tbody").html(html);
     }
@@ -76,10 +80,11 @@
       buildCal();
     }
     function curr() {
-			var today = new Date();
-      app = {"m":today.getMonth(),"y":today.getFullYear()};
+			var t = new Date();
+      app = {"m":t.getMonth(),"y":t.getFullYear()};
       localStorage.index = JSON.stringify(app);
       buildCal();
+      today(t);
     }
     function next() {
       if(app.m == 11) {
@@ -90,6 +95,10 @@
       }
       localStorage.index = JSON.stringify(app);
       buildCal();
+    }
+    function today(req) {
+      $("table td").removeClass("info");
+      $("#day-"+req.getFullYear()+"-"+req.getMonth()+"-"+req.getDate()).addClass("info");
     }
     $(document).ready(function() {
       buildCal();
@@ -119,6 +128,7 @@
   </nav>
   <div class="jumbotron">
     <div class="container">
+      <h2 id="date" class="text-center"></h2>
       <h1 id="clock" class="text-center"></h1>
     </div>
   </div>
