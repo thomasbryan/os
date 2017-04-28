@@ -1,0 +1,4 @@
+[submodule "phpseclib"]
+	path = phpseclib
+	url = https://github.com/phpseclib/phpseclib
+	branch = 1.0

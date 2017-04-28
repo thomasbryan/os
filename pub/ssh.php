@@ -21,14 +21,9 @@
         			<input id="user" type="text" name="user" placeholder="USER" class="form-control" />
 						</div>
 					</div>
-					<div class="form-group col-sm-4">
+					<div class="form-group col-sm-6">
 						<div class="col-sm-12">
         			<input id="host" type="text" name="host" placeholder="HOST" class="form-control" />
-						</div>
-					</div>
-					<div class="form-group col-sm-2">
-						<div class="col-sm-12">
-        			<input id="port" type="text" name="port" placeholder="PORT" class="form-control" value="22" />
 						</div>
 					</div>
 					<div class="form-group col-sm-4">
@@ -78,7 +73,6 @@
       var file_data = $('#key').prop('files')[0];
       var form_data = new FormData();
       form_data.append('host',$("#host").val());
-      form_data.append('port',$("#port").val());
       form_data.append('user',$("#user").val());
       form_data.append('pass',$("#pass").val());
       form_data.append('key', file_data);
@@ -108,8 +102,13 @@
 </body></html>
 <?php
 class API {
-  private $path = '../src/ssh';
+  private $path = '../phpseclib/phpseclib';
   function __construct() {
+    /*
+      TODO 
+      cache profile.json > { "user@host"=> count,}
+      cache commands.json > { "command"=> count,}
+    */
     if($_SERVER['REQUEST_METHOD']==='POST') {
       $res = false;
       $ssh = $this->path.'/Net/SSH2.php';
@@ -120,9 +119,8 @@ class API {
         include($rsa);
 
         $host = $_POST['host'];
-        $port = $_POST['port'];
         $user = $_POST['user'];
-        if(!empty($user) && !empty($port) && !empty($host)) {
+        if(!empty($user) && !empty($host)) {
           $pass = $_POST['pass'];
 			    $key = '';
 			    if(isset($_FILES['key'])) {
@@ -130,7 +128,7 @@ class API {
 			    }
           $phrase = $_POST['phrase'];
           $cmd  = $_POST['cmd'];
-          $ssh = new Net_SSH2($host, $port);
+          $ssh = new Net_SSH2($host);
           if(empty($key)) {
             if(!$ssh->login($user,$pass)) {
 			        $this->json($res);
