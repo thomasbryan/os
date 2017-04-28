@@ -7,11 +7,11 @@
   <title>OS</title>
   <meta charset="utf-8">
   <style>
-    body { padding-top: 70px; }
+    body { padding-top: 50px; overflow:hidden;}
     thead th { text-align:center; }
     thead th a { display:block; }
-    thead th a:hover { text-decoration:none; }
-
+    thead th a:hover, thead th a:focus { text-decoration:none; }
+    table { background: #fff; }
   </style>
   <script src="js/jquery.min.js"></script>
 	<script>
@@ -35,8 +35,8 @@
 		}
 		function checkTime(i) { return (i < 10 ? i = "0" + i : i); }
     function buildCal() {
+      var t = new Date();
       if(app == null) {
-			  var t = new Date();
         app = {"m":t.getMonth(),"y":t.getFullYear()};
         localStorage.index = JSON.stringify(app);
       }else{
@@ -68,6 +68,7 @@
         c++;
       }
       $("tbody").html(html);
+      today(t);
     }
     function prev() {
       if(app.m == 0) {
@@ -84,7 +85,6 @@
       app = {"m":t.getMonth(),"y":t.getFullYear()};
       localStorage.index = JSON.stringify(app);
       buildCal();
-      today(t);
     }
     function next() {
       if(app.m == 11) {
@@ -113,7 +113,7 @@
       $.each(app,function(k,v) {
         var html = "<li><a href='"+v.h+"' target='_blank' class='navbar-brand'>"
           + "<span class='glyphicon glyphicon-"+v.i+"'></span> "
-          + k 
+          + "<span class='hidden-xs'>" + k + "</span>"
           ;
         $(".navbar .nav").append(html);
       });
@@ -128,32 +128,33 @@
   </nav>
   <div class="jumbotron">
     <div class="container">
-      <h2 id="date" class="text-center"></h2>
-      <h1 id="clock" class="text-center"></h1>
-    </div>
-  </div>
-  <div class="container">
-    <div class="row">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th><a href="javascript:prev();"><span class="glyphicon glyphicon-menu-left"></span></a></th>
-            <th colspan="5"><a href="javascript:curr();"><span class="glyphicon glyphicon-calendar"></span> <span id="title"></span></a></th>
-            <th><a href="javascript:next();"><span class="glyphicon glyphicon-menu-right"></span></a></th>
-          </tr>
-          <tr>
-            <th>Sunday</th>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-            <th>Friday</th>
-            <th>Saturday</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+      <div class="row">
+        <div class="col-sm-6">
+          <h2 id="date" class="text-center"></h2>
+          <h1 id="clock" class="text-center"></h1>
+        </div>
+        <div class="col-sm-6">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th><a href="javascript:prev();"><span class="glyphicon glyphicon-menu-left"></span></a></th>
+                <th colspan="5"><a href="javascript:curr();"><span class="glyphicon glyphicon-calendar"></span> <span id="title"></span></a></th>
+                <th><a href="javascript:next();"><span class="glyphicon glyphicon-menu-right"></span></a></th>
+              </tr>
+              <tr>
+                <th>S<span class="hidden-xs hidden-sm">unday</span></th>
+                <th>M<span class="hidden-xs hidden-sm">onday</span></th>
+                <th>T<span class="hidden-xs hidden-sm">uesday</span></th>
+                <th>W<span class="hidden-xs hidden-sm">ednesday</span></th>
+                <th>T<span class="hidden-xs hidden-sm">hursday</span></th>
+                <th>F<span class="hidden-xs hidden-sm">riday</span></th>
+                <th>S<span class="hidden-xs hidden-sm">aturday</span></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </body></html>
