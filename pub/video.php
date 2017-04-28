@@ -3,9 +3,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Audio</title>
+    <title>Video</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="ico/audio.ico" rel="icon" type="image/x-icon">
+    <link href="ico/video.ico" rel="icon" type="image/x-icon">
     <style>
       body { padding: 50px 0; }
       .form-group { margin: 9px; }
@@ -20,11 +20,130 @@
         body.body-edit { padding-top: 215px; }
         .list-group { padding-right: 0; }
       }
-      button.update { margin-left: 1em; }
       #e { position: fixed; right: 1em; z-index: 100; }
       #l { line-height: 50px; }
       #t { color: #9d9d9d; height: 100%; line-height: 50px; overflow: hidden; position: absolute; width: 0%; white-space: nowrap; }
       #tl { bottom:0; height: 50px; left:0; position: absolute; right:0; width: 100%; }
+    <?php /*
+    TODO Complete converting code base.
+      html,body{
+        overflow:auto;
+        -webkit-overflow-scrolling:touch;
+      }
+      body{
+        margin:0;
+        padding:0;
+        top:0;
+        right:0;
+        left:0;
+        bottom:0;
+        font-family:monaco,monospace;
+        font-size:20px;
+        background-color:#333;
+        -webkit-user-select:none;
+      }
+      .r{
+        position:relative;
+        min-width:325px;
+        height:64px;
+        line-height:64px;
+        cursor:default;
+        padding:0 1em;
+        font-weight:bold;
+        color:#fcfcfc;
+        overflow:hidden;
+        word-break:break-all;
+      }
+      .r.a{
+        background-color:#0063CE;
+        color: #fff;
+      }
+      #c{
+        -webkit-overflow-scrolling:touch;
+        position:absolute;
+        top:0;
+        bottom:0;
+        right:0;
+        left:0;
+        padding:1em 0;
+        overflow:auto;
+      }
+      #v{
+        z-index:1;
+      }
+      #o{
+        z-index:2147483647;
+      }
+      #n {
+        z-index:2147483647;
+        position:absolute;
+      }
+      #o.a{
+        background-color:rgba(0,0,0,0.75);
+      }
+      #o,#v{
+        position:absolute;
+        top:0;
+        right:0;
+        bottom:0;
+        left:0;
+        width:100%;
+      }
+      .icon-stop {
+        top:25%;
+        left:25%;
+      }
+      .icon-backward {
+        top:75%;
+        left: 25%;
+      }
+      #p {
+        left:50%;
+        top:50%;
+        line-height: 142px !important;
+        height: 128px !important;
+        width: 128px !important;
+        margin-top: -64px !important;
+        margin-left: -64px !important;
+        font-size: 64px !important;
+      }
+      .icon-forward {
+        top:75%;
+        left:75%;
+      }
+      #f {
+        top:25%;
+        left:75%;
+      }
+      #n > i {
+        margin-top: -32px;
+        margin-left: -32px;
+        background-color: #fff;
+        font-size:32px;
+        width: 64px;
+        height: 64px;
+        line-height: 72px;
+        text-align: center;
+        position: fixed;
+      }
+      #tl {
+        right:0;
+        bottom:0;
+        left:0;
+        position: fixed;
+        width: 100%;
+        height: 64px;
+        background-color: #fff;
+      }
+      #t {
+        position: absolute;
+        width: 1%;
+        height: 100%;
+        background-color:#0063CE;
+      }
+      .ui-loading .ui-loader{display:block;}
+      .ui-loader{display:none;position:absolute;opacity:.85;z-index:100;left:50%;width:200px;margin-left:-130px;margin-top:-35px;padding:10px 30px;}
+    */ ?>
     </style>
   </head>
   <body>
@@ -39,43 +158,28 @@
             </div>
           </form>
         </div>
+        <a data-req="ba" class="navbar-brand"><span class="glyphicon glyphicon-backward"></span></a>
         <a data-req="pp" class="navbar-brand"><span class="glyphicon glyphicon-play"></span></a>
         <a data-req="pp" class="navbar-brand hidden"><span class="glyphicon glyphicon-pause"></span></a>
         <a data-req="fo" class="navbar-brand"><span class="glyphicon glyphicon-forward"></span></a>
-        <a data-req="ra" class="navbar-brand"><span class="glyphicon glyphicon-random"></span></a>
         <a data-req="dn" class="navbar-brand"><span class="glyphicon glyphicon-volume-down"></span></a>
         <a data-req="up" class="navbar-brand"><span class="glyphicon glyphicon-volume-up"></span></a>
-        <a data-req="li" class="navbar-brand"><span class="glyphicon glyphicon-list"></span></a>
-        <div class="edit hidden navbar-header">
-          <form id="edit" method="POST" >
-            <div class="form-group">
-              <input type="hidden" name="req" value="edit" />
-              <input type="hidden" id="f" name="f" />
-              <input type="text" id="n" name="n" class="form-control" placeholder="Name" />
-            </div>
-          </form>
-        </div>
-        <a data-req="ce" class="edit hidden navbar-brand"><span class="glyphicon glyphicon-remove-sign"></span></a>
-        <a data-req="tn" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-trash text-danger"></span> <span class='text-danger'>Trash</span></a>
       </div>
     </nav>
+    <div id="c"></div>
     <div class="container-fluid">
       <div class="row-fluid">
         <div id="e" class="hidden alert alert-danger" role="alert"> </div>
-        <div class="col-sm-8">
+        <div class="col-sm-12">
           <h5></h5>
           <div id="r" class="list-group"></div>
-        </div>
-        <div class="col-sm-4">
-          <h5><span class="glyphicon glyphicon-list"></span> <span id="playlist"></span></h5>
-          <div id="p" class="list-group"></div>
         </div>
       </div>
     </div>
     <nav class="navbar navbar-default navbar-fixed-bottom">
       <div id="tl"><div id="t" class="navbar-inverse"></div><span id="l"></span></div>
     </nav>
-    <audio id="a"><source src="" type="audio/mp3"></audio>
+    <video id="a"><source src="" type="video/mp4"></video>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script>
@@ -94,138 +198,32 @@
               data: $(this).serialize()
             }).done(function(res) {
               search(false);
-              $(".col-sm-8 h5").html("<span class='glyphicon glyphicon-search'></span> Results");
+              $(".col-sm-12 h5").html("<span class='glyphicon glyphicon-search'></span> Results");
               var html = "";
               $.each(res,function(k,v){
                 html += "<a class='g list-group-item' data-f='"+v.f+"' data-n='"+v.n+"' data-t='0'>"+v.n;
-                html += "<button class='update btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-plus-sign'></span> Playlist</button>";
-                html += "<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-pencil'></span> Edit</button>";
                 html += "</a>";
               });
               $("#r").html(html);
               if($("#r .active").length==0) {$("#r a:first").addClass("active");}
             }).fail(function() {
               $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
-              youtube();
             });
-          }else{
-            if($("#r .y").length == 0) youtube();
           }
         }else{
           reset();
         }
       });
-      $("form#edit").on("submit",function(e) {
-        e.preventDefault();
-        $.ajax({
-          type: "POST",
-          data: $(this).serialize()
-        }).fail(function() {
-          err("Unable to Update");
-        });
-        $(".edit").addClass("hidden");
-        $("body").removeClass("body-edit");
-      });
-      $(document).on("submit","form#create",function(e) {
-        e.preventDefault();
-        var l = $("#create .create").val();
-        if(l.length > 0) {
-          $.ajax({
-            type: "POST",
-            data: "req=create&"+$(this).serialize()
-          }).done(function(res) {
-            var k = $("#r .l").length;
-            $("#r").append("<a id='list-"+k+"' class='l list-group-item '>"+l+"<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-minus-sign'></span> Playlist</button></a>");
-            $("#list-"+k).data("l",l);
-            $("#create .create").val("");
-          }).fail(function() {
-            $("#create .create").val("");
-          });
-        }
-      });
       function search(req) {
         ( req ? $(".form-control-feedback").removeClass("glyphicon-search").addClass("glyphicon-hourglass") : $(".form-control-feedback").removeClass("glyphicon-hourglass").addClass("glyphicon-search") );
       }
-      function youtube() {
-        $("#q").blur();
-        $("#r .g.disabled").remove();
-        search(true);
-        $.ajax({
-          type: "POST",
-          data: "req=youtube&y="+$("#q").val()
-        }).done(function(res) {
-          search(false);
-          var html = "";
-          $.each(res,function(k,v){
-            html += "<a class='y list-group-item' data-d='"+v.u+"'>";
-            html += "<h4 class='list-group-item-heading'>"+v.n+"</h4>";
-            html += "<p class='list-group-item-text'>"+v.u+"</p>";
-            if(v.i!==undefined) html += "<img src='"+v.i+"' />";
-            html += "</a>";
-          });
-          $("#r").append(html);
-          if($("#r .active").length==0) {$("#r a:first").addClass("active");}
-        }).fail(function() {
-          search(false);
-          $("#r").append("<a class='y list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
-        });
-      }
-      $(document).on("click","#r .g:not(.disabled) button.update",function(e) {
-        var div = $(this)
-          , data = div.parent().data()
-          ;
-        data.l = app.l;
-        data.req = "update";
-        $.ajax({
-          type: "POST",
-          data: data
-        }).done(function(res) {
-          div.addClass("btn-info");
-        });
-        e.stopPropagation();
-      });
       $(document).on("click","#r .g:not(.disabled)",function(e) {
         play($(this).data());
         reset();
       });
-      $(document).on("click","#r .y:not(.disabled)",function(e) {
-        $(this).addClass("disabled").removeClass("active");
-        $.ajax({
-          type: "POST",
-          data: "req=download&d="+$(this).data("d")+"&q="+$("#q").val()
-        }).done(function(res) {
-          reset();
-        }).fail(function() {
-          //TODO check not returning something??
-          err("Failed to Download");
-          reset();
-        });
-      });
-      $(document).on("click","#r .l button",function(e) {
-        var div = $(this).parent()
-          , data = div.data()
-          ;
-        data.req = "delete";
-        $.ajax({
-          type: "POST",
-          data: data
-        }).done(function(res) {
-          div.remove();
-        }).fail(function() {
-          err("Unable to Delete '"+data.l+"' Playlist");
-        });
-        e.stopPropagation();
-      });
-      $(document).on("click","#r .l",function(e) {
-        if($(this).data("l")) {
-          app.l = $(this).data("l");
-          localStorage.audio = JSON.stringify(app);
-          reset();
-          ui();
-        }
-      });
       $(document).on("click",".navbar-brand",function(e) {
         switch ($(this).data("req")) {
+          default: console.log($(this).data("req")+" Not Registered");break;
           case "pp":pp();break;
           case "fo":fo();break;
           case "ra":ra();break;
@@ -233,15 +231,7 @@
           case "up":up();break;
           case "li":list();break;
           case "ce":close();break;
-          case "tn":trash();break;
         }
-      });
-      $(document).on("click","#p a,#r .g:not(.disabled) button:not(.update)",function(e) {
-        $(".edit").removeClass("hidden");
-        $("body").addClass("body-edit");
-        $("#f").val(($(this).data("f")===undefined?$(this).parent().data("f"):$(this).data("f")));
-        $("#n").val(($(this).data("n")===undefined?$(this).parent().data("n"):$(this).data("n"))).focus();
-        e.stopPropagation();
       });
       function pp() {
         if(app.p) {
@@ -270,54 +260,18 @@
         app.f = req.f;
         app.n = req.n;
         app.t = req.t;
-        localStorage.audio = JSON.stringify(app);
-        playlist();
+        localStorage.video = JSON.stringify(app);
+        //playlist();
         audio();
         ui();
-      }
-      function list() {
-        reset();
-        if($("#create").length == 0) {
-          $.ajax({
-            type: "POST",
-            data: "req=list"
-          }).done(function(res) {
-            $(".col-sm-8 h5").html("<span class='glyphicon glyphicon-list'></span> Playlists");
-            $("#r").html("<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='create form-control' name='l' type='text' placeholder='Create' /><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> Playlist</button></div></div></form></div>");
-            if(app.l===undefined) app.l="";
-            $.each(res,function(k,v) {
-              var a = "";
-              if(app.l == v) a = "active";
-              $("#r").append("<a id='list-"+k+"' class='l list-group-item "+a+"'>"+v+"<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-minus-sign'></span> Playlist</button></a>");
-              $("#list-"+k).data("l",v);
-            });
-          }).fail(function() {
-            err("Failed Playlist Retreival");
-          });
-        }
       }
       function close() {
         $(".edit").addClass("hidden");
         $("body").removeClass("body-edit");
       }
-      function trash() {
-        $.ajax({
-          type: "POST",
-          data: "req=trash&f="+$("#f").val()
-        }).done(function(res) {
-          close();
-        }).fail(function() {
-          err("Failed to Delete File");
-        });
-      }
-      function playlist() {
-        $("#p").prepend("<a class='list-group-item'>"+app.n+"</a>");
-        $("#p a").first().attr("data-f",app.f).attr("data-n",app.n);
-        if($("#p a").length > 20 ) $("#p a").last().remove();
-      }
       function ra() {
         app.s = (app.s ? false : true);
-        localStorage.audio = JSON.stringify(app);
+        localStorage.video = JSON.stringify(app);
         ui();
       }
       function dn() {
@@ -361,7 +315,7 @@
         var init=1;
         $("#a").attr("src","").remove();
         if(app.f!== undefined) {
-          $("body").append("<audio id='a'><source src='"+decodeURIComponent(app.f).replace(/'/g,'%27')+"' type='audio/mp3'></audio>");
+          $("body").append("<video id='a'><source src='"+decodeURIComponent(app.f).replace(/'/g,'%27')+"' type='video/mp4'></video>");
           $("#a").get(0).volume = app.v;
           $("#a").get(0).addEventListener("ended",function() { 
             fo();
@@ -384,11 +338,6 @@
         }else{
           $(".glyphicon-pause").parent().addClass("hidden");
         }
-        if(app.s) {
-          $(".glyphicon-random").addClass("text-info");
-        }else{
-          $(".glyphicon-random").removeClass("text-info");
-        }
         var p = "&nbsp;&nbsp;&nbsp;";
         $("#t").html(p+app.n);
         $("#l").html(p+app.n);
@@ -401,7 +350,7 @@
       }
       function reset() {
         $("#q").val("");
-        $("#r,.col-sm-8 h5").html("");
+        $("#r,.col-sm-12 h5").html("");
       }
       setInterval(function() { timeline(); }, 3000);
       function timeline() {
@@ -412,7 +361,7 @@
       }
       function bookmark() {
         app.t = $("#a").get(0).currentTime;
-        localStorage.audio = JSON.stringify(app);
+        localStorage.video = JSON.stringify(app);
       }
       $(document).on("click", "#tl",function(e){
         var percent = e.pageX / $(window).width();
@@ -434,27 +383,240 @@
           if(e.keyCode == 27) {$("input").blur();e.preventDefault();}
         }
       });
-      var app = localStorage.audio;
+      var app = localStorage.video;
       $(document).ready(function() {
         if(app == null) {
           app = {"f":"","l":"Library","n":"","p":false,"s":false,"t":0,"v":0.5};
           fo();
         }else{
           app = JSON.parse(app);
-          playlist();
+          //playlist();
           audio();
           ui();
         }
       });
+      /* TODO convert code */
+      var o="click",p=false,f=false;
+      /*** Events ***/
+      /* Select Video */
+      $(document).on(o, ".r", function(e){
+        $(".r").removeClass("a");
+        $(this).addClass("a");
+        e.preventDefault();
+      });
+      /* Play Video */
+      $(document).on(o, ".r.a", function(e){
+        video(e);
+        e.preventDefault();
+      });
+      $(document).on(o, "#tl",function(e){
+        var percent = e.pageX / $(window).width();
+        $("#v").get(0).currentTime = $("#v").get(0).duration * percent;
+        $("#t").css({"width":percent * 100 + "%"});
+      });
+      function state() {
+        return (p ? "icon-pause" : "icon-play");
+      }
+      function frame() {
+        return (f ? "icon-compress" : "icon-expand");
+      }
+      $(document).on(o, "#o.i", function(e){
+        $("#o").removeClass("i").addClass("a");
+        $("#n").append("<i id='f' class='"+frame()+"' onclick='full()'></i><i class='icon-stop' onclick='exitVideo()'></i><i class='icon-backward' onclick='leftKey()'></i><i id='p' class='"+state()+"' onclick='playpause()'></i><i class='icon-forward' onclick='rightKey()'></i><div id='tl'><div id='t'></div></div>");
+        $("#t").css({"width":($("#v").get(0).currentTime / $("#v").get(0).duration )* 100 + "%"});
+        e.preventDefault();
+      });
+      $(document).on(o, "#o.a", function(e){
+        $("#o").removeClass("a").addClass("i");
+        $("#n > div,#n > i").remove();
+        e.preventDefault();
+      });
+      function video(e) {
+        var init=1;
+        $("#c").hide();
+        $("body").append("<video id='v'><source src='"+decodeURIComponent($(".r.a").data("href"))+"' type='video/mp4'></video><div id='o' class='i'></div><div id='n'></div>");
+        $("#v").get(0).addEventListener("canplay",function() { 
+          if(init == "1") { 
+            init=0; 
+            $("#v").get(0).currentTime=$(".r.a").data("time");
+            $("#v").get(0).play();
+            if($("#v").get(0).paused == false) p=true;
+          }
+        });
+        if($(window).height() - $("#v").height() > 0) {
+          $("#v").css({"top":($(window).height() - $("#v").height()) / 2+"px"});
+        }else{
+          $("#v").height($(window).height());
+        }
+        //update video. send id and currentTime if playing every 60 seconds.
+      }
+      /* Exit Video */
+      function exitVideo() {
+        if($(".r.a").data("time") != $("#v").get(0).currentTime) {
+          $(".r.a").data("time",$("#v").get(0).currentTime);
+          bookmarkVideo({f:$(".r.a").data("href"),t:$("#v").get(0).currentTime});
+        }
+        $("#c").show();
+        $("#n,#o").remove();
+        $("#v").attr("src","").remove();
+        p=false;
+        f=false;
+      }
+      function playpause() {
+        $("#p").removeClass(state());
+        if(p) {
+          $("#v").get(0).pause();
+          p=false;
+          bookmarkVideo({f:$(".r.a").data("href"),t:$("#v").get(0).currentTime});
+        }else{
+          $("#v").get(0).play();
+          p=true;
+        }
+        $("#p").addClass(state());
+      }
+      function full() {
+        $("#f").removeClass(frame());
+        if(f) {
+          var video=$("#v");
+          if(video.length != 0) {
+            try { video.get(0).webkitExitFullscreen(); f=false; }
+            catch(err) { }
+            try { video.get(0).mozCancelFullscreen(); f=false; }
+            catch(err) { }
+            try { video.get(0).exitFullscreen(); f=false; }
+            catch(err) { }
+          }
+        }else{
+          enterKey();
+        }
+        $("#f").addClass(frame());
+      }
+      /* Bookmark Time */
+      function bookmarkVideo(req) {
+        $.post("video.php",req);
+      }
+      function enterKey(e) {
+        var video=$("#v");
+        if(video.length != 0) {
+          try { video.get(0).webkitRequestFullscreen(); f=true; }
+          catch(err) { }
+          try { video.get(0).mozRequestFullscreen(); f=true; }
+          catch(err) { }
+          try { video.get(0).requestFullscreen(); f=true; }
+          catch(err) { }
+        }
+      }
+      function escapeKey(e) {
+        if($("#v").length != 0) {
+          exitVideo();
+        }
+      }
+      function spaceKey(e) {
+        var v=$("#v");
+        if(v.length != 0) {
+          playpause();
+        }else{
+          video(e);
+        }
+      }
+      function leftKey(e) {
+        var v=$("#v");
+        if(v.length != 0) {
+          v.get(0).currentTime=v.get(0).currentTime-10;
+          $("#t").css({"width":($("#v").get(0).currentTime / $("#v").get(0).duration )* 100 + "%"});
+        }
+      }
+      function upKey(e) {
+        var that=$(".r.a");
+        if($(".r.a").length==0){
+          $(".r:first").addClass("a");
+          $("html,body").animate({ scrollTop: $(".r.a").offset().top });
+        }else{
+          that.removeClass("a");
+          if(that.is(":first-child")) {
+            $(".r:last").addClass("a");
+            $("#c").animate({ scrollTop: $(".r.a").index()*$(".r").height() },0);
+          }else{
+            that.prev().addClass("a");
+            $("#c").animate({ scrollTop: $(".r.a").index()*$(".r").height() },0);
+          }
+        }
+      }
+      function rightKey(e) {
+        var v=$("#v");
+        if(v.length != 0) {
+          v.get(0).currentTime=v.get(0).currentTime+10;
+          $("#t").css({"width":($("#v").get(0).currentTime / $("#v").get(0).duration )* 100 + "%"});
+        }
+      }
+      function downKey(e) {
+        var that=$(".r.a");
+        if(that.length==0){
+          $(".r:first").addClass("a");
+          $("html,body").animate({ scrollTop: $(".r.a").offset().top });
+        }else{
+          that.removeClass("a");
+          if(that.is(":last-child")) {
+            $(".r:first").addClass("a");
+            $("#c").animate({ scrollTop: $(".r.a").index()*$(".r").height() },0);
+          }else{
+            that.next().addClass("a");
+            $("#c").animate({ scrollTop: $(".r.a").index()*$(".r").height() },0);
+          }
+        }
+      }
+      function isTouchDevice(){ return typeof window.ontouchstart !== "undefined"; }
+      /* Keyboard Shortcuts 
+      $(document).keyup(function(e) {
+        switch(e.keyCode) { 
+          case 13:enterKey(e);e.preventDefault();break;
+          case 27:escapeKey(e);e.preventDefault();break;
+          case 32:spaceKey(e);e.preventDefault();break;
+          case 72: case 37:leftKey(e);e.preventDefault();break;
+          case 75: case 38:upKey(e);e.preventDefault();break;
+          case 76: case 39:rightKey(e);e.preventDefault();break;
+          case 74: case 40:downKey(e);e.preventDefault();break;
+        }
+      });
+      */
+      /* Initialize 
+      $(document).ready(function() {
+        if(isTouchDevice()) {
+          o = "tap";
+          $.getScript("mobile.js",function(data) { });
+        }
+        $.getJSON("video.php",function(res) {
+          $("#c").html("");
+          $.each(res,function(file,path) {
+            $("#c").append("<div class='r' data-href='"+file+"' data-time='"+path.time+"' >"+
+            decodeURIComponent(decodeURIComponent(file).slice(decodeURIComponent(file).lastIndexOf("/")+1,-4)));
+          });
+        });
+      });
+      */
+      <?php /* $api = new API();
+      class API {
+        private $json = '../src/videos.json';
+        function __construct() {
+          if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
+            $video=json_decode(file_get_contents($this->json),true);
+            $video[$_POST['f']]['time']=$_POST['t'];
+            file_put_contents($this->json,json_encode($video));
+            exit;
+          }
+          if ($_SERVER['REQUEST_METHOD'] === 'GET') { 
+            echo file_get_contents($this->json);
+            exit;
+          }
+        }
+      } */ ?>
     </script>
   </body>
 </html><?php class API {
   private $d = '';
   private $m = 'meta';
   private $l = 'Library';
-  private $p = './mp3/';
-  # required: youtube-dl
-  # required: libav-tools
+  private $p = './mp4/';
   function __construct() {
     if($_SERVER['REQUEST_METHOD']==='POST') {
       $this->d = dirname(__FILE__);
@@ -463,14 +625,8 @@
       switch($_POST['req']) {
         default: $res = $this->fetch($_POST['s'],(isset($_POST['f'])?$_POST['f']:''),(isset($_POST['l'])?$_POST['l']:''));break;
         case 'create': $res = $this->create($_POST['l']);break;
-        case 'update': $res = $this->update($_POST['f'],$_POST['l']);break;
-        case 'delete': $res = $this->delete($_POST['l']);break;
-        case 'download': $res = $this->download($_POST['d'],$_POST['q']);break;
         case 'list': $res = $this->files($this->p,false);break;
         case 'search': $res = $this->search($_POST['q']);break;
-        case 'edit': $res = $this->edit($_POST['n'],$_POST['f']);break;
-        case 'youtube': $res = $this->youtube($_POST['y']);break;
-        case 'trash': $res = $this->trash($_POST['f']);break;
       }
       $this->json($res);
     }
@@ -483,64 +639,14 @@
     }
     return $res;
   }
-  private function update($f='',$l='') {
-    $res = false;
-    if($l != $this->l && !empty($l)) {
-      if(file_exists($this->p.$l.'.json')) {
-        $mp3=json_decode(file_get_contents($this->p.$this->l.'.json'),true);
-        $list = json_decode(file_get_contents($this->p.$l.'.json'),true);
-        $list[$f] = $mp3[$f];
-        file_put_contents($this->p.$l.'.json',json_encode($list));
-        $res = true;
-      }
-    }
-    return $res;
-  }
-  private function delete($req='') {
-    $res = false;
-    if($req!=$this->l && !empty($req)) {
-      unlink($this->p.$req.'.json');
-      $res = true;
-    }
-    return $res;
-  }
-  private function download($url='',$n ='') {
-    $res = false;
-    if(!empty($url) ) {
-
-      $id = exec('youtube-dl --get-id '.$url);
-      if(file_exists($this->p.$this->m)) $meta = json_decode(file_get_contents($this->p.$this->m),true);
-      $meta[$id] = $n;
-      file_put_contents($this->p.$this->m,json_encode($meta));
-      chdir($this->p);
-      $res = exec('youtube-dl -w -x --id --audio-format mp3 '.$url);
-      chmod($id.'.mp3',0666);
-      chdir($this->d);
-      $res = $this->refresh();
-    }
-    return $res;
-  }
-  private function edit($n='',$f='') {
-    $res = false;
-    if(file_exists($this->p.$this->l.'.json')) {
-      $mp3=json_decode(file_get_contents($this->p.$this->l.'.json'),true);
-      if(isset($mp3[$f])) {
-        if(file_exists($this->p.$this->m)) $meta = json_decode(file_get_contents($this->p.$this->m),true);
-        $meta[$mp3[$f]] = $n;
-        file_put_contents($this->p.$this->m,json_encode($meta));
-        $res = true;
-      }
-    }
-    return $res;
-  }
   private function search($req) {
     $res = false;
     if(!empty($req)) {
-      $mp3 = json_decode(file_get_contents($this->p.$this->l.'.json'),true);
+      $mp4 = json_decode(file_get_contents($this->p.$this->l.'.json'),true);
       if(file_exists($this->p.$this->m)) {
         $meta = json_decode(file_get_contents($this->p.$this->m),true);
       }
-      foreach($mp3 as $k => $v) {
+      foreach($mp4 as $k => $v) {
         $n = (isset($meta[$v]) ? $meta[$v] : $v);
         if(preg_match('/'.$req.'/i',$n)) {
           $res[] = array( 'f' => $k, 'n' => $n);
@@ -553,84 +659,48 @@
     $res=false;
     if(empty($l)) $l = $this->l;
     if(file_exists($this->p.$l.'.json')) {
-      $mp3=json_decode(file_get_contents($this->p.$l.'.json'),true);
+      $mp4=json_decode(file_get_contents($this->p.$l.'.json'),true);
     }else{
       # ???
       $this->refresh();
     }
     if(empty($id)) {
-      $id = key($mp3);
+      $id = key($mp4);
     }else{
       if($req == 'true') {
-        $r = array_rand($mp3,2);
+        $r = array_rand($mp4,2);
         if($r[0]!=$id) {
           $id = $r[0];
         }else{
           $id = $r[1];
         }
       }else{
-        while(key($mp3) !== $id) next($mp3);
-        next($mp3);
-        $id = key($mp3);
-        if($id==null) $mp3 = false;
+        while(key($mp4) !== $id) next($mp4);
+        next($mp4);
+        $id = key($mp4);
+        if($id==null) $mp4 = false;
       }
     }
-    if($mp3) {
+    if($mp4) {
       if(!file_exists($id)) {
-        unset($mp3[$id]);
-        file_put_contents($this->p.$l.'.json',json_encode($mp3));
+        unset($mp4[$id]);
+        file_put_contents($this->p.$l.'.json',json_encode($mp4));
         return $this->fetch($req,$id,$l);
       }
       if(file_exists($this->p.$this->m)) $meta=json_decode(file_get_contents($this->p.$this->m),true);
-      $res = array('f' => $id, 'n' => (isset($meta[$mp3[$id]]) ? $meta[$mp3[$id]] : $mp3[$id]));
+      $res = array('f' => $id, 'n' => (isset($meta[$mp4[$id]]) ? $meta[$mp4[$id]] : $mp4[$id]));
     }
     return $res;
   }
-  private function trash($req) {
-    $res = false;
-    if(file_exists($req)) {
-      if(file_exists($this->p.$this->l.'.json')) {
-        $mp3=json_decode(file_get_contents($this->p.$this->l.'.json'),true);
-        if(file_exists($this->p.$this->m)) $meta = json_decode(file_get_contents($this->p.$this->m),true);
-        if(isset($meta)) unset($meta[$mp3[$req]]);
-        unlink($req);
-        if(!file_exists($req)) {
-          file_put_contents($this->p.$this->m,json_encode($meta));
-          $res = $this->refresh();
-        }
-      }
-    }
-    return $res;
-  }
-  private function youtube($req) {
-    if(!empty($req)) {
-      $dom = new DOMDocument('1.0');
-      @$dom->loadHTMLFile('https://www.google.com/search?q='.htmlentities('site:www.youtube.com '.$req));
-      $res = array();
-      $h = $dom->getElementsByTagName('h3');
-      $i = $dom->getElementsByTagName('img');
-      $c = $dom->getElementsByTagName('cite');
-      foreach($h as $k => $v) {
-        $res[$k]['n'] = $v->nodeValue;
-      }
-      foreach($i as $k => $v) {
-        $res[$k]['i'] = $v->getAttribute('src');
-      }
-      foreach($c as $k => $v) {
-        $res[$k]['u'] = $v->nodeValue;
-      }
-    }
-    return $res;
-  }
-  private function files($req,$mp3=true) {
+  private function files($req,$mp4=true) {
     $res = false;
     if(is_Dir($req)) {
       $res = array(); 
       $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($req));
-      if($mp3) {
+      if($mp4) {
         foreach($rii as $file) {
-          if($file->isDir()|| $file->getExtension() != 'mp3') continue;
-          $res[$file->getPathname()] = $file->getBasename('.mp3'); 
+          if($file->isDir()|| $file->getExtension() != 'mp4') continue;
+          $res[$file->getPathname()] = $file->getBasename('.mp4'); 
         }
       }else{
         foreach($rii as $file) {

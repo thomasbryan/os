@@ -2,3 +2,6 @@
 	path = phpseclib
 	url = https://github.com/phpseclib/phpseclib
 	branch = 1.0
+[submodule "adminer"]
+	path = adminer
+	url = https://github.com/vrana/adminer.git

@@ -8,10 +8,10 @@
   </style>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-      </div>
-    </nav>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+    </div>
+  </nav>
   <div class="container-fluid">
     <div class="row-fluid">
       <div class="col-xs-12">
@@ -108,6 +108,11 @@ class API {
       TODO 
       cache profile.json > { "user@host"=> count,}
       cache commands.json > { "command"=> count,}
+
+      step 1: pick profile / enter user and host
+      step 2: enter password / passphrase / choose key
+      step 3: pick command / enter command
+      step 4: results
     */
     if($_SERVER['REQUEST_METHOD']==='POST') {
       $res = false;
