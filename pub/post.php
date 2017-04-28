@@ -3,7 +3,7 @@
   <title>GET/POST CLIENT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <style>
       body { padding-top: 1em; }
       #type { font-family: monospace; }
@@ -58,8 +58,7 @@
       <div id="text" contenteditable="true"></div>
     </div>
   </div>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="jquery.min.js"><\/script>')</script>
+  <script src="js/jquery.min.js"></script>
   <script>
     $(document).ready(function() {
       if($('body').css('color') != 'rgb(51, 51, 51)') {
