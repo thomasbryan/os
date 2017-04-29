@@ -5,12 +5,16 @@ if(file_exists($path.$db)) {
   include($path.$db);
 }else{
   chdir($path);
-  $src = 'compile.php';
-  if(file_exists($src)) {
-    exec('php '.$src);
-    if(file_exists($db)) {
-      include($db);
+  if(is_writable(getcwd())) {
+    $src = 'compile.php';
+    if(file_exists($src)) {
+      exec('php '.$src);
+      if(file_exists($db)) {
+        include($db);
+      }
     }
+  }else{
+    echo 'Error: directory read only, unable to compile adminer';
   }
 }
 ?>
