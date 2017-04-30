@@ -21,12 +21,13 @@
       ;
 		function startTime() {
 			var d = new Date()
-        , h = d.getHours()
+        , h = (( d.getHours() + 11) % 12 + 1)
 			  , m = d.getMinutes()
 			  , o = (60 - d.getSeconds())*1000
 			  , m = checkTime(m)
 			  , t = setTimeout(startTime, o)
-        , c = (h < 13 ? h : h - 12 ) + ":" + m + " " + (h < 12 ? "AM" : "PM" )
+        , a = (d.getHours() < 12 ? "AM" : "PM")
+        , c = h+":"+m+" "+a
         ;
       $("#date").html(day[d.getDay()]+", "+mon[d.getMonth()]+" "+d.getDate()+" "+d.getFullYear());
       today(d);

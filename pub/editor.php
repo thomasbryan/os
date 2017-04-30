@@ -27,6 +27,10 @@
             </div>
           </form>
         </div>
+        <!-- 
+        create document in current path.
+        
+        -->
         <div class="navbar-brand">
         /path/to/file
         </div>
@@ -35,7 +39,9 @@
     </nav>
     <div class="container-fluid">
       <div class="row-fluid">
-        <textarea id="d" name="d" class="form-control" rows="10" placeholder="Info"></textarea>
+        <div class="col-xs-12">
+          <textarea id="d" name="d" class="form-control" rows="10" placeholder="Info"></textarea>
+        </div>
       </div>
     </div>
     <script src="js/jquery.min.js"></script>
@@ -128,7 +134,6 @@
           app.l = $(this).data("l");
           localStorage.app = JSON.stringify(app);
           reset();
-          ui();
         }
       });
       $(document).on("click","#p a,#r .g:not(.disabled) button:not(.update)",function(e) {
@@ -138,34 +143,9 @@
         $("#n").val(($(this).data("n")===undefined?$(this).parent().data("n"):$(this).data("n"))).focus();
         e.stopPropagation();
       });
-      function audio() {
-        // ??? //
-        var init=1;
-        $("#a").attr("src","").remove();
-        if(app.f!== undefined) {
-          $("body").append("<audio id='a'><source src='"+decodeURIComponent(app.f).replace(/'/g,'%27')+"' type='audio/mp3'></audio>");
-          $("#a").get(0).volume = app.v;
-          $("#a").get(0).addEventListener("ended",function() { 
-            fo();
-          });
-          $("#a").get(0).addEventListener("canplay",function() { 
-            if(init == "1") { 
-              init=0; 
-              $("#a").get(0).currentTime=app.t;
-              if(app.p) $("#a").get(0).play();
-            }
-          });
-        }else{
-          fo();
-        }
-      }
       function reset() {
         $("#q").val("");
         $("#r,.col-sm-8 h5").html("");
-      }
-      function bookmark() {
-        app.t = $("#a").get(0).currentTime;
-        localStorage.app = JSON.stringify(app);
       }
       //var app = localStorage.app;
       $(document).ready(function() {
@@ -175,11 +155,21 @@
           fo();
         }else{
           app = JSON.parse(app);
-          playlist();
-          audio();
-          ui();
         }
         */
+      });
+      // just set to height on load
+      $("textarea").keyup(function(e) {
+        if (e.which == 8 || e.which == 46) {
+          if( ($(this).height() + parseFloat($(this).css("font-size"))) > this.scrollHeight ) {
+            $(this).height(parseFloat($(this).css("font-size")));
+          }
+        }
+        if($('.col-xs-12').outerHeight() < ( $(window).height() - 120 ) ) {
+          while($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css("borderTopWidth")) + parseFloat($(this).css("borderBottomWidth"))) {
+            $(this).height($(this).height()+1);
+          };
+        }
       });
     </script>
   </body>

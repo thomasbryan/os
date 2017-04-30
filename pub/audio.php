@@ -305,6 +305,7 @@
           type: "POST",
           data: "req=trash&f="+$("#f").val()
         }).done(function(res) {
+          $(".list-group").find("[data-f='"+$("#f").val()+"']").remove();
           close();
         }).fail(function() {
           err("Failed to Delete File");
