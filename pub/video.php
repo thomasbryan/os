@@ -7,7 +7,7 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="ico/video.ico" rel="icon" type="image/x-icon">
     <style>
-      body { padding: 50px 0; }
+      body { padding: 50px 0; background: #333; }
       .form-group { margin: 9px; }
       .list-group:last-child { padding-right: 0; }
       .list-group { margin-bottom: 0; }
@@ -21,6 +21,15 @@
         .list-group { padding-right: 0; }
       }
       #e { position: fixed; right: 1em; z-index: 100; }
+      #v{
+        z-index:1;
+        position:absolute;
+        top:0;
+        right:0;
+        bottom:0;
+        left:0;
+        width:100%;
+      }
       #l { line-height: 50px; }
       #t { color: #9d9d9d; height: 100%; line-height: 50px; overflow: hidden; position: absolute; width: 0%; white-space: nowrap; }
       #tl { bottom:0; height: 50px; left:0; position: absolute; right:0; width: 100%; }
@@ -158,9 +167,10 @@
             </div>
           </form>
         </div>
+        <a data-req="pp" class="navbar-brand"><span class="glyphicon glyphicon-play text-info"></span></a>
+        <a data-req="pp" class="navbar-brand hidden"><span class="glyphicon glyphicon-pause text-info"></span></a>
         <a data-req="ba" class="navbar-brand"><span class="glyphicon glyphicon-backward"></span></a>
-        <a data-req="pp" class="navbar-brand"><span class="glyphicon glyphicon-play"></span></a>
-        <a data-req="pp" class="navbar-brand hidden"><span class="glyphicon glyphicon-pause"></span></a>
+        <a data-req="st" class="navbar-brand"><span class="glyphicon glyphicon-stop"></span></a>
         <a data-req="fo" class="navbar-brand"><span class="glyphicon glyphicon-forward"></span></a>
         <a data-req="dn" class="navbar-brand"><span class="glyphicon glyphicon-volume-down"></span></a>
         <a data-req="up" class="navbar-brand"><span class="glyphicon glyphicon-volume-up"></span></a>
@@ -179,7 +189,7 @@
     <nav class="navbar navbar-default navbar-fixed-bottom">
       <div id="tl"><div id="t" class="navbar-inverse"></div><span id="l"></span></div>
     </nav>
-    <video id="a"><source src="" type="video/mp4"></video>
+    <video id="v"><source src="" type="video/mp4"></video>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script>
@@ -236,10 +246,10 @@
       function pp() {
         if(app.p) {
           app.p = false;
-          $("#a").get(0).pause();
+          $("#v").get(0).pause();
         }else{
           app.p = true;
-          if($("#a source").attr("src").length > 0 ) $("#a").get(0).play();
+          if($("#v source").attr("src").length > 0 ) $("#v").get(0).play();
         }
         bookmark();
         ui();
@@ -275,13 +285,13 @@
         ui();
       }
       function dn() {
-        if($("#a").get(0).volume >= 0.1 && $("#a").get(0).volume <= 1 ) {
-          $("#a").get(0).volume = $("#a").get(0).volume - 0.1;
+        if($("#v").get(0).volume >= 0.1 && $("#v").get(0).volume <= 1 ) {
+          $("#v").get(0).volume = $("#v").get(0).volume - 0.1;
         }
       }
       function up() {
-        if($("#a").get(0).volume >= 0 && $("#a").get(0).volume <= 0.9 ) {
-          $("#a").get(0).volume = $("#a").get(0).volume + 0.1;
+        if($("#v").get(0).volume >= 0 && $("#v").get(0).volume <= 0.9 ) {
+          $("#v").get(0).volume = $("#v").get(0).volume + 0.1;
         }
       }
       function prev() {
@@ -313,20 +323,25 @@
       function audio() {
         // ??? //
         var init=1;
-        $("#a").attr("src","").remove();
+        $("#v").attr("src","").remove();
         if(app.f!== undefined) {
-          $("body").append("<video id='a'><source src='"+decodeURIComponent(app.f).replace(/'/g,'%27')+"' type='video/mp4'></video>");
-          $("#a").get(0).volume = app.v;
-          $("#a").get(0).addEventListener("ended",function() { 
+          $("body").append("<video id='v'><source src='"+decodeURIComponent(app.f).replace(/'/g,'%27')+"' type='video/mp4'></video>");
+          $("#v").get(0).volume = app.v;
+          $("#v").get(0).addEventListener("ended",function() { 
             fo();
           });
-          $("#a").get(0).addEventListener("canplay",function() { 
+          $("#v").get(0).addEventListener("canplay",function() { 
             if(init == "1") { 
               init=0; 
-              $("#a").get(0).currentTime=app.t;
-              if(app.p) $("#a").get(0).play();
+              $("#v").get(0).currentTime=app.t;
+              if(app.p) $("#v").get(0).play();
             }
           });
+          if($(window).height() - $("#v").height() > 0) {
+            $("#v").css({"top":($(window).height() - $("#v").height()) / 2+"px"});
+          }else{
+            $("#v").height($(window).height());
+          }
         }else{
           fo();
         }
@@ -354,18 +369,18 @@
       }
       setInterval(function() { timeline(); }, 3000);
       function timeline() {
-        if($("#a").get(0).duration) {
-          $("#t").css({"width": $("#a").get(0).currentTime / $("#a").get(0).duration * 100 + "%"});
+        if($("#v").get(0).duration) {
+          $("#t").css({"width": $("#v").get(0).currentTime / $("#v").get(0).duration * 100 + "%"});
           bookmark();
         }
       }
       function bookmark() {
-        app.t = $("#a").get(0).currentTime;
+        app.t = $("#v").get(0).currentTime;
         localStorage.video = JSON.stringify(app);
       }
       $(document).on("click", "#tl",function(e){
         var percent = e.pageX / $(window).width();
-        $("#a").get(0).currentTime = $("#a").get(0).duration * percent;
+        $("#v").get(0).currentTime = $("#v").get(0).duration * percent;
         bookmark();
         $("#t").css({"width":percent * 100 + "%"});
       });
