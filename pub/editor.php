@@ -37,7 +37,6 @@
         <div class="edit hidden navbar-header">
           <form id="edit" method="POST" >
             <div class="form-group">
-              <input type="hidden" name="req" value="edit" />
               <input type="hidden" id="f" name="f" />
               <input type="text" id="n" name="n" class="form-control" placeholder="Name" />
             </div>
@@ -53,6 +52,8 @@
         <div class="col-xs-12">
           <ol id="b" class="breadcrumb"><li class="active"><span class="glyphicon glyphicon-home"></span></li></ol>
           <div id="r" class="list-group"></div>
+        </div>
+        <div class="col-xs-12">
           <textarea id="d" name="d" class="hidden form-control" rows="10" placeholder="Info"></textarea>
         </div>
       </div>
@@ -67,7 +68,7 @@
             $("#q").data("q",$("#q").val());
             $("#r").html("");
             $("#d").addClass("hidden");
-            //breadcrumbs
+            $("#b").html("<li><a href='javascript:void(0);' data-f=''><span class='glyphicon glyphicon-home'></span></a></li>");
           }
           if($("#r .g").length == 0 ) {
             $("#q").blur();
@@ -80,7 +81,6 @@
               var html = "";
               html += list(res);
               $("#r").html(html);
-              //if($("#r .active").length==0) {$("#r a:first").addClass("active");}
             }).fail(function() {
               search(false);
               $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
@@ -91,14 +91,9 @@
         }
       });
       $("form#edit").on("submit",function(e) {
-        /***
-
-        update ???
-        rename file??
-
-
-        ***/
         e.preventDefault();
+        console.log("update this information");
+        console.log($(this).serialize());
         /*
         $.ajax({
           type: "POST",
@@ -111,27 +106,20 @@
         $("body").removeClass("body-edit");
       });
       $(document).on("submit","form#create",function(e) {
-        /***
-        update request
-
-        empty data
-
-
-        ***/
         e.preventDefault();
-        var n = $("#create .create").val();
+        var n = $("#create .form-control").val();
         if(n.length > 0) {
-          /*
           $.ajax({
             type: "POST",
-            data: "req=update&"+$(this).serialize()
+            data: "req=create&f="+app.f+"&n="+n
           }).done(function(res) {
-            //switch to file??
-            $("#create .create").val("");
+            $("#create .form-control").val("");
+            app.f = app.f+(app.f.length>0?"/":"")+n;
+            state();
           }).fail(function() {
-            $("#create .create").val("");
+            $("#create .form-control").val("");
+            err("Failed to Create File");
           });
-          */
         }
       });
       function search(req) {
@@ -150,11 +138,8 @@
       $(document).on("click","#p a,#r a:not(.disabled) button:not(.update)",function(e) {
         $(".edit").removeClass("hidden");
         $("body").addClass("body-edit");
-        console.log("lets get the name of this file / directory to modify.");
-
         $("#f").val(($(this).data("f")===undefined?$(this).parent().data("f"):$(this).data("f")));
         $("#n").val(($(this).data("n")===undefined?$(this).parent().data("n"):$(this).data("n"))).focus();
-
         e.stopPropagation();
       });
       function close() {
@@ -181,6 +166,7 @@
         state();
       }
       function state() {
+        $("#q").val("");
         $("#b").html("<li><a href='javascript:void(0);' data-f=''><span class='glyphicon glyphicon-home'></span></a></li>");
         if(app.f.length > 0) {
           var b = app.f.split("/")
@@ -193,20 +179,10 @@
           });
         }
         $("#b li").last().html($("#b li:last a").html()).addClass("active");
-        // ??? //
-        if(app.q.length > 0) {
-          $("#q").val(app.q);
-          console.log("lets get our search on");
-        }else{
-          read();
-        }
-      }
-      function read() {
         $.ajax({
           type: "POST",
           data: "req=read&f="+app.f
         }).done(function(res) {
-          console.log(res);
           var html = ""
             , val = ""
             ;
@@ -214,14 +190,14 @@
             $.each(res,function(k,v) {
               val=val+v+"\n";
             });
-            $("#d").removeClass("hidden").val($.trim(val)).focus();
+            $("#d").removeClass("hidden").val($.trim(val)).height(($(window).height()-$("nav").height()-$("#b").height()-100)).focus();
+            app.d = $("#d").val().length;
           }else{
             $("#d").addClass("hidden");
-            html += "<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='create form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>";
+            html += "<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>";
             if($.isPlainObject(res)) {
               html += list(res);
             }
-            //if($("#r .active").length==0) {$("#r a:first").addClass("active");}
           }
           $("#r").html(html);
         });
@@ -229,16 +205,31 @@
       function list(req) {
         var res = "";
         $.each(req,function(k,v){
-          res += "<a class='list-group-item' data-f='"+k+"'>"+v;
+          var type = (v.t=="d" ? "folder-close":"file");
+          res += "<a class='list-group-item' data-n='"+v.n+"' data-f='"+k+"'><span class='glyphicon glyphicon-"+type+"'></span> "+v.n;
           res += "<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-pencil'></span> Edit</button>";
           res += "</a>";
         });
         return res;
       }
+      setInterval(function() { 
+        if($("#d").is(":visible")) {
+          var d = $("#d").val().length;
+          if(app.d != d) {
+            app.d = d;
+            $.ajax({
+              type: "POST",
+              data: "req=update&f="+app.f+"&d="+$("#d").val()
+            }).done(function(res) {
+              app.d = $("#d").val().length;
+            });
+          }
+        }
+      }, 5000);
       var app = localStorage.editor;
       $(document).ready(function() {
         if(app == null) {
-          app = {"f":"","q":""};
+          app = {"f":"","q":"","d":0};
         }else{
           app = JSON.parse(app);
         }
@@ -257,6 +248,7 @@
       if(!isset($_POST['req'])) $_POST['req'] = '';
       switch($_POST['req']) {
         case 'search': $res = $this->search($_POST['q']);break;
+        case 'create': $res = $this->create($_POST['f'],$_POST['n']);break;
         case 'read': $res = $this->read($_POST['f']);break;
         case 'update': $res = $this->update($_POST['f'],$_POST['d']);break;
         case 'delete': $res = $this->delete($_POST['f']);break;
@@ -267,7 +259,31 @@
   private function search($req) {
     $res = false;
     if(!empty($req)) {
-      //recurse through $this->d and $res[] = $req;
+      $res = array();
+      $count = strlen($this->d);
+      $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->d));
+      foreach($files as $file) {
+        $f = substr($file->getPathname(),$count);
+        $pos = strpos($f, $req);
+        if($pos !== false) {
+          $res[$f] = array('n'=>$file->getFilename(),'t'=>($file->isDir()?'d':'f'));
+        }
+      }
+    }
+    return $res;
+  }
+  private function create($f='',$n='') {
+    $res = false;
+    if(!empty($n)) {
+      if($this->valid($f)) {
+        chdir(realpath($this->d.$f));
+        if(substr($n,-1)=='/') {
+          mkdir($n);
+        }else{
+          touch($n);
+        }
+        $res = true;
+      }
     }
     return $res;
   }
@@ -281,7 +297,7 @@
         $files = new DirectoryIterator($req);
         foreach($files as $file) {
           if($file->isDot()) continue;
-          $res[substr($file->getPathname(),$count)] = $file->getFilename();
+          $res[substr($file->getPathname(),$count)] = array('n'=>$file->getFilename(),'t'=>($file->isDir()?'d':'f'));
         }
         if(empty($res)) $res=true;
       }else{
@@ -290,23 +306,24 @@
     }
     return $res;
   }
-  private function update($f='',$l='') {
+  private function update($f='',$d='') {
     $res = false;
-    if($l != $this->l && !empty($l)) {
-      if(file_exists($this->p.$l.'.json')) {
-        $mp3=json_decode(file_get_contents($this->p.$this->l.'.json'),true);
-        $list = json_decode(file_get_contents($this->p.$l.'.json'),true);
-        $list[$f] = $mp3[$f];
-        file_put_contents($this->p.$l.'.json',json_encode($list));
-        $res = true;
-      }
+    if($this->valid($f)) {
+      $f = realpath($this->d.$f);
+      file_put_contents($f, $d);
+      $res = true;
     }
     return $res;
   }
   private function delete($req='') {
     $res = false;
-    if($req!=$this->l && !empty($req)) {
-      unlink($this->p.$req.'.json');
+    if($this->valid($req)) {
+      $req = realpath($this->d.$req);
+      if(is_dir($req)) {
+        rmdir($req);
+      }else{
+        unlink($req);
+      }
       $res = true;
     }
     return $res;
