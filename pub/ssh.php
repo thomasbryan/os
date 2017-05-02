@@ -63,62 +63,134 @@
     }
     $("form#data").on("submit", function(e) {
 	    e.preventDefault();
-      ssh(true)
-      $("#res").html("");
-      var file_data = $("#key").prop("files")[0];
-      var form_data = new FormData();
-      form_data.append("host",$("#host").val());
-      form_data.append("user",$("#user").val());
-      form_data.append("pass",$("#pass").val());
-      form_data.append("key", file_data);
-      form_data.append("phrase",$("#phrase").val());
-      form_data.append("cmd",$("#cmd").val());
-      $.ajax({
-        dataType: "jsonp",
-        cache: false,
-        contentType: false,
-        processData: false,
-        data: form_data,
-        type: "post",
-        error: function() {
-          ssh(false);
-          $("#res").html("<code>Error</code>");
-        },
-        success: function(res) {
-          ssh(false);
-          console.log("update app.profiles and app.commands");
-          $("#res").html("<pre></pre>");
-          $.each(res,function(k,v) {
-            $("#res pre").append(v+"\n");
-          });
+      var user = $("#user").val()
+        , host = $("#host").val()
+        , cmd = $("#cmd").val()
+        , key = $("#key").prop("files")[0]
+        , data = new FormData()
+        ;
+      if(user.length > 0 && host.length > 0 && cmd.length > 0) {
+        ssh(true)
+        $("#res").html("");
+        data.append("host",host);
+        data.append("user",user);
+        data.append("pass",$("#pass").val());
+        data.append("key", key);
+        data.append("phrase",$("#phrase").val());
+        data.append("cmd",cmd);
+        if(app.profile!==undefined) {
+          if(app.profiles[app.profile].profile == user+"@"+host) {
+            app.profiles[app.profile].count++
+          }else{
+            profiles(user+"@"+host);
+          }
+        }else{
+          profiles(user+"@"+host);
         }
-      });
+        if(app.command!==undefined) {
+          if(app.commands[app.command].command == cmd) {
+            app.commands[app.command].count++
+          }else{
+            commands(cmd);
+          }
+        }else{
+          commands(cmd);
+        }
+        localStorage.ssh = JSON.stringify(app);
+        state();
+        $.ajax({
+          dataType: "jsonp",
+          cache: false,
+          contentType: false,
+          processData: false,
+          data: data,
+          type: "post",
+          error: function() {
+            ssh(false);
+            $("#res").html("<code>Error</code>");
+          },
+          success: function(res) {
+            ssh(false);
+            $("#res").html("<pre></pre>");
+            $.each(res,function(k,v) {
+              $("#res pre").append(v+"\n");
+            });
+          }
+        });
+      }
     });
     $(document).on("click","#profiles a",function() {
-      var profiles = $(this).text();
-      //profiles.split("@")
+      var profiles = $(this).text().split("@");
+      if(profiles.length == 2) {
+        app.profile = $(this).data("index");
+        $("#user").val(profiles[0]);
+        $("#host").val(profiles[1]);
+      }
     });
     $(document).on("click","#commands a",function() {
+      app.command = $(this).data("index");
       $("#cmd").val($(this).text());
     });
     var app = localStorage.ssh;
     $(document).ready(function() {
       if(app == null) {
-        app = {"profiles":[],"commands":["ls "]};
+        app = {"profiles":[],"commands":[]};
       }else{
         app = JSON.parse(app);
       }
-      if(app.profiles.length > 0 ) {
-      console.log(app);
-      }
-      if(app.commands.length > 0 ) {
-        $("#commands").html("<div class='list-group'></div>");
-        $.each(app.commands,function(k,v) {
-          $("#commands .list-group").append("<a href='javascript:void(0);' class='list-group-item'>"+v);
-          console.log(v);
+      state();
+    });
+    function state() {
+      delete app.profile;
+      delete app.command;
+      if(app.profiles.length > 0) {
+        $("#profiles").html("<div class='list-group'></div>");
+        $.each(app.profiles.sort(vsort("-count")) ,function(k,v) {
+          $("#profiles .list-group").append("<a href='javascript:void(0);' class='list-group-item' data-index='"+k+"'>"+v.profile);
         });
       }
-    });
+      if(app.commands.length > 0) {
+        $("#commands").html("<div class='list-group'></div>");
+        $.each(app.commands.sort(vsort("-count")) ,function(k,v) {
+          $("#commands .list-group").append("<a href='javascript:void(0);' class='list-group-item' data-index='"+k+"'>"+v.command);
+        });
+      }
+    }
+    function vsort(req) {
+      var sort = 1;
+      if(req[0] === "-") {
+        sort = -1;
+        req = req.substr(1);
+      }
+      return function (a,b) {
+        var res = (a[req] < b[req]) ? -1 : (a[req] > b[req]) ? 1 : 0;
+        return res * sort;
+      }
+    }
+    function profiles(req) {
+      var res = false;
+      $.each(app.profiles,function(k,v) {
+        if(v.profile == req) {
+          app.profiles[k].count++;
+          res = true;
+        }
+      });
+      if(!res) {
+        app.profiles.push({"profile":req,"count":1});
+      }
+    }
+    function commands(req) {
+      var res = false;
+      $.each(app.commands,function(k,v) {
+        if(v.command == req) {
+          app.commands[k].count++;
+          res = true;
+        }
+      });
+      if(!res) {
+        app.commands.push({"command":req,"count":1});
+      }
+    }
   </script>
 </body></html>
 <?php
@@ -127,9 +199,6 @@ class API {
   function __construct() {
     /*
       TODO 
-      cache profile.json > { "user@host"=> count,}
-      cache commands.json > { "command"=> count,}
-
       step 1: pick profile / enter user and host
       step 2: enter password / passphrase / choose key
       step 3: pick command / enter command
