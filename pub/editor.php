@@ -64,10 +64,10 @@
       $("form#search").on("submit",function(e) {
         e.preventDefault();
         if($("#q").val().length > 0) {
+          $("#d").addClass("hidden");
           if($("#q").val() != $("#q").data("q")) {
             $("#q").data("q",$("#q").val());
             $("#r").html("");
-            $("#d").addClass("hidden");
             $("#b").html("<li><a href='javascript:void(0);' data-f=''><span class='glyphicon glyphicon-home'></span></a></li>");
           }
           if($("#r .g").length == 0 ) {
@@ -206,7 +206,7 @@
         var res = "";
         $.each(req,function(k,v){
           var type = (v.t=="d" ? "folder-close":"file");
-          res += "<a class='list-group-item' data-n='"+v.n+"' data-f='"+k+"'><span class='glyphicon glyphicon-"+type+"'></span> "+v.n;
+          res += "<a class='list-group-item' data-n='"+v.n+"' data-f='"+k+"' title='"+k+"'><span class='glyphicon glyphicon-"+type+"'></span> "+v.n;
           res += "<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-pencil'></span> Edit</button>";
           res += "</a>";
         });
@@ -219,10 +219,9 @@
             app.d = d;
             $.ajax({
               type: "POST",
-              data: "req=update&f="+app.f+"&d="+$("#d").val()
+              data: "req=update&f="+app.f+"&d="+encodeURIComponent($("#d").val())
             }).done(function(res) {
               $("#b .active .glyphicon-floppy-disk").show().removeClass("hidden").delay(500).fadeOut(500);
-              app.d = $("#d").val().length;
             });
           }
         }

@@ -4,63 +4,65 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
 	<style>
     body { padding-top: 70px; }
-    .navbar .form-group { margin: 9px; }
+    .navbar .form-group { margin: 9px 0; }
     button { width: 100%; }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-inverse navbar-fixed-top">
+  <form id="data" class="" method="POST" enctype="multipart/form-data">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+				<div class="form-group col-xs-6 pull-left">
+          <div id="back" class="btn btn-primary col-xs-12 hidden">
+            <span class="glyphicon glyphicon-arrow-left"></span>
+            Back
+          </div>
+			  </div>
+				<div class="form-group col-xs-6 pull-right">
+          <button id="submit" type="submit" name="submit" class="btn btn-primary">
+            Submit
+            <span id="hourglass" class="glyphicon glyphicon-share"></span>
+          </button>
+			  </div>
+      </div>
+    </nav>
     <div class="container-fluid">
-    </div>
-  </nav>
-  <div class="container-fluid">
-    <div class="row-fluid">
-      <div class="col-xs-12">
-      	<form id="data" class="" method="POST" enctype="multipart/form-data">
-          <div class="col-sm-4">
-            <div id="profiles"></div>
-					  <div class="form-group">
-        		  <input id="user" type="text" name="user" placeholder="USER" class="form-control" />
-					  </div>
-					  <div class="form-group">
-        		  <input id="host" type="text" name="host" placeholder="HOST" class="form-control" />
-					  </div>
-          </div>
-          <div class="col-sm-4">
-					  <div class="form-group">
-        			<input id="pass" type="password" name="pass" placeholder="PASS" class="form-control" />
-					  </div>
-					  <div class="form-group">
-        			<input id="key" type="file" name="key" placeholder="KEY" class="form-control" />
-					  </div>
-					  <div class="form-group">
-        			<input id="phrase" type="password" name="phrase" placeholder="PHRASE" class="form-control" />
-					  </div>
-          </div>
-          <div class="col-sm-4">
-					  <div class="form-group">
-              <button type="submit" name="submit" class="btn btn-primary">
-                Submit
-                <span id="submit" class="glyphicon glyphicon-share"></span>
-              </button>
-					  </div>
-            <div id="commands"></div>
-					  <div class="form-group">
-        			<input id="cmd" type="text" name="cmd" placeholder="CMD" class="form-control" />
-					  </div>
-          </div>
-      	</form>
-      </div>
-      <div class="col-xs-12">
-      	<div id="res"></div>
+      <div class="row-fluid">
+        <div id="req" class="col-xs-12">
+            <div class="col-sm-4">
+              <div id="profiles"></div>
+					    <div class="form-group">
+        		    <input id="user" type="text" name="user" placeholder="USER" class="form-control" />
+					    </div>
+					    <div class="form-group">
+        		    <input id="host" type="text" name="host" placeholder="HOST" class="form-control" />
+					    </div>
+            </div>
+            <div class="col-sm-4">
+					    <div class="form-group">
+        			  <input id="pass" type="password" name="pass" placeholder="PASS" class="form-control" />
+					    </div>
+					    <div class="form-group">
+        			  <input id="key" type="file" name="key" placeholder="KEY" class="form-control" />
+					    </div>
+					    <div class="form-group">
+        			  <input id="phrase" type="password" name="phrase" placeholder="PHRASE" class="form-control" />
+					    </div>
+            </div>
+            <div class="col-sm-4">
+              <div id="commands"></div>
+					    <div class="form-group">
+        			  <input id="cmd" type="text" name="cmd" placeholder="CMD" class="form-control" />
+					    </div>
+            </div>
+        </div>
+        <div id="res" class="col-xs-12 hidden">
+        </div>
       </div>
     </div>
-  </div>
+  </form>
   <script src="js/jquery.min.js"></script>
   <script>
-    function ssh(req) {
-      (req ? $("#submit").removeClass("glyphicon-share").addClass("glyphicon-hourglass") : $("#submit").removeClass("glyphicon-hourglass").addClass("glyphicon-share"))
-    }
     $("form#data").on("submit", function(e) {
 	    e.preventDefault();
       var user = $("#user").val()
@@ -70,8 +72,9 @@
         , data = new FormData()
         ;
       if(user.length > 0 && host.length > 0 && cmd.length > 0) {
-        ssh(true)
-        $("#res").html("");
+        $("#submit,#req").addClass("hidden");
+        $("#back,#res").removeClass("hidden");
+        $("#res").html("<span class='glyphicon glyphicon-hourglass'></span>");
         data.append("host",host);
         data.append("user",user);
         data.append("pass",$("#pass").val());
@@ -106,18 +109,24 @@
           data: data,
           type: "post",
           error: function() {
-            ssh(false);
-            $("#res").html("<code>Error</code>");
+            if(!$("#res").hasClass("hidden")) {
+              $("#res").html("<code>Error</code>");
+            }
           },
           success: function(res) {
-            ssh(false);
-            $("#res").html("<pre></pre>");
-            $.each(res,function(k,v) {
-              $("#res pre").append(v+"\n");
-            });
+            if(!$("#res").hasClass("hidden")) {
+              $("#res").html("<pre></pre>");
+              $.each(res,function(k,v) {
+                $("#res pre").append(v+"\n");
+              });
+            }
           }
         });
       }
+    });
+    $(document).on("click","#back",function() {
+      $("#submit,#req").removeClass("hidden");
+      $("#back,#res").addClass("hidden");
     });
     $(document).on("click","#profiles a",function() {
       var profiles = $(this).text().split("@");
