@@ -7,7 +7,7 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="ico/video.ico" rel="icon" type="image/x-icon">
     <style>
-      body { padding: 50px 0; background: #333; }
+      body { padding: 20px 0 0; background: #333; }
       .form-group { margin: 9px; }
       .list-group:last-child { padding-right: 0; }
       .list-group { margin-bottom: 0; }
@@ -15,11 +15,6 @@
       .list-group-item { cursor: pointer; overflow: hidden; white-space: nowrap; }
       .list-group-item img { position:absolute; top:0; right:0; height: 100%; }
       .navbar-brand { cursor: pointer; }
-      @media (max-width: 767px) {
-        body { padding-top: 100px; }
-        body.body-edit { padding-top: 215px; }
-        .list-group { padding-right: 0; }
-      }
       #e { position: fixed; right: 1em; z-index: 100; }
       #v{
         z-index:1;
@@ -30,129 +25,6 @@
         left:0;
         width:100%;
       }
-      #l { line-height: 50px; }
-      #t { color: #9d9d9d; height: 100%; line-height: 50px; overflow: hidden; position: absolute; width: 0%; white-space: nowrap; }
-      #tl { bottom:0; height: 50px; left:0; position: absolute; right:0; width: 100%; }
-    <?php /*
-    TODO Complete converting code base.
-      html,body{
-        overflow:auto;
-        -webkit-overflow-scrolling:touch;
-      }
-      body{
-        margin:0;
-        padding:0;
-        top:0;
-        right:0;
-        left:0;
-        bottom:0;
-        font-family:monaco,monospace;
-        font-size:20px;
-        background-color:#333;
-        -webkit-user-select:none;
-      }
-      .r{
-        position:relative;
-        min-width:325px;
-        height:64px;
-        line-height:64px;
-        cursor:default;
-        padding:0 1em;
-        font-weight:bold;
-        color:#fcfcfc;
-        overflow:hidden;
-        word-break:break-all;
-      }
-      .r.a{
-        background-color:#0063CE;
-        color: #fff;
-      }
-      #c{
-        -webkit-overflow-scrolling:touch;
-        position:absolute;
-        top:0;
-        bottom:0;
-        right:0;
-        left:0;
-        padding:1em 0;
-        overflow:auto;
-      }
-      #v{
-        z-index:1;
-      }
-      #o{
-        z-index:2147483647;
-      }
-      #n {
-        z-index:2147483647;
-        position:absolute;
-      }
-      #o.a{
-        background-color:rgba(0,0,0,0.75);
-      }
-      #o,#v{
-        position:absolute;
-        top:0;
-        right:0;
-        bottom:0;
-        left:0;
-        width:100%;
-      }
-      .icon-stop {
-        top:25%;
-        left:25%;
-      }
-      .icon-backward {
-        top:75%;
-        left: 25%;
-      }
-      #p {
-        left:50%;
-        top:50%;
-        line-height: 142px !important;
-        height: 128px !important;
-        width: 128px !important;
-        margin-top: -64px !important;
-        margin-left: -64px !important;
-        font-size: 64px !important;
-      }
-      .icon-forward {
-        top:75%;
-        left:75%;
-      }
-      #f {
-        top:25%;
-        left:75%;
-      }
-      #n > i {
-        margin-top: -32px;
-        margin-left: -32px;
-        background-color: #fff;
-        font-size:32px;
-        width: 64px;
-        height: 64px;
-        line-height: 72px;
-        text-align: center;
-        position: fixed;
-      }
-      #tl {
-        right:0;
-        bottom:0;
-        left:0;
-        position: fixed;
-        width: 100%;
-        height: 64px;
-        background-color: #fff;
-      }
-      #t {
-        position: absolute;
-        width: 1%;
-        height: 100%;
-        background-color:#0063CE;
-      }
-      .ui-loading .ui-loader{display:block;}
-      .ui-loader{display:none;position:absolute;opacity:.85;z-index:100;left:50%;width:200px;margin-left:-130px;margin-top:-35px;padding:10px 30px;}
-    */ ?>
     </style>
   </head>
   <body>
@@ -167,16 +39,8 @@
             </div>
           </form>
         </div>
-        <a data-req="pp" class="navbar-brand"><span class="glyphicon glyphicon-play text-info"></span></a>
-        <a data-req="pp" class="navbar-brand hidden"><span class="glyphicon glyphicon-pause text-info"></span></a>
-        <a data-req="ba" class="navbar-brand"><span class="glyphicon glyphicon-backward"></span></a>
-        <a data-req="st" class="navbar-brand"><span class="glyphicon glyphicon-stop"></span></a>
-        <a data-req="fo" class="navbar-brand"><span class="glyphicon glyphicon-forward"></span></a>
-        <a data-req="dn" class="navbar-brand"><span class="glyphicon glyphicon-volume-down"></span></a>
-        <a data-req="up" class="navbar-brand"><span class="glyphicon glyphicon-volume-up"></span></a>
       </div>
     </nav>
-    <div id="c"></div>
     <div class="container-fluid">
       <div class="row-fluid">
         <div id="e" class="hidden alert alert-danger" role="alert"> </div>
@@ -186,10 +50,7 @@
         </div>
       </div>
     </div>
-    <nav class="navbar navbar-default navbar-fixed-bottom">
-      <div id="tl"><div id="t" class="navbar-inverse"></div><span id="l"></span></div>
-    </nav>
-    <video id="v"><source src="" type="video/mp4"></video>
+    <video id="v" controls><source src="" type="video/mp4"></video>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script>
@@ -217,6 +78,7 @@
               $("#r").html(html);
               if($("#r .active").length==0) {$("#r a:first").addClass("active");}
             }).fail(function() {
+              search(false);
               $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
             });
           }
@@ -271,13 +133,18 @@
         app.n = req.n;
         app.t = req.t;
         localStorage.video = JSON.stringify(app);
-        //playlist();
-        audio();
+        video();
         ui();
       }
       function close() {
         $(".edit").addClass("hidden");
         $("body").removeClass("body-edit");
+      }
+      function sb() {
+        $("#v").get(0).currentTime=$("#v").get(0).currentTime-10;
+      }
+      function sf() {
+        $("#v").get(0).currentTime=$("#v").get(0).currentTime+10;
       }
       function ra() {
         app.s = (app.s ? false : true);
@@ -320,12 +187,12 @@
           }
         }
       }
-      function audio() {
+      function video() {
         // ??? //
         var init=1;
         $("#v").attr("src","").remove();
         if(app.f!== undefined) {
-          $("body").append("<video id='v'><source src='"+decodeURIComponent(app.f).replace(/'/g,'%27')+"' type='video/mp4'></video>");
+          $("body").append("<video id='v' controls><source src='"+decodeURIComponent(app.f).replace(/'/g,'%27')+"' type='video/mp4'></video>");
           $("#v").get(0).volume = app.v;
           $("#v").get(0).addEventListener("ended",function() { 
             fo();
@@ -337,13 +204,18 @@
               if(app.p) $("#v").get(0).play();
             }
           });
-          if($(window).height() - $("#v").height() > 0) {
-            $("#v").css({"top":($(window).height() - $("#v").height()) / 2+"px"});
-          }else{
-            $("#v").height($(window).height());
-          }
+          centered();
         }else{
           fo();
+        }
+      }
+      function centered() {
+        if($(window).height() - $("#v").height() > 50) {
+          var off = (($(window).height() - $("#v").height() ) / 2)
+          
+          $("#v").css({"top":(off< 50?50:off) +"px"});
+        }else{
+          $("#v").height($(window).height()-50);
         }
       }
       function ui() {
@@ -354,9 +226,9 @@
           $(".glyphicon-pause").parent().addClass("hidden");
         }
         var p = "&nbsp;&nbsp;&nbsp;";
-        $("#t").html(p+app.n);
-        $("#l").html(p+app.n);
-        $("#playlist").html(app.l);
+        //$("#t").html(p+app.n);
+        //$("#l").html(p+app.n);
+        //$("#playlist").html(app.l);
         document.title = app.n;
         timeline();
       }
@@ -370,7 +242,7 @@
       setInterval(function() { timeline(); }, 3000);
       function timeline() {
         if($("#v").get(0).duration) {
-          $("#t").css({"width": $("#v").get(0).currentTime / $("#v").get(0).duration * 100 + "%"});
+          //$("#t").css({"width": $("#v").get(0).currentTime / $("#v").get(0).duration * 100 + "%"});
           bookmark();
         }
       }
@@ -389,14 +261,17 @@
           switch(e.keyCode) { 
             case 27:$("#q").focus();e.preventDefault();break;
             case 32:if($("#r .active").length==0){pp();}else{$("#r .active").click();}e.preventDefault();break;
-            case 37:ra();e.preventDefault();break;
+            case 37:sb();e.preventDefault();break;
             case 38:if($("#r .active").length==0){up();}else{prev();}e.preventDefault();break;
-            case 39:fo();e.preventDefault();break;
+            case 39:sf();e.preventDefault();break;
             case 40:if($("#r .active").length==0){dn();}else{next();}e.preventDefault();break;
           }
         }else{
           if(e.keyCode == 27) {$("input").blur();e.preventDefault();}
         }
+      });
+      $(window).resize(function () {
+        centered();
       });
       var app = localStorage.video;
       $(document).ready(function() {
@@ -405,226 +280,10 @@
           fo();
         }else{
           app = JSON.parse(app);
-          //playlist();
-          audio();
+          video();
           ui();
         }
       });
-      /* TODO convert code */
-      var o="click",p=false,f=false;
-      /*** Events ***/
-      /* Select Video */
-      $(document).on(o, ".r", function(e){
-        $(".r").removeClass("a");
-        $(this).addClass("a");
-        e.preventDefault();
-      });
-      /* Play Video */
-      $(document).on(o, ".r.a", function(e){
-        video(e);
-        e.preventDefault();
-      });
-      $(document).on(o, "#tl",function(e){
-        var percent = e.pageX / $(window).width();
-        $("#v").get(0).currentTime = $("#v").get(0).duration * percent;
-        $("#t").css({"width":percent * 100 + "%"});
-      });
-      function state() {
-        return (p ? "icon-pause" : "icon-play");
-      }
-      function frame() {
-        return (f ? "icon-compress" : "icon-expand");
-      }
-      $(document).on(o, "#o.i", function(e){
-        $("#o").removeClass("i").addClass("a");
-        $("#n").append("<i id='f' class='"+frame()+"' onclick='full()'></i><i class='icon-stop' onclick='exitVideo()'></i><i class='icon-backward' onclick='leftKey()'></i><i id='p' class='"+state()+"' onclick='playpause()'></i><i class='icon-forward' onclick='rightKey()'></i><div id='tl'><div id='t'></div></div>");
-        $("#t").css({"width":($("#v").get(0).currentTime / $("#v").get(0).duration )* 100 + "%"});
-        e.preventDefault();
-      });
-      $(document).on(o, "#o.a", function(e){
-        $("#o").removeClass("a").addClass("i");
-        $("#n > div,#n > i").remove();
-        e.preventDefault();
-      });
-      function video(e) {
-        var init=1;
-        $("#c").hide();
-        $("body").append("<video id='v'><source src='"+decodeURIComponent($(".r.a").data("href"))+"' type='video/mp4'></video><div id='o' class='i'></div><div id='n'></div>");
-        $("#v").get(0).addEventListener("canplay",function() { 
-          if(init == "1") { 
-            init=0; 
-            $("#v").get(0).currentTime=$(".r.a").data("time");
-            $("#v").get(0).play();
-            if($("#v").get(0).paused == false) p=true;
-          }
-        });
-        if($(window).height() - $("#v").height() > 0) {
-          $("#v").css({"top":($(window).height() - $("#v").height()) / 2+"px"});
-        }else{
-          $("#v").height($(window).height());
-        }
-        //update video. send id and currentTime if playing every 60 seconds.
-      }
-      /* Exit Video */
-      function exitVideo() {
-        if($(".r.a").data("time") != $("#v").get(0).currentTime) {
-          $(".r.a").data("time",$("#v").get(0).currentTime);
-          bookmarkVideo({f:$(".r.a").data("href"),t:$("#v").get(0).currentTime});
-        }
-        $("#c").show();
-        $("#n,#o").remove();
-        $("#v").attr("src","").remove();
-        p=false;
-        f=false;
-      }
-      function playpause() {
-        $("#p").removeClass(state());
-        if(p) {
-          $("#v").get(0).pause();
-          p=false;
-          bookmarkVideo({f:$(".r.a").data("href"),t:$("#v").get(0).currentTime});
-        }else{
-          $("#v").get(0).play();
-          p=true;
-        }
-        $("#p").addClass(state());
-      }
-      function full() {
-        $("#f").removeClass(frame());
-        if(f) {
-          var video=$("#v");
-          if(video.length != 0) {
-            try { video.get(0).webkitExitFullscreen(); f=false; }
-            catch(err) { }
-            try { video.get(0).mozCancelFullscreen(); f=false; }
-            catch(err) { }
-            try { video.get(0).exitFullscreen(); f=false; }
-            catch(err) { }
-          }
-        }else{
-          enterKey();
-        }
-        $("#f").addClass(frame());
-      }
-      /* Bookmark Time */
-      function bookmarkVideo(req) {
-        $.post("video.php",req);
-      }
-      function enterKey(e) {
-        var video=$("#v");
-        if(video.length != 0) {
-          try { video.get(0).webkitRequestFullscreen(); f=true; }
-          catch(err) { }
-          try { video.get(0).mozRequestFullscreen(); f=true; }
-          catch(err) { }
-          try { video.get(0).requestFullscreen(); f=true; }
-          catch(err) { }
-        }
-      }
-      function escapeKey(e) {
-        if($("#v").length != 0) {
-          exitVideo();
-        }
-      }
-      function spaceKey(e) {
-        var v=$("#v");
-        if(v.length != 0) {
-          playpause();
-        }else{
-          video(e);
-        }
-      }
-      function leftKey(e) {
-        var v=$("#v");
-        if(v.length != 0) {
-          v.get(0).currentTime=v.get(0).currentTime-10;
-          $("#t").css({"width":($("#v").get(0).currentTime / $("#v").get(0).duration )* 100 + "%"});
-        }
-      }
-      function upKey(e) {
-        var that=$(".r.a");
-        if($(".r.a").length==0){
-          $(".r:first").addClass("a");
-          $("html,body").animate({ scrollTop: $(".r.a").offset().top });
-        }else{
-          that.removeClass("a");
-          if(that.is(":first-child")) {
-            $(".r:last").addClass("a");
-            $("#c").animate({ scrollTop: $(".r.a").index()*$(".r").height() },0);
-          }else{
-            that.prev().addClass("a");
-            $("#c").animate({ scrollTop: $(".r.a").index()*$(".r").height() },0);
-          }
-        }
-      }
-      function rightKey(e) {
-        var v=$("#v");
-        if(v.length != 0) {
-          v.get(0).currentTime=v.get(0).currentTime+10;
-          $("#t").css({"width":($("#v").get(0).currentTime / $("#v").get(0).duration )* 100 + "%"});
-        }
-      }
-      function downKey(e) {
-        var that=$(".r.a");
-        if(that.length==0){
-          $(".r:first").addClass("a");
-          $("html,body").animate({ scrollTop: $(".r.a").offset().top });
-        }else{
-          that.removeClass("a");
-          if(that.is(":last-child")) {
-            $(".r:first").addClass("a");
-            $("#c").animate({ scrollTop: $(".r.a").index()*$(".r").height() },0);
-          }else{
-            that.next().addClass("a");
-            $("#c").animate({ scrollTop: $(".r.a").index()*$(".r").height() },0);
-          }
-        }
-      }
-      function isTouchDevice(){ return typeof window.ontouchstart !== "undefined"; }
-      /* Keyboard Shortcuts 
-      $(document).keyup(function(e) {
-        switch(e.keyCode) { 
-          case 13:enterKey(e);e.preventDefault();break;
-          case 27:escapeKey(e);e.preventDefault();break;
-          case 32:spaceKey(e);e.preventDefault();break;
-          case 72: case 37:leftKey(e);e.preventDefault();break;
-          case 75: case 38:upKey(e);e.preventDefault();break;
-          case 76: case 39:rightKey(e);e.preventDefault();break;
-          case 74: case 40:downKey(e);e.preventDefault();break;
-        }
-      });
-      */
-      /* Initialize 
-      $(document).ready(function() {
-        if(isTouchDevice()) {
-          o = "tap";
-          $.getScript("mobile.js",function(data) { });
-        }
-        $.getJSON("video.php",function(res) {
-          $("#c").html("");
-          $.each(res,function(file,path) {
-            $("#c").append("<div class='r' data-href='"+file+"' data-time='"+path.time+"' >"+
-            decodeURIComponent(decodeURIComponent(file).slice(decodeURIComponent(file).lastIndexOf("/")+1,-4)));
-          });
-        });
-      });
-      */
-      <?php /* $api = new API();
-      class API {
-        private $json = '../src/videos.json';
-        function __construct() {
-          if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
-            $video=json_decode(file_get_contents($this->json),true);
-            $video[$_POST['f']]['time']=$_POST['t'];
-            file_put_contents($this->json,json_encode($video));
-            exit;
-          }
-          if ($_SERVER['REQUEST_METHOD'] === 'GET') { 
-            echo file_get_contents($this->json);
-            exit;
-          }
-        }
-      } */ ?>
     </script>
   </body>
 </html><?php class API {

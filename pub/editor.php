@@ -178,7 +178,7 @@
             f=f+"/";
           });
         }
-        $("#b li").last().html($("#b li:last a").html()).addClass("active");
+        $("#b li").last().html($("#b li:last a").html()).addClass("active").append(" <span class='hidden glyphicon glyphicon-floppy-disk'>");
         $.ajax({
           type: "POST",
           data: "req=read&f="+app.f
@@ -221,6 +221,7 @@
               type: "POST",
               data: "req=update&f="+app.f+"&d="+$("#d").val()
             }).done(function(res) {
+              $("#b .active .glyphicon-floppy-disk").show().removeClass("hidden").delay(500).fadeOut(500);
               app.d = $("#d").val().length;
             });
           }
