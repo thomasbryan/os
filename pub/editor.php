@@ -203,13 +203,26 @@
         });
       }
       function list(req) {
-        var res = "";
-        $.each(req,function(k,v){
-          var type = (v.t=="d" ? "folder-close":"file");
-          res += "<a class='list-group-item' data-n='"+v.n+"' data-f='"+k+"' title='"+k+"'><span class='glyphicon glyphicon-"+type+"'></span> "+v.n;
+        var res = ""
+          , keys = []
+          , k
+          , i
+          , len
+        ;
+        for (k in req) {
+          if (req.hasOwnProperty(k)) {
+            keys.push(k);
+          }
+        }
+        keys.sort();
+        len = keys.length;
+        for(i = 0; i < len; i++) {
+          k = keys[i];
+          var type = (req[k].t=="d" ? "folder-close":"file");
+          res += "<a class='list-group-item' data-n='"+req[k].n+"' data-f='"+k+"' title='"+k+"'><span class='glyphicon glyphicon-"+type+"'></span> "+req[k].n;
           res += "<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-pencil'></span> Edit</button>";
           res += "</a>";
-        });
+        }
         return res;
       }
       setInterval(function() { 
