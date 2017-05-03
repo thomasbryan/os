@@ -11,6 +11,7 @@
     .navbar .form-group { margin: 9px 0; }
     button { width: 100%; }
     #or { margin-bottom: 15px; }
+		textarea { resize: none; }
   </style>
 </head>
 <body>
@@ -27,6 +28,10 @@
           <a href="javascript:void(0);" id="next" class="btn btn-primary col-xs-12 visible-sm visible-xs">
             Next
             <span class="glyphicon glyphicon-arrow-right"></span>
+          </a>
+          <a id="copy" class="btn btn-default col-xs-12 hidden" data-copytarget="#res textarea">
+            <span class="glyphicon glyphicon-copy"></span>
+            Copy
           </a>
           <button id="submit" type="submit" name="submit" class="btn btn-primary hidden-sm hidden-xs">
             Submit
@@ -86,7 +91,7 @@
       if($("#next").is(":visible")) $("#next").click();
       if(user.length > 0 && host.length > 0 && ( pass.length > 0 || $("#key").val().length > 0 ) && cmd.length > 0) {
         $("#submit,#req").addClass("hidden");
-        $("#back,#res").removeClass("hidden");
+        $("#back,#copy,#res").removeClass("hidden");
         $("#res").html("<span class='glyphicon glyphicon-hourglass'></span>");
         data.append("host",host);
         data.append("user",user);
@@ -128,15 +133,35 @@
           },
           success: function(res) {
             if(!$("#res").hasClass("hidden")) {
-              $("#res").html("<pre></pre>");
+              var html="";
               $.each(res,function(k,v) {
-                $("#res pre").append(v+"\n");
+                html+=v+"\n";
               });
+              $("#res").html("<textarea class='form-control' rows='10'>"+html.trim()+"</textarea>");
             }
           }
         });
       }
     });
+    (function() {
+      "use strict";
+      document.body.addEventListener("click", copy, true);
+      function copy(e) {
+        var t = e.target
+          , c = t.dataset.copytarget
+          , inp = (c ? document.querySelector(c) : null)
+          ;
+        if (inp && inp.select) {
+          inp.select();
+          try {
+            document.execCommand("copy");
+            inp.blur();
+          } catch (err) {
+            alert("Press Ctrl/Cmd+C to copy.");
+          }
+        }
+      }
+    })();
     $(document).on("click","#back",function() {
       var curr = $(".col-md-4:visible").attr("id");
       switch(curr) {
@@ -155,7 +180,7 @@
         break;
         default:
           $("#submit,#req").removeClass("hidden");
-          $("#res").addClass("hidden");
+          $("#res,#copy").addClass("hidden");
           if($(".col-md-4:visible").attr("id") != "command") $("#back").addClass("hidden");
         break;
       }
