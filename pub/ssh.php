@@ -6,6 +6,7 @@
     body { padding-top: 70px; }
     .navbar .form-group { margin: 9px 0; }
     button { width: 100%; }
+    #or { margin-bottom: 15px; }
   </style>
 </head>
 <body>
@@ -18,8 +19,12 @@
             Back
           </div>
 			  </div>
-				<div class="form-group col-xs-6 pull-right">
-          <button id="submit" type="submit" name="submit" class="btn btn-primary">
+        <div class="form-group col-xs-6 pull-right">
+          <div id="next" class="btn btn-primary col-xs-12 visible-sm visible-xs">
+            Next
+            <span class="glyphicon glyphicon-arrow-right"></span>
+          </div>
+          <button id="submit" type="submit" name="submit" class="btn btn-primary hidden-sm hidden-xs">
             Submit
             <span id="hourglass" class="glyphicon glyphicon-share"></span>
           </button>
@@ -29,7 +34,7 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div id="req" class="col-xs-12">
-            <div class="col-sm-4">
+            <div id="profile" class="col-md-4">
               <div id="profiles"></div>
 					    <div class="form-group">
         		    <input id="user" type="text" name="user" placeholder="USER" class="form-control" />
@@ -38,10 +43,12 @@
         		    <input id="host" type="text" name="host" placeholder="HOST" class="form-control" />
 					    </div>
             </div>
-            <div class="col-sm-4">
+            <div id="password" class="col-md-4 hidden-sm hidden-xs">
+					    <div class="profile text-center"></div>
 					    <div class="form-group">
         			  <input id="pass" type="password" name="pass" placeholder="PASS" class="form-control" />
 					    </div>
+              <div id="or" class="text-center">- or -</div>
 					    <div class="form-group">
         			  <input id="key" type="file" name="key" placeholder="KEY" class="form-control" />
 					    </div>
@@ -49,15 +56,15 @@
         			  <input id="phrase" type="password" name="phrase" placeholder="PHRASE" class="form-control" />
 					    </div>
             </div>
-            <div class="col-sm-4">
+            <div id="command" class="col-md-4 hidden-sm hidden-xs">
+					    <div class="profile text-center"></div>
               <div id="commands"></div>
 					    <div class="form-group">
         			  <input id="cmd" type="text" name="cmd" placeholder="CMD" class="form-control" />
 					    </div>
             </div>
         </div>
-        <div id="res" class="col-xs-12 hidden">
-        </div>
+        <div id="res" class="col-xs-12 hidden"></div>
       </div>
     </div>
   </form>
@@ -67,17 +74,19 @@
 	    e.preventDefault();
       var user = $("#user").val()
         , host = $("#host").val()
-        , cmd = $("#cmd").val()
+        , pass = $("#pass").val()
         , key = $("#key").prop("files")[0]
+        , cmd = $("#cmd").val()
         , data = new FormData()
         ;
-      if(user.length > 0 && host.length > 0 && cmd.length > 0) {
+      if($("#next").is(":visible")) $("#next").click();
+      if(user.length > 0 && host.length > 0 && ( pass.length > 0 || $("#key").val().length > 0 ) && cmd.length > 0) {
         $("#submit,#req").addClass("hidden");
         $("#back,#res").removeClass("hidden");
         $("#res").html("<span class='glyphicon glyphicon-hourglass'></span>");
         data.append("host",host);
         data.append("user",user);
-        data.append("pass",$("#pass").val());
+        data.append("pass",pass);
         data.append("key", key);
         data.append("phrase",$("#phrase").val());
         data.append("cmd",cmd);
@@ -125,8 +134,56 @@
       }
     });
     $(document).on("click","#back",function() {
-      $("#submit,#req").removeClass("hidden");
-      $("#back,#res").addClass("hidden");
+      var curr = $(".col-md-4:visible").attr("id");
+      switch(curr) {
+        case "password":
+          $("#profile").removeClass("hidden-sm hidden-xs");
+          $("#password").addClass("hidden-sm hidden-xs");
+          $("#back").addClass("hidden");
+          $("#user").focus();
+        break;
+        case "command":
+          $("#password").removeClass("hidden-sm hidden-xs");
+          $("#command").addClass("hidden-sm hidden-xs");
+          $("#submit").addClass("hidden-sm hidden-xs");
+          $("#next").addClass("visible-sm visible-xs");
+          $("#next").removeClass("hidden");
+        break;
+        default:
+          $("#submit,#req").removeClass("hidden");
+          $("#res").addClass("hidden");
+          if($(".col-md-4:visible").attr("id") != "command") $("#back").addClass("hidden");
+        break;
+      }
+    });
+    $(document).on("click","#next",function() {
+      var curr = $(".col-md-4:visible").attr("id");
+      switch(curr) {
+        case "profile":
+          $("#profile .form-group").removeClass("has-error");
+          if($("#user").val().length > 0 && $("#host").val().length > 0) {
+            $("#profile").addClass("hidden-sm hidden-xs");
+            $("#password").removeClass("hidden-sm hidden-xs");
+            $("#back").removeClass("hidden");
+            $(".profile").html("<h4>"+$("#user").val()+"@"+$("#host").val()+"</h4>");
+          }else{
+            $("#profile .form-group").addClass("has-error");
+          }
+          empty();
+        break;
+        case "password":
+          if($("#pass").val().length > 0 || $("#key").val().length > 0) {
+            $("#password").addClass("hidden-sm hidden-xs");
+            $("#command").removeClass("hidden-sm hidden-xs");
+            $("#submit").removeClass("hidden-sm hidden-xs");
+            $("#next").removeClass("visible-sm visible-xs");
+            $("#next").addClass("hidden");
+          }else{
+            $("#profile .form-group").addClass("has-error");
+            empty();
+          }
+        break;
+      }
     });
     $(document).on("click","#profiles a",function() {
       var profiles = $(this).text().split("@");
@@ -135,10 +192,12 @@
         $("#user").val(profiles[0]);
         $("#host").val(profiles[1]);
       }
+      if($("#next").is(":visible")) $("#next").click();
     });
     $(document).on("click","#commands a",function() {
       app.command = $(this).data("index");
       $("#cmd").val($(this).text());
+      $("#submit").click();
     });
     var app = localStorage.ssh;
     $(document).ready(function() {
@@ -147,6 +206,7 @@
       }else{
         app = JSON.parse(app);
       }
+      empty();
       state();
     });
     function state() {
@@ -175,6 +235,14 @@
         var res = (a[req] < b[req]) ? -1 : (a[req] > b[req]) ? 1 : 0;
         return res * sort;
       }
+    }
+    function empty() {
+      $("input").each(function(){
+        if($(this).val() == ""){
+          this.focus();
+          return false;
+        }
+      });
     }
     function profiles(req) {
       var res = false;
@@ -206,13 +274,6 @@
 class API {
   private $path = '../phpseclib/phpseclib';
   function __construct() {
-    /*
-      TODO 
-      step 1: pick profile / enter user and host
-      step 2: enter password / passphrase / choose key
-      step 3: pick command / enter command
-      step 4: results
-    */
     if($_SERVER['REQUEST_METHOD']==='POST') {
       $res = false;
       $ssh = $this->path.'/Net/SSH2.php';
