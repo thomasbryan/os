@@ -18,16 +18,16 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
 				<div class="form-group col-xs-6 pull-left">
-          <div id="back" class="btn btn-primary col-xs-12 hidden">
+          <a href="javascript:void(0);" id="back" class="btn btn-primary col-xs-12 hidden">
             <span class="glyphicon glyphicon-arrow-left"></span>
             Back
-          </div>
+          </a>
 			  </div>
         <div class="form-group col-xs-6 pull-right">
-          <div id="next" class="btn btn-primary col-xs-12 visible-sm visible-xs">
+          <a href="javascript:void(0);" id="next" class="btn btn-primary col-xs-12 visible-sm visible-xs">
             Next
             <span class="glyphicon glyphicon-arrow-right"></span>
-          </div>
+          </a>
           <button id="submit" type="submit" name="submit" class="btn btn-primary hidden-sm hidden-xs">
             Submit
             <span id="hourglass" class="glyphicon glyphicon-share"></span>
@@ -210,7 +210,6 @@
       }else{
         app = JSON.parse(app);
       }
-      empty();
       state();
     });
     function state() {

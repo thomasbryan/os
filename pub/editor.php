@@ -161,7 +161,6 @@
         $("#e").html("<strong>Error:</strong> "+req+"!").show().removeClass("hidden").delay(5000).fadeOut(500);
       }
       function reset() {
-        app.q = "";
         $("#q").val("");
         state();
       }
@@ -194,9 +193,11 @@
             app.d = $("#d").val().length;
           }else{
             $("#d").addClass("hidden");
-            html += "<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>";
             if($.isPlainObject(res)) {
+              html += "<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>";
               html += list(res);
+            }else{
+              html += "<img class='img-responsive' src='"+res+"' />";
             }
           }
           $("#r").html(html);
@@ -204,6 +205,7 @@
       }
       function list(req) {
         var res = ""
+          , type = ""
           , keys = []
           , k
           , i
@@ -218,7 +220,11 @@
         len = keys.length;
         for(i = 0; i < len; i++) {
           k = keys[i];
-          var type = (req[k].t=="d" ? "folder-close":"file");
+          switch(req[k].t) {
+            default:type="file";break;
+            case "d":type = "folder-close";break;
+            case "i":type = "picture";break;
+          }
           res += "<a class='list-group-item' data-n='"+req[k].n+"' data-f='"+k+"' title='"+k+"'><span class='glyphicon glyphicon-"+type+"'></span> "+req[k].n;
           res += "<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-pencil'></span> Edit</button>";
           res += "</a>";
@@ -242,7 +248,7 @@
       var app = localStorage.editor;
       $(document).ready(function() {
         if(app == null) {
-          app = {"f":"","q":"","d":0};
+          app = {"f":"","d":0};
         }else{
           app = JSON.parse(app);
         }
@@ -310,11 +316,28 @@
         $files = new DirectoryIterator($req);
         foreach($files as $file) {
           if($file->isDot()) continue;
-          $res[substr($file->getPathname(),$count)] = array('n'=>$file->getFilename(),'t'=>($file->isDir()?'d':'f'));
+          $m = mime_content_type($file->getPathname());
+          switch($m) {
+            case 'directory':$t='d';break;
+            default:
+              $p = explode('/',$m);
+              switch($p[0]) {
+                default: $t='f';break;
+                case 'image':$t='i';break;
+              }
+            break;
+          }
+          $res[substr($file->getPathname(),$count)] = array('n'=>$file->getFilename(),'t'=>$t);
         }
         if(empty($res)) $res=true;
       }else{
-        $res=explode("\n",file_get_contents($req));
+        $m = mime_content_type($req);
+        $p = explode('/',$m);
+        if($p[0]=='text') {
+          $res=explode("\n",file_get_contents($req));
+        }else{
+          $res='data:'.$m.';base64,'.base64_encode(file_get_contents($req));
+        }
       }
     }
     return $res;
