@@ -1,7 +1,11 @@
 <?php $api = new API(); ?><!DOCTYPE html><html lang="en">
 <head>
-  <title>SSH</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="favicon.ico" rel="icon" type="image/x-icon">
+  <title>SSH</title>
+  <meta charset="utf-8">
 	<style>
     body { padding-top: 70px; }
     .navbar .form-group { margin: 9px 0; }
