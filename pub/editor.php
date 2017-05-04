@@ -339,10 +339,9 @@
       }else{
         $m = mime_content_type($req);
         $p = explode('/',$m);
-        if($p[0]=='text') {
-          $res=explode("\n",file_get_contents($req));
-        }else{
-          $res='data:'.$m.';base64,'.base64_encode(file_get_contents($req));
+        switch($p[0]) {
+          case 'image': $res='data:'.$m.';base64,'.base64_encode(file_get_contents($req)); break;
+          default: $res=explode("\n",file_get_contents($req)); break;
         }
       }
     }
