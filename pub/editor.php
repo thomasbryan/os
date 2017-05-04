@@ -155,10 +155,10 @@
           data: "req=delete&f="+f
         }).done(function(res) {
           $(".list-group").find("[data-f='"+f+"']").remove();
-          close();
         }).fail(function() {
           err("Failed to Delete '"+f+"'");
         });
+        close();
       }
       function err(req) {
         $("#e").html("<strong>Error:</strong> "+req+"!").show().removeClass("hidden").delay(5000).fadeOut(500);
