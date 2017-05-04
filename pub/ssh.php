@@ -92,7 +92,7 @@
       if(user.length > 0 && host.length > 0 && ( pass.length > 0 || $("#key").val().length > 0 ) && cmd.length > 0) {
         $("#submit,#req").addClass("hidden");
         $("#back,#copy,#res").removeClass("hidden");
-        $("#res").html("<span class='glyphicon glyphicon-hourglass'></span>");
+        $("#res").html("<h4><span class='glyphicon glyphicon-hourglass'></span> "+user+"@"+host+": "+cmd+"</h4>");
         data.append("host",host);
         data.append("user",user);
         data.append("pass",pass);
@@ -128,7 +128,7 @@
           type: "post",
           error: function() {
             if(!$("#res").hasClass("hidden")) {
-              $("#res").html("<code>Error</code>");
+              $("#res").html("<h4 class='alert alert-danger'>Error</h4>");
             }
           },
           success: function(res) {
@@ -137,8 +137,9 @@
               $.each(res,function(k,v) {
                 html+=v+"\n";
               });
-              $("#res").html("<textarea class='form-control' rows='10'>"+html.trim()+"</textarea>");
-              $("textarea").height($(window).height()-$("nav").height()-50);
+              $("#res .glyphicon-hourglass").remove()
+              $("#res").append("<textarea class='form-control' rows='10'>"+html.trim()+"</textarea>");
+              $("textarea").height($(window).height()-$("nav").height()-$("#res h4").height()-75);
             }
           }
         });
