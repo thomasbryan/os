@@ -11,10 +11,12 @@
       textarea { resize: none; }
       .list-group:last-child { padding-right: 0; }
       .list-group { margin-bottom: 0; }
+      .list-group .list-group-item:nth-of-type(even) { background-color: #f9f9f9; }
       .list-group a:last-child { margin-bottom: 20px; }
       .list-group-item { cursor: pointer; overflow: hidden; white-space: nowrap; }
       .list-group-item img { position:absolute; top:0; right:0; height: 100%; }
       .navbar-brand { cursor: pointer; }
+      .btn-danger { position: absolute; top:0;right:0;bottom:0;border:0;border-radius:0; }
       @media (max-width: 767px) {
         body.body-edit { padding-top: 170px; }
         .list-group { padding-right: 0; }
@@ -38,12 +40,12 @@
           <form id="edit" method="POST" >
             <div class="form-group">
               <input type="hidden" id="f" name="f" />
-              <input type="text" id="n" name="n" class="form-control" placeholder="Name" />
             </div>
           </form>
         </div>
-        <a data-req="ce" class="edit hidden navbar-brand"><span class="glyphicon glyphicon-remove-sign"></span></a>
-        <a data-req="tn" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-trash text-danger"></span> <span class='text-danger'>Trash</span></a>
+        <a id="n" class="edit hidden navbar-brand"></a>
+        <a data-req="ce" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-remove-sign"></span> No</a>
+        <a data-req="tn" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-ok-sign text-danger"></span> <span class='text-danger'>Yes</span></a>
       </div>
     </nav>
     <div class="container-fluid">
@@ -139,7 +141,7 @@
         $(".edit").removeClass("hidden");
         $("body").addClass("body-edit");
         $("#f").val(($(this).data("f")===undefined?$(this).parent().data("f"):$(this).data("f")));
-        $("#n").val(($(this).data("n")===undefined?$(this).parent().data("n"):$(this).data("n"))).focus();
+        $("#n").html("Delete '"+($(this).data("n")===undefined?$(this).parent().data("n"):$(this).data("n"))+"'?");
         e.stopPropagation();
       });
       function close() {
@@ -147,14 +149,15 @@
         $("body").removeClass("body-edit");
       }
       function trash() {
+        var f = $("#f").val();
         $.ajax({
           type: "POST",
-          data: "req=delete&f="+$("#f").val()
+          data: "req=delete&f="+f
         }).done(function(res) {
-          $(".list-group").find("[data-f='"+$("#f").val()+"']").remove();
+          $(".list-group").find("[data-f='"+f+"']").remove();
           close();
         }).fail(function() {
-          err("Failed to Delete File");
+          err("Failed to Delete '"+f+"'");
         });
       }
       function err(req) {
@@ -232,7 +235,7 @@
             case "i":type = "picture";break;
           }
           res += "<a class='list-group-item' data-n='"+req[k].n+"' data-f='"+k+"' title='"+k+"'><span class='glyphicon glyphicon-"+type+"'></span> "+req[k].n;
-          res += "<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-pencil'></span> Edit</button>";
+          res += "<button class='btn btn-danger'><span class='glyphicon glyphicon-trash'></span> Delete</button>";
           res += "</a>";
         }
         return res;
