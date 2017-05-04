@@ -138,6 +138,7 @@
                 html+=v+"\n";
               });
               $("#res").html("<textarea class='form-control' rows='10'>"+html.trim()+"</textarea>");
+              $("textarea").height($(window).height()-$("nav").height()-50);
             }
           }
         });

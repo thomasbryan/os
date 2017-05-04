@@ -184,6 +184,7 @@
         }).done(function(res) {
           var html = ""
             , val = ""
+            , form = "<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>"
             ;
           if($.isArray(res)) {
             $.each(res,function(k,v) {
@@ -194,10 +195,15 @@
           }else{
             $("#d").addClass("hidden");
             if($.isPlainObject(res)) {
-              html += "<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>";
+              html += form;
               html += list(res);
             }else{
-              html += "<img class='img-responsive' src='"+res+"' />";
+              if(res.length === undefined) {
+                html += form;
+              }else{
+                html += "<img class='img-responsive' src='"+res+"' />";
+              }
+              console.log(res.length);
             }
           }
           $("#r").html(html);
