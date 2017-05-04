@@ -286,7 +286,7 @@
     if(!empty($req)) {
       $res = array();
       $count = strlen($this->d);
-      $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->d));
+      $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->d,FilesystemIterator::SKIP_DOTS));
       foreach($files as $file) {
         $f = substr($file->getPathname(),$count);
         $pos = strpos($f, $req);
