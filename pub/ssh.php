@@ -128,7 +128,8 @@
           type: "post",
           error: function() {
             if(!$("#res").hasClass("hidden")) {
-              $("#res").html("<h4 class='alert alert-danger'>Error</h4>");
+              $("#res .glyphicon-hourglass").addClass("glyphicon-alert").removeClass("glyphicon-hourglass");
+              $("#res h4").addClass("alert alert-danger");
             }
           },
           success: function(res) {
