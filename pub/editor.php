@@ -81,7 +81,7 @@
             }).done(function(res) {
               search(false);
               var html = "";
-              html += list(res);
+              html += list(res,true);
               $("#r").html(html);
             }).fail(function() {
               search(false);
@@ -199,7 +199,7 @@
             $("#d").addClass("hidden");
             if($.isPlainObject(res)) {
               html += form;
-              html += list(res);
+              html += list(res,false);
             }else{
               if(res.length === undefined) {
                 html += form;
@@ -212,7 +212,7 @@
           $("#r").html(html);
         });
       }
-      function list(req) {
+      function list(req,t) {
         var res = ""
           , type = ""
           , keys = []
@@ -234,7 +234,7 @@
             case "d":type = "folder-close";break;
             case "i":type = "picture";break;
           }
-          res += "<a class='list-group-item' data-n='"+req[k].n+"' data-f='"+k+"' title='"+k+"'><span class='glyphicon glyphicon-"+type+"'></span> "+req[k].n;
+          res += "<a class='list-group-item' data-n='"+req[k].n+"' data-f='"+k+"' title='"+k+"'><span class='glyphicon glyphicon-"+type+"'></span> "+(t ? k : req[k].n);
           res += "<button class='btn btn-danger'><span class='glyphicon glyphicon-trash'></span> Delete</button>";
           res += "</a>";
         }

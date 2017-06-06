@@ -106,10 +106,10 @@
               if($("#r .active").length==0) {$("#r a:first").addClass("active");}
             }).fail(function() {
               $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
-              youtube();
+              google();
             });
           }else{
-            if($("#r .y").length == 0) youtube();
+            if($("#r .y").length == 0) google();
           }
         }else{
           reset();
@@ -146,13 +146,13 @@
       function search(req) {
         ( req ? $(".form-control-feedback").removeClass("glyphicon-search").addClass("glyphicon-hourglass") : $(".form-control-feedback").removeClass("glyphicon-hourglass").addClass("glyphicon-search") );
       }
-      function youtube() {
+      function google() {
         $("#q").blur();
         $("#r .g.disabled").remove();
         search(true);
         $.ajax({
           type: "POST",
-          data: "req=youtube&y="+$("#q").val()
+          data: "req=google&y="+$("#q").val()
         }).done(function(res) {
           search(false);
           var html = "";
@@ -259,7 +259,15 @@
           type: "POST",
           data: app
         }).done(function(res) {
-          play({"f":res.f,"n":res.n,"t":0});
+          var stale = false;
+          $.each($("#p a"),function(k,v) {
+            if($(this).data("f") == res.f) stale = true;
+          });
+          if(stale) {
+            fo();
+          }else{
+            play({"f":res.f,"n":res.n,"t":0});
+          }
         }).fail(function() {
           err("Failed to Initialize");
           app.p = false;
@@ -470,8 +478,9 @@
         case 'list': $res = $this->files($this->p,false);break;
         case 'search': $res = $this->search($_POST['q']);break;
         case 'edit': $res = $this->edit($_POST['n'],$_POST['f']);break;
-        case 'youtube': $res = $this->youtube($_POST['y']);break;
+        case 'google': $res = $this->google($_POST['y']);break;
         case 'trash': $res = $this->trash($_POST['f']);break;
+        case 'refresh': $res = $this->refresh();break;
       }
       $this->json($res);
     }
@@ -603,8 +612,9 @@
     }
     return $res;
   }
-  private function youtube($req) {
+  private function google($req) {
     if(!empty($req)) {
+      //search soundcloud as well.
       $dom = new DOMDocument('1.0');
       @$dom->loadHTMLFile('https://www.google.com/search?q='.htmlentities('site:www.youtube.com '.$req));
       $res = array();
@@ -651,14 +661,24 @@
     }
     return $res;
   }
+  private function utf8ize($d) {
+    if (is_array($d)) {
+      foreach ($d as $k => $v) {
+        $d[$k] = $this->utf8ize($v);
+      }
+    } else if (is_string ($d)) {
+      return utf8_encode($d);
+    }
+    return $d;
+  }
   private function json($req=false) {
     if($req) {
       header("Content-type: application/json");
       if(array_key_exists('callback', $_GET) == TRUE){
         $req=json_encode($req);
-        print $_GET['callback']."(".$req.")"; 
+        print $_GET['callback']."(".$this->utf8ize($req).")"; 
       }else{
-        echo json_encode($req);
+        echo json_encode($this->utf8ize($req));
       }
     }else{
       header('HTTP/1.0 404 Not Found');
