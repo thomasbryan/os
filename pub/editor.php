@@ -22,6 +22,7 @@
         .list-group { padding-right: 0; }
       }
       #e { position: fixed; right: 1em; z-index: 100; }
+      #m { position: absolute; right: 2em; top: 0.5em; z-index: 100; }
     </style>
   </head>
   <body>
@@ -45,13 +46,17 @@
         </div>
         <a id="n" class="edit hidden navbar-brand"></a>
         <a data-req="ce" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-remove-sign"></span> No</a>
-        <a data-req="tn" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-ok-sign text-danger"></span> <span class='text-danger'>Yes</span></a>
+        <a data-req="tn" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-ok-sign text-danger"></span> <span class="text-danger">Yes</span></a>
       </div>
     </nav>
     <div class="container-fluid">
       <div class="row-fluid">
         <div id="e" class="hidden alert alert-danger" role="alert"> </div>
         <div class="col-xs-12">
+          <div id="m" class="btn-group btn-group-xs hidden">
+            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-tasks"></span></button>
+            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-file"></span></button>
+          </div>
           <ol id="b" class="breadcrumb"><li class="active"><span class="glyphicon glyphicon-home"></span></li></ol>
           <div id="r" class="list-group"></div>
         </div>
@@ -170,6 +175,7 @@
       function state() {
         $("#q").val("");
         $("#b").html("<li><a href='javascript:void(0);' data-f=''><span class='glyphicon glyphicon-home'></span></a></li>");
+        $("#m").addClass("hidden");
         if(app.f.length > 0) {
           var b = app.f.split("/")
             , f = ""
@@ -190,6 +196,9 @@
             , form = "<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>"
             ;
           if($.isArray(res)) {
+            $("#m").removeClass("hidden");
+            //set active based on app.m
+            console.log(app.m);
             $.each(res,function(k,v) {
               val=val+v+"\n";
             });
@@ -257,7 +266,7 @@
       var app = localStorage.editor;
       $(document).ready(function() {
         if(app == null) {
-          app = {"f":"","d":0};
+          app = {"f":"","d":0,"m":0};
         }else{
           app = JSON.parse(app);
         }
