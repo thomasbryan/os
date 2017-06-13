@@ -106,43 +106,6 @@
       $("table#calendar td").removeClass("info");
       $("#day-"+req.getFullYear()+"-"+req.getMonth()+"-"+req.getDate()).addClass("info");
     }
-    function buildChess() {
-      var board = [
-          [0,1,2,3,4,2,1,0],
-          [5,5,5,5,5,5,5,5],
-          [6,6,6,6,6,6,6,6],
-          [6,6,6,6,6,6,6,6],
-          [6,6,6,6,6,6,6,6],
-          [6,6,6,6,6,6,6,6],
-          [7,7,7,7,7,7,7,7],
-          [8,9,10,11,12,10,9,8],
-        ]
-        , pieces = ["tower black","knight black", "bishop black","queen black","king black","pawn black","","pawn white","tower white","knight white","bishop white","queen white","king white"]
-        , html = ""
-        , square = true
-        , rank = 8
-        , files = ["A","B","C","D","E","F","G","H"]
-        ;
-      $.each(board,function(k,v) {
-        html+="<tr><td></td><td></td>";
-        file = 0;
-        $.each(v,function(kk,vv) {
-          html+="<td data-rank='"+rank+"' data-file='"+files[file]+"' class='"+(square?"light":"dark")+"'>";
-          if(square){square=false;}else{square=true;}
-          file++;
-          if(pieces[vv].length > 0) {
-            html+="<span class='glyphicon glyphicon-"+pieces[vv]+"'></span>";
-          }else{
-            html+="&nbsp;";
-          }
-          html+="</td>";
-        });
-        if(square){square=false;}else{square=true;}
-        rank--;
-        html+="<td></td><td></td></tr>";
-      });
-      $("#chess tbody").html(html);
-    }
     $(document).ready(function() {
       buildCal();
       var app = {
@@ -153,6 +116,7 @@
         "POST": {"h":"post.php","i":"send"},
         "SSH": {"h":"ssh.php","i":"console"},
         "GIT": {"h":"git.php","i":"star"},
+        "CHESS": {"h":"chess.html","i":"queen"},
       };
       startTime();
       $.each(app,function(k,v) {
@@ -162,7 +126,6 @@
           ;
         $(".navbar .nav").append(html);
       });
-      buildChess();
     });
 	</script>
 </head>
@@ -203,12 +166,4 @@
       </div>
     </div>
   </div>
-  <table id="chess" class="table">
-    <thead>
-    </thead>
-    <tbody>
-    </tbody>
-    <tfoot>
-    </tfoot>
-  </table>
 </body></html>

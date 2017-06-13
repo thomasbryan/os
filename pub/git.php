@@ -6,35 +6,25 @@
     <title>Git</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <style>
+      body { padding-top: 25px; }
       .status .btn { margin-bottom: 0.5em; }
-      .fixed-width { font-family: monospace; }
+      #cache { position:fixed; bottom:1em; right:1em; }
     </style>
   </head>
   <body>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Project<br><span style="font-weight:normal;">Branch</span></th>
-          <th>Staged</th>
-          <th>Non-Staged</th>
-          <th>Untracked</th>
-          <th><span class="glyphicon glyphicon-download"></span> <span class="hidden-xs">Pull</span></th>
-          <th><span class="glyphicon glyphicon-upload"></span> <span class="hidden-xs">Push</span></th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div id="projects"></div>
+    <a id="cache" href="javascript:void(0);" class="btn btn-primary">Update Cache</a>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script>
       $(document).on("click",".n, .u",function(e) {
-        action("add&project="+$(this).closest("tr").data("project")+"&file="+$(this).data("file"));
+        action("add&project="+$(this).closest(".project").data("project")+"&file="+$(this).data("file"));
       });
       $(document).on("click",".s",function(e) {
-        action("rem&project="+$(this).closest("tr").data("project")+"&file="+$(this).data("file"));
+        action("rem&project="+$(this).closest(".project").data("project")+"&file="+$(this).data("file"));
       });
       $(document).on("click",".p",function(e) {
-        action("push&project="+$(this).closest("tr").data("project"));
+        action("push&project="+$(this).closest(".project").data("project"));
       });
       $(document).on("click",".d",function(e) {
         action("pull");
@@ -55,11 +45,13 @@
           type: "POST",
           data: "req=status",
         }).done(function(res) {
-          var html = "";
+          var projects = "";
           $.each(res,function(k,v) {
             var s = ""
               , n = ""
               , u = ""
+              , p = ""
+              , t = "default"
               ;
             $.each(v.s,function(kk,vv) {
               s+=button({"c":"s","t":"success","f":vv,"a":"minus"});
@@ -70,15 +62,43 @@
             $.each(v.u,function(kk,vv) {
               u+=button({"c":"u","t":"danger","f":vv,"a":"plus"});
             });
-            var push = "";
-            if(s.length>0) push = "<div class='p btn btn-primary'><span class='glyphicon glyphicon-upload'></span> <span class='hidden-xs'>Push</span></div>";
-            html+= "<tr data-project='"+k+"' title='"+k+"'><td><strong class='text-success'><span class='glyphicon glyphicon-tree-conifer'></span> "+k+"</strong><br><span class='text-info'><span class='glyphicon glyphicon-leaf'></span> "+v.b+"</span></td><td class='status'>"+s+"</td><td class='status'>"+n+"</td><td class='status'>"+u+"</td><td><div class='d btn btn-default'><span class='glyphicon glyphicon-download'></span> <span class='hidden-xs'>Pull</span></div></td><td>"+push+"</td>";
+            if(s.length>0) p = "<div class='p btn btn-primary col-xs-12'><span class='glyphicon glyphicon-upload'></span> <span class='hidden-xs'>Push</span></div>";
+            if(k=="/") t = "primary";
+            projects+= "<div data-project='"+k+"' class='project col-xs-12 col-sm-6 col-md-4'>";
+            projects+= "<div class='panel panel-"+t+"'>";
+            projects+= "<div class='panel-heading'><strong>"+k+"</strong><span class='pull-right'>"+v.b+"</span></div>";
+            projects+= "<div class='panel-body'>";
+            projects+= "<div class='row'><div class='col-xs-12'>";
+            projects+= "<div class='status col-sm-4'>";
+            projects+= s;
+            projects+= "</div>";
+            projects+= "<div class='status col-sm-4'>";
+            projects+= n;
+            projects+= "</div>";
+            projects+= "<div class='status col-sm-4'>";
+            projects+= u;
+            projects+= "</div>";
+            projects+= "</div></div>";
+            projects+= "<div class='col-sm-6'>";
+            projects+= "<div class='d btn btn-default col-xs-12'><span class='glyphicon glyphicon-download'></span> <span class='hidden-xs'>Pull</span></div>";
+            projects+= "</div>";
+            projects+= "<div class='col-sm-6'>";
+            projects+= p;
+            projects+= "</div>";
+            projects+= "</div>";
+            projects+= "</div>";
+            projects+= "</div>";
+            projects+= "</div>";
           });
-          $("table tbody").html(html);
+          $("#projects").html(projects);
         });
       }
       function button(req) {
-        return "<div class='"+req.c+" btn btn-"+req.t+" btn-xs' data-file='"+req.f+"' title='"+req.f+"'><span class='glyphicon glyphicon-"+req.a+"'></span> <span class='fixed-width'>"+req.f.substr(0,5)+"...</span></div><br>";
+        var shrapnel = req.f.split("/")
+          , last = (shrapnel.length - 1)
+          , name = (shrapnel[last].length > 10 ? shrapnel[last].substr(0,7)+"...":shrapnel[last]) 
+          ;
+        return "<div class='col-xs-12 "+req.c+" btn btn-"+req.t+" btn-xs' data-file='"+req.f+"' title='"+req.f+"'><span class='pull-left glyphicon glyphicon-"+req.a+"'></span> <span class=''>"+name+"</span></div><br>";
       }
     </script>
   </body>
@@ -92,6 +112,7 @@ class API {
     if($_SERVER['REQUEST_METHOD']==='POST') {
       if(!isset($_POST['req'])) $_POST['req'] = ''; 
         switch($_POST['req']) {
+          case 'cache': $res = $this->cache();break;
           case 'status': $res = $this->status();break;
           case 'add': $res = $this->add();break;
           case 'rem': $res = $this->rem();break;
@@ -100,6 +121,11 @@ class API {
         }
       $this->json($res);
     }
+  }
+  private function cache() {
+    $prefix = '../src/';
+    unlink($prefix.'.git');
+    return true;
   }
   private function status() {
     $res = false;
