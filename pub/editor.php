@@ -54,14 +54,15 @@
         <div id="e" class="hidden alert alert-danger" role="alert"> </div>
         <div class="col-xs-12">
           <div id="m" class="btn-group btn-group-xs hidden">
-            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-tasks"></span></button>
-            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-file"></span></button>
+            <button type="button" class="l btn btn-default"><span class="glyphicon glyphicon-tasks"></span></button>
+            <button type="button" class="d btn btn-default"><span class="glyphicon glyphicon-file"></span></button>
           </div>
           <ol id="b" class="breadcrumb"><li class="active"><span class="glyphicon glyphicon-home"></span></li></ol>
           <div id="r" class="list-group"></div>
         </div>
         <div class="col-xs-12">
           <textarea id="d" name="d" class="hidden form-control" rows="10" placeholder="Info"></textarea>
+          <div id="l" class="list-group hidden"></div>
         </div>
       </div>
     </div>
@@ -149,6 +150,21 @@
         $("#n").html("Delete '"+($(this).data("n")===undefined?$(this).parent().data("n"):$(this).data("n"))+"'?");
         e.stopPropagation();
       });
+      $(document).on("click","#m button",function(e) {
+        $("#m button").removeClass("active");
+        $("#d,#l").addClass("hidden");
+        $(this).addClass("active");
+        if($(this).hasClass("l")) {
+          app.m = 0;
+          $("#l").removeClass("hidden");
+          //scroll to active
+        }else{
+          app.m = 1;
+          $("#d").removeClass("hidden").focus();
+          //scroll to top
+        }
+        //localStorage.editor = JSON.stringify(app);
+      });
       function close() {
         $(".edit").addClass("hidden");
         $("body").removeClass("body-edit");
@@ -187,25 +203,36 @@
           });
         }
         $("#b li").last().html($("#b li:last a").html()).addClass("active").append(" <span class='hidden glyphicon glyphicon-floppy-disk'>");
+        document.title = $("#b .active").text()+($("#b .active").text().trim().length>0?"- ":"")+"Editor"
         $.ajax({
           type: "POST",
           data: "req=read&f="+app.f
         }).done(function(res) {
           var html = ""
             , val = ""
+            , lines = ""
             , form = "<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>"
             ;
           if($.isArray(res)) {
             $("#m").removeClass("hidden");
-            //set active based on app.m
-            console.log(app.m);
+            $("#m > button").removeClass("active");
             $.each(res,function(k,v) {
+              lines+="<a href='javascript:void(0);' class='list-group-item'>"+v.replace(/</g,"&lt;").replace(/>/g,"&gt;")+"<span class='badge'>"+(k+1)+"</span></a>";
               val=val+v+"\n";
             });
-            $("#d").removeClass("hidden").val($.trim(val)).height(($(window).height()-$("nav").height()-$("#b").height()-100)).focus();
+            $("#d").val($.trim(val)).height(($(window).height()-$("nav").height()-$("#b").height()-100));
+            $("#l").html(lines);
+            if(app.m) {
+              $("#d").removeClass("hidden").focus();
+              $("#m .d").addClass("active");
+            }else{
+              $("#l").removeClass("hidden");
+              $("#m .l").addClass("active");
+              $("#l a").first().addClass("active");
+            }
             app.d = $("#d").val().length;
           }else{
-            $("#d").addClass("hidden");
+            $("#d,#l").addClass("hidden");
             if($.isPlainObject(res)) {
               html += form;
               html += list(res,false);
