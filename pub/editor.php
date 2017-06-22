@@ -361,7 +361,7 @@
         $files = new DirectoryIterator($req);
         foreach($files as $file) {
           if($file->isDot()) continue;
-          $m = mime_content_type($file->getPathname());
+          if(file_exists($file->getPathname())) $m = mime_content_type($file->getPathname());
           switch($m) {
             case 'directory':$t='d';break;
             default:
