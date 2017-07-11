@@ -213,6 +213,7 @@
             , lines = ""
             , form = "<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>"
             ;
+          $(window).scrollTop(0);
           if($.isArray(res)) {
             $("#m").removeClass("hidden");
             $("#m > button").removeClass("active");
@@ -293,7 +294,7 @@
       var app = localStorage.editor;
       $(document).ready(function() {
         if(app == null) {
-          app = {"f":"","d":0,"m":0};
+          app = {"f":"","d":0,"m":1};
         }else{
           app = JSON.parse(app);
         }
