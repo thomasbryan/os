@@ -146,13 +146,13 @@
             project+= "</div>";
             project+= "</div></div>";
             project+= "<div class='col-sm-4'>";
-            project+= d;
+            project+= p;
             project+= "</div>";
             project+= "<div class='col-sm-4'>";
             project+= "<a href='javascript:void(0);' class='d btn btn-info col-xs-12'><span class='glyphicon glyphicon-download'></span> <span class='hidden-xs'>Pull</span></a>";
             project+= "</div>";
             project+= "<div class='col-sm-4'>";
-            project+= p;
+            project+= d;
             project+= "</div>";
             project+= "</div>";
             project+= "</div>";
