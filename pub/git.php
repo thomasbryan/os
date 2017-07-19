@@ -57,7 +57,7 @@
           type: "POST",
           data: "req=diff&project="+project
         }).done(function(res) {
-          var html = "<div id='overlay'><div class='panel panel-info'><div class='panel-heading'>Diff '"+project+"'</div><div class='panel-body'>";
+          var html = "<div id='overlay'><div class='panel panel-info'><div class='panel-heading'><a>&nbsp;</a>Diff '"+project+"'</div><div class='panel-body'>";
           $.each(res,function(k,v) {
             var c = "info";
             switch(v.charAt(0)) {
@@ -133,6 +133,7 @@
             project+= "<div data-project='"+k+"' class='project col-xs-12 col-sm-6 col-md-4'>";
             project+= "<div class='panel panel-"+t+"'>";
             project+= "<div class='panel-heading'><strong>"+k+"</strong><span class='pull-right'>"+v.b+"</span></div>";
+            //text box < git grep >
             project+= "<div class='panel-body'>";
             project+= "<div class='row'><div class='col-xs-12'>";
             project+= "<div class='status col-sm-4'>";
