@@ -1,0 +1,15 @@
+server {
+  server_name default localhost;
+  root        /var/www/pub;
+  index       index.html;
+  client_max_body_size 100M;
+  fastcgi_read_timeout 1800;
+  location ~ \.php$ {
+    try_files     $uri =404;
+    include       fastcgi_params;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_pass  unix:/run/php/php7.0-fpm.sock;
+  }
+  allow all;
+}

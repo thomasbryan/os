@@ -514,21 +514,45 @@
     }
     return $res;
   }
-  private function download($url='',$n ='') {
+  private function download($url='',$n ='',$p = '') {
     $res = false;
     if(!empty($url) ) {
-
-      $id = exec('youtube-dl --get-id '.$url);
-      if(file_exists($this->p.$this->m)) $meta = json_decode(file_get_contents($this->p.$this->m),true);
-      $meta[$id] = $n;
-      file_put_contents($this->p.$this->m,json_encode($meta));
-      chdir($this->p);
-      $res = exec('youtube-dl -w -x --id --audio-format mp3 '.$url);
-      chmod($id.'.mp3',0666);
-      chdir($this->d);
-      $res = $this->refresh();
+      exec($p.'youtube-dl --get-id '.$url,$id,$ret);
+      if(!$ret) {
+        if(file_exists($this->p.$this->m)) $meta = json_decode(file_get_contents($this->p.$this->m),true);
+        $meta[$id] = $n;
+        file_put_contents($this->p.$this->m,json_encode($meta));
+        chdir($this->p);
+        $res = exec($p.'youtube-dl -w -x --id --audio-format mp3 '.$url);
+        chmod($id.'.mp3',0666);
+        chdir($this->d);
+        $res = $this->refresh();
+      }else{
+        if(empty($p)) $res = $this->install($url,$n);
+      }
     }
     return $res;
+  }
+  private function install($url='',$n='') {
+    $p = '/tmp/';
+    $c = 'youtube-dl';
+    if(!file_exists($p.$c)) {
+      $data = '';
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, 'https://yt-dl.org/downloads/latest/youtube-dl');
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+      curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+      $data = curl_exec($ch);
+      $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      curl_close($ch);
+      if(!empty($data)) {
+        file_put_contents($p.$c,$data);
+        chmod($p.$c,0755);
+      }
+    }
+    return $this->download($url,$n,$p);
   }
   private function edit($n='',$f='') {
     $res = false;
