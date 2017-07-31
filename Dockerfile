@@ -18,6 +18,12 @@ COPY conf/supervisord.conf /etc/supervisor/supervisord.conf
 COPY conf/nginx.conf /etc/nginx/
 COPY conf/default.vhost /etc/nginx/conf.d/
 
+COPY conf/nginx.sh /root/
+RUN echo "* * * * * root sh /root/nginx.sh >> /var/log/cron.log 2>&1" >> /etc/cron.d/nginx-cron && \
+    echo "" >> /etc/cron.d/nginx-cron && \
+    chmod 0644 /etc/cron.d/nginx-cron && \
+    touch /var/log/cron.log
+
 RUN mkdir -p /run/php
 
 COPY adminer /var/www/adminer
