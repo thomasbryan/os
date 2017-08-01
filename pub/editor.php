@@ -305,19 +305,33 @@
   </body>
 </html><?php class API {
   private $d = '';
-  private $p = '../src/';
+  private $p = '../src/users/';
   function __construct() {
     if($_SERVER['REQUEST_METHOD']==='POST') {
-      chdir($this->p);
-      $this->d = getcwd().'/';
       $res = false;
-      if(!isset($_POST['req'])) $_POST['req'] = '';
-      switch($_POST['req']) {
-        case 'search': $res = $this->search($_POST['q']);break;
-        case 'create': $res = $this->create($_POST['f'],$_POST['n']);break;
-        case 'read': $res = $this->read($_POST['f']);break;
-        case 'update': $res = $this->update($_POST['f'],$_POST['d']);break;
-        case 'delete': $res = $this->delete($_POST['f']);break;
+      if(isset($_COOKIE)) {
+        if(isset($_COOKIE['t'])) {
+          $token = $_COOKIE['t'];
+          $key = parse_ini_file('../src/conf.ini');
+          if(isset($key['key'])) {
+            $shrapnel = explode('.',$token);
+            if(count($shrapnel) == 2) {
+              if($shrapnel[1] == base64_encode(hash_hmac('sha256',$shrapnel[0],$key['key']))) {
+                $claim = json_decode(base64_decode($shrapnel[0]));
+                chdir($this->p.$claim->User.'/');
+                $this->d = getcwd().'/';
+                if(!isset($_POST['req'])) $_POST['req'] = '';
+                switch($_POST['req']) {
+                  case 'search': $res = $this->search($_POST['q']);break;
+                  case 'create': $res = $this->create($_POST['f'],$_POST['n']);break;
+                  case 'read': $res = $this->read($_POST['f']);break;
+                  case 'update': $res = $this->update($_POST['f'],$_POST['d']);break;
+                  case 'delete': $res = $this->delete($_POST['f']);break;
+                }
+              }
+            }
+          }
+        }
       }
       $this->json($res);
     }

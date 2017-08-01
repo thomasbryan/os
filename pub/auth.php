@@ -184,7 +184,7 @@
 
 
   */
-  private $conf = '../conf.ini';
+  private $conf = '../src/conf.ini';
   private $auth = array();
   function __construct() {
     if($_SERVER['REQUEST_METHOD']==='POST') {
@@ -227,8 +227,12 @@
         $users.=$k.' = '.$v."\n";
       }
       $users.=$user.' = '.password_hash($pass,PASSWORD_DEFAULT)."\n";
-      if(file_put_contents($this->conf,$users))
+      if(file_put_contents($this->conf,$users)) {
+        mkdir('../src/audio/'.$user);
+        mkdir('../src/users/'.$user);
+        mkdir('../src/video/'.$user);
         exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$user.' -q -N "" -C "'.$user.'"',$res);
+      }
     }
     return $res;
   }

@@ -466,21 +466,36 @@
   # required: libav-tools
   function __construct() {
     if($_SERVER['REQUEST_METHOD']==='POST') {
-      $this->d = dirname(__FILE__);
       $res = false;
-      if(!isset($_POST['req'])) $_POST['req'] = '';
-      switch($_POST['req']) {
-        default: $res = $this->fetch($_POST['s'],(isset($_POST['f'])?$_POST['f']:''),(isset($_POST['l'])?$_POST['l']:''));break;
-        case 'create': $res = $this->create($_POST['l']);break;
-        case 'update': $res = $this->update($_POST['f'],$_POST['l']);break;
-        case 'delete': $res = $this->delete($_POST['l']);break;
-        case 'download': $res = $this->download($_POST['d'],$_POST['q']);break;
-        case 'list': $res = $this->files($this->p,false);break;
-        case 'search': $res = $this->search($_POST['q']);break;
-        case 'edit': $res = $this->edit($_POST['n'],$_POST['f']);break;
-        case 'google': $res = $this->google($_POST['y']);break;
-        case 'trash': $res = $this->trash($_POST['f']);break;
-        case 'refresh': $res = $this->refresh();break;
+      if(isset($_COOKIE)) {
+        if(isset($_COOKIE['t'])) {
+          $token = $_COOKIE['t'];
+          $key = parse_ini_file('../src/conf.ini');
+          if(isset($key['key'])) {
+            $shrapnel = explode('.',$token);
+            if(count($shrapnel) == 2) {
+              if($shrapnel[1] == base64_encode(hash_hmac('sha256',$shrapnel[0],$key['key']))) {
+                $claim = json_decode(base64_decode($shrapnel[0]));
+
+                $this->d = dirname(__FILE__);
+                if(!isset($_POST['req'])) $_POST['req'] = '';
+                switch($_POST['req']) {
+                  default: $res = $this->fetch($_POST['s'],(isset($_POST['f'])?$_POST['f']:''),(isset($_POST['l'])?$_POST['l']:''));break;
+                  case 'create': $res = $this->create($_POST['l']);break;
+                  case 'update': $res = $this->update($_POST['f'],$_POST['l']);break;
+                  case 'delete': $res = $this->delete($_POST['l']);break;
+                  case 'download': $res = $this->download($_POST['d'],$_POST['q']);break;
+                  case 'list': $res = $this->files($this->p,false);break;
+                  case 'search': $res = $this->search($_POST['q']);break;
+                  case 'edit': $res = $this->edit($_POST['n'],$_POST['f']);break;
+                  case 'google': $res = $this->google($_POST['y']);break;
+                  case 'trash': $res = $this->trash($_POST['f']);break;
+                  case 'refresh': $res = $this->refresh();break;
+                }
+              }
+            }
+          }
+        }
       }
       $this->json($res);
     }
