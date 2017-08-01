@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Editor</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="ico/editor.ico" rel="icon" type="image/x-icon">
     <style>
       body { padding-top: 70px; }
       .form-group { margin: 9px; }

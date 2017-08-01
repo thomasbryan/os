@@ -18,6 +18,17 @@
         .list-group { padding-right: 0; }
       }
       #e { position: fixed; right: 1em; z-index: 100; }
+      #profile .pub {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        -ms-word-break: break-all;
+        word-break: break-all;
+        word-break: break-word;
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+      }
     </style>
   </head>
   <body>
@@ -54,7 +65,19 @@
                 </div >
                 </p ></form>
               </div>
-              <div id="profile" class="hidden">
+              <div id="profile" class="hidden table-responsive">
+                <table class="table">
+                  <tr>
+                    <th>User</th>
+                    <th><span class="glyphicon glyphicon-user"></span></th>
+                    <td class="user"></td>
+                  </tr>
+                  <tr>
+                    <th>SSH</th>
+                    <th><span class="glyphicon glyphicon-certificate"></span></th>
+                    <td class="pub"></td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>
@@ -81,15 +104,13 @@
         app("profile")
         if(req.token) {
           updateCookie("t",req.token);
-
           var p = req.token.split(".");
           var u = $.parseJSON(atob(p[0]));
-          console.log(u);
+          $("#profile .user").html(u.User);
         }
-
-        //update token
-        //display user profile content.
-        console.log(req);
+        if(req.pub) {
+          $("#profile .pub").html("<span>"+req.pub+"</span>");
+        }
       }
       function login() {
         app("login");
@@ -206,9 +227,8 @@
         $users.=$k.' = '.$v."\n";
       }
       $users.=$user.' = '.password_hash($pass,PASSWORD_DEFAULT)."\n";
-      file_put_contents($this->conf,$users);
-      //ssh-keygen -b 2048 -t rsa -f ~/.ssh/$USER -q -N "" -C "$USER"
-      $res = true;
+      if(file_put_contents($this->conf,$users))
+        exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$user.' -q -N "" -C "'.$user.'"',$res);
     }
     return $res;
   }
@@ -249,9 +269,10 @@
     $res = false;
     $json = array('User' => $req,'Expr' => date('U',strtotime('+1 day')));
     $claim = base64_encode(json_encode($json));
+    $pub = file_get_contents('/var/www/.ssh/'.$req.'.pub');
     $res = array(
       'token' => $claim.'.'.base64_encode(hash_hmac('sha256',$claim,$this->auth['key'])),
-      'pub' => ''
+      'pub' => $pub
     );
     return $res;
   }
