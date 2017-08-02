@@ -10,7 +10,7 @@
       body { padding-top: 1em; padding-bottom: 70px; }
       .form-group { margin: 9px; }
       .status .btn { margin-bottom: 0.5em; }
-      #overlay { position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 9000; background: rgba(0,0,0,0.5); padding: 3em; }
+      #overlay { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9000; background: rgba(0,0,0,0.5); padding: 3em; }
       #overlay .panel-body { overflow: auto; }
     </style>
   </head>
