@@ -361,6 +361,7 @@
           mkdir($n);
         }else{
           touch($n);
+          chmod($n,0664);
         }
         $res = true;
       }
