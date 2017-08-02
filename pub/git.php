@@ -129,7 +129,6 @@
             });
             if(s.length>0) p = "<a href='javascript:void(0);' class='p btn btn-primary col-xs-12'><span class='glyphicon glyphicon-upload'></span> <span class='hidden-xs'>Push</span></a>";
             if(v.s.length + v.n.length + v.u.length > 0) d = "<a href='javascript:void(0);' class='diff btn btn-default col-xs-12'><span class='glyphicon glyphicon-duplicate'></span> <span class='hidden-xs'>Diff</span></a>";
-            if(k=="/") t = "primary";
             project+= "<div data-project='"+k+"' class='project col-xs-12 col-sm-6 col-md-4'>";
             project+= "<div class='panel panel-"+t+"'>";
             project+= "<div class='panel-heading'><strong>"+k+"</strong><span class='pull-right'>"+v.b+"</span></div>";
@@ -175,6 +174,7 @@
           , last = (shrapnel.length - 1)
           , name = (shrapnel[last].length > 10 ? shrapnel[last].substr(0,7)+"...":shrapnel[last]) 
           ;
+        if(name.length == 0) name = "<span class='glyphicon glyphicon-folder-open'></span>";
         return "<a href='javascript:void(0);' class='col-xs-12 "+req.c+" btn btn-"+req.t+" btn-xs' data-file='"+req.f+"' title='"+req.f+"'><span class='pull-left glyphicon glyphicon-"+req.a+"'></span> <span class=''>"+name+"</span></a><br>";
       }
     </script>
@@ -182,28 +182,53 @@
 </html><?php 
 class API {
   private $path = '';
+  private $user = '';
+  private $len = 0;
+  private $cache = '';
+  private $prefix = '';
   private $res;
   # required: git
   # create user profiles for repos access
   function __construct() {
     if($_SERVER['REQUEST_METHOD']==='POST') {
-      if(!isset($_POST['req'])) $_POST['req'] = ''; 
-        switch($_POST['req']) {
-          case 'cache': $res = $this->cache();break;
-          case 'diff': $res = $this->diff();break;
-          case 'status': $res = $this->status();break;
-          case 'config': $res = $this->config();break;
-          case 'add': $res = $this->add();break;
-          case 'rem': $res = $this->rem();break;
-          case 'pull': $res = $this->pull();break;
-          case 'push': $res = $this->push();break;
+      $res = false;
+      if(isset($_COOKIE)) {
+        if(isset($_COOKIE['t'])) {
+          $token = $_COOKIE['t'];
+          $key = parse_ini_file('../src/conf.ini');
+          if(isset($key['key'])) {
+            $shrapnel = explode('.',$token);
+            if(count($shrapnel) == 2) {
+              if($shrapnel[1] == base64_encode(hash_hmac('sha256',$shrapnel[0],$key['key']))) {
+                $claim = json_decode(base64_decode($shrapnel[0]));
+                $this->user = $claim->User;
+                $this->len = strlen($this->user);
+                $this->cache = '../src/repos/'.$this->user;
+                $this->prefix = '../src/users/'.$this->user.'/';
+
+                if(!isset($_POST['req'])) $_POST['req'] = ''; 
+                switch($_POST['req']) {
+                  case 'cache': $res = $this->cache();break;
+                  case 'diff': $res = $this->diff();break;
+                  case 'status': $res = $this->status();break;
+                  case 'config': $res = $this->config();break;
+                  case 'add': $res = $this->add();break;
+                  case 'rem': $res = $this->rem();break;
+                  case 'pull': $res = $this->pull();break;
+                  case 'push': $res = $this->push();break;
+                }
+              }
+            }
+          }
         }
+      }
       $this->json($res);
     }
   }
   private function cache() {
-    $prefix = '../src/';
-    unlink($prefix.'.git');
+    if(file_exists($this->cache)) {
+      unlink($this->cache);
+    }
     return true;
   }
   private function config() {
@@ -214,11 +239,9 @@ class API {
     $res = false;
     $status = $this->status();
     if(isset($status[$_POST['project']])) {
-      $prefix = '../src/';
-      if($_POST['project'] == '/') $prefix = '..';
       $this->path = dirname(__FILE__);
       chdir($this->path);
-      chdir($prefix.$_POST['project']);
+      chdir($this->prefix.$_POST['project']);
       $exec = 'git diff';
       exec($exec,$res);
     }
@@ -226,10 +249,8 @@ class API {
   }
   private function status() {
     $res = false;
-    $file = '../src/.git';
-    if(!file_exists($file)) {
-      exec('find ../src/ -type d -name ".git"',$dir);
-      array_unshift($dir,'../.git');
+    if(!file_exists($this->cache)) {
+      exec('find ../src/users/'.$this->user.' -type d -name ".git"',$dir);
       $this->path = dirname(__FILE__);
       $len = strlen(dirname(getcwd()));
       foreach($dir as $k => $v) {
@@ -237,9 +258,9 @@ class API {
       }
       $git = $this->res;
       chdir($this->path);
-      file_put_contents($file,serialize($git));
+      file_put_contents($this->cache,serialize($git));
     }else{
-      $git = unserialize(file_get_contents($file));
+      $git = unserialize(file_get_contents($this->cache));
     }
     if(isset($_POST['git'])) {
       if(isset($git[$_POST['git']])) {
@@ -256,11 +277,7 @@ class API {
   private function gitstatus($req,$len) {
     chdir($this->path);
     chdir(dirname($req.'/'));
-    if(strlen(getcwd()) > $len+4) {
-      $project = substr(getcwd(),$len+5);
-    }else{
-      $project = '/';
-    }
+    $project = substr(getcwd(),$len+12+$this->len);
     exec('git status -sb',$e);
     $b = '';
     $s = array();
@@ -295,13 +312,11 @@ class API {
         if($v == $_POST['file']) $valid = true;
       }
       if($valid) {
-        $prefix = '../src/';
-        unlink($prefix.'.git');
-        if($_POST['project'] == '/') $prefix = '..';
+        $this->cache();
         $this->path = dirname(__FILE__);
         $len = strlen(dirname(getcwd()));
         chdir($this->path);
-        chdir($prefix.$_POST['project']);
+        chdir($this->prefix.$_POST['project']);
         exec('git add '.$_POST['file']);
         $res = true;
       }
@@ -317,13 +332,11 @@ class API {
         if($v == $_POST['file']) $valid = true;
       }
       if($valid) {
-        $prefix = '../src/';
-        unlink($prefix.'.git');
-        if($_POST['project'] == '/') $prefix = '..';
+        $this->cache();
         $this->path = dirname(__FILE__);
         $len = strlen(dirname(getcwd()));
         chdir($this->path);
-        chdir($prefix.$_POST['project']);
+        chdir($this->prefix.$_POST['project']);
         exec('git reset HEAD "'.$_POST['file'].'"');
         $res = true;
       }
@@ -334,13 +347,11 @@ class API {
     $res = false;
     $status = $this->status();
     if(isset($status[$_POST['project']])) {
-      $prefix = '../src/';
-      unlink($prefix.'.git');
-      if($_POST['project'] == '/') $prefix = '..';
+      $this->cache();
       $this->path = dirname(__FILE__);
       $len = strlen(dirname(getcwd()));
       chdir($this->path);
-      chdir($prefix.$_POST['project']);
+      chdir($this->prefix.$_POST['project']);
       exec('git pull origin '.$status[$_POST['project']]['b']);
       $res = true;
     }
@@ -352,13 +363,11 @@ class API {
     if(isset($status[$_POST['project']])) {
       $count = count($status[$_POST['project']]['s']);
       if($count) {
-        $prefix = '../src/';
-        unlink($prefix.'.git');
-        if($_POST['project'] == '/') $prefix = '..';
+        $this->cache();
         $this->path = dirname(__FILE__);
         $len = strlen(dirname(getcwd()));
         chdir($this->path);
-        chdir($prefix.$_POST['project']);
+        chdir($this->prefix.$_POST['project']);
         $msg = 'Update ';
         if($count>1) {
           $msg .= $count.' files';
