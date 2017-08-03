@@ -1,170 +1,51 @@
-<!DOCTYPE html><html lang="en">
-<head>
+<!DOCTYPE html>
+<html>
+  <head>
+		<title>OS</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="favicon.ico" rel="icon" type="image/x-icon">
-  <title>OS</title>
-  <meta charset="utf-8">
-  <style>
-    body { padding-top: 50px; overflow:hidden;}
-    td, th { text-align:center; }
-    thead th a { display:block; }
-    thead th a:hover, thead th a:focus { text-decoration:none; }
-    table { background: #fff; }
-    .light { background: #a7b9e9; }
-    .dark { background: #5a69ac; }
-    .black { color: #000; }
-    .white { color: #fff; }
-    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th { border-top:0px; }
-  </style>
-  <script src="js/jquery.min.js"></script>
-	<script>
-    var app = localStorage.index
-      , mon = ["January","February","March","April","May","June","July","August","September","October","November","December"]
-      , day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-      ;
-		function startTime() {
-			var d = new Date()
-        , h = (( d.getHours() + 11) % 12 + 1)
-			  , m = d.getMinutes()
-			  , o = (60 - d.getSeconds())*1000
-			  , m = checkTime(m)
-			  , t = setTimeout(startTime, o)
-        , a = (d.getHours() < 12 ? "AM" : "PM")
-        , c = h+":"+m+" "+a
-        ;
-      $("#date").html(day[d.getDay()]+", "+mon[d.getMonth()]+" "+d.getDate()+" "+d.getFullYear());
-      today(d);
-      $("#clock").html(c);
-      document.title = c;
-		}
-		function checkTime(i) { return (i < 10 ? i = "0" + i : i); }
-    function buildCal() {
-      var t = new Date();
-      if(app == null) {
-        app = {"m":t.getMonth(),"y":t.getFullYear()};
-        localStorage.index = JSON.stringify(app);
-      }else{
-        if(typeof app === 'string') app = JSON.parse(app);
-      }
-      var first = new Date(app.y, app.m, 1).getDay()
-        , last = new Date(app.y, app.m+1, 0).getDate()
-        , html = "<tr>"
-        , c = 0
-        ;
-      $("#title").html(mon[app.m]+" "+app.y);
-      for(i=0;i<first;i++) {
-        html+= "<td></td>";
-        c++;
-      }
-      for(i=1;i<=last;i++) {
-        if(c%7==0) {
-          html+="</tr><tr>";
-        }
-        html+= "<td id='day-"+app.y+"-"+app.m+"-"+i+"'>"+i+"</td>";
-        c++;
-      }
-      for(i=0;i<6;i++) {
-        if(c%7==0) {
-          html+="</tr>";
-          continue;
-        }
-        html+= "<td></td>";
-        c++;
-      }
-      $("#calendar tbody").html(html);
-      today(t);
-    }
-    function prev() {
-      if(app.m == 0) {
-        app.m = 11;
-        app.y--;
-      }else{
-        app.m--;
-      }
-      localStorage.index = JSON.stringify(app);
-      buildCal();
-    }
-    function curr() {
-			var t = new Date();
-      app = {"m":t.getMonth(),"y":t.getFullYear()};
-      localStorage.index = JSON.stringify(app);
-      buildCal();
-    }
-    function next() {
-      if(app.m == 11) {
-        app.m = 0;
-        app.y++;
-      }else{
-        app.m++;
-      }
-      localStorage.index = JSON.stringify(app);
-      buildCal();
-    }
-    function today(req) {
-      $("table#calendar td").removeClass("info");
-      $("#day-"+req.getFullYear()+"-"+req.getMonth()+"-"+req.getDate()).addClass("info");
-    }
-    $(document).ready(function() {
-      buildCal();
-      var app = {
-        "AUDIO": {"h":"audio.php","i":"music"},
-        "VIDEO": {"h":"video.php","i":"film"},
-        "DB": {"h":"db.php","i":"hdd"},
-        "EDIT": {"h":"editor.php","i":"pencil"},
-        "POST": {"h":"post.php","i":"send"},
-        "SSH": {"h":"ssh.php","i":"console"},
-        "GIT": {"h":"git.php","i":"star"},
-        "CHESS": {"h":"chess.html","i":"queen"},
-        "PLAY": {"h":"play.php","i":"play"},
-      };
-      startTime();
-      $.each(app,function(k,v) {
-        var html = "<li><a href='"+v.h+"' target='_blank' class='navbar-brand'>"
-          + "<span class='glyphicon glyphicon-"+v.i+"'></span> "
-          + "<span class='hidden-xs'>" + k + "</span>"
-          ;
-        $(".navbar .nav").append(html);
-      });
-    });
-	</script>
-</head>
-<body>
-  <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-      <ul class="nav navbar-nav"></ul>
-    </div>
-  </nav>
-  <div class="jumbotron">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-6">
-          <h2 id="date" class="text-center"></h2>
-          <h1 id="clock" class="text-center"></h1>
-        </div>
-        <div class="col-sm-6">
-          <table id="calendar" class="table table-bordered">
-            <thead>
-              <tr>
-                <th colspan="2"><a href="javascript:prev();"><span class="glyphicon glyphicon-menu-left"></span></a></th>
-                <th colspan="3"><a href="javascript:curr();"><span class="glyphicon glyphicon-calendar"></span> <span id="title"></span></a></th>
-                <th colspan="2"><a href="javascript:next();"><span class="glyphicon glyphicon-menu-right"></span></a></th>
-              </tr>
-              <tr>
-                <th>S<span class="hidden-xs hidden-sm">un</span></th>
-                <th>M<span class="hidden-xs hidden-sm">on</span></th>
-                <th>T<span class="hidden-xs hidden-sm">ue</span></th>
-                <th>W<span class="hidden-xs hidden-sm">ed</span></th>
-                <th>T<span class="hidden-xs hidden-sm">hu</span></th>
-                <th>F<span class="hidden-xs hidden-sm">ri</span></th>
-                <th>S<span class="hidden-xs hidden-sm">at</span></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</body></html>
+  <link href="css/style.css" rel="stylesheet">
+  <link href="ico/editor.ico" rel="icon" type="image/x-icon">
+  </head>
+  <body>
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="slide-nav">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-toggle"> 
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+				</div>
+				<div id="slidemenu">
+					<form class="navbar-form navbar-right" role="form" id="search" method="POST" >
+						<input type="hidden" name="req" value="search" />
+						<div class="form-group has-feedback">
+							<input type="text" id="q" name="q" class="form-control" placeholder="Search" />
+							<span class="glyphicon glyphicon-search form-control-feedback"></span>
+						</div>
+					</form>
+					<ul class="nav navbar-nav">
+						<li><a class="navbar-brand" target="" href="#home"><span class="glyphicon glyphicon-home"></span> <span class="hidden-sm hidden-md">HOME</span></a></li>
+						<li><a class="navbar-brand" target="" href="#login"><span class="glyphicon glyphicon-user"></span> <span class="hidden-sm hidden-md">LOGIN</span></a></li>
+						<li><a class="navbar-brand" target="_blank" href="audio.php"><span class="glyphicon glyphicon-music"></span> <span class="hidden-sm">AUDIO</span></a></li>
+						<li><a class="navbar-brand" target="_blank" href="video.php"><span class="glyphicon glyphicon-film"></span> <span class="hidden-sm">VIDEO</span></a></li>
+						<li><a class="navbar-brand" target="_blank" href="db.php"><span class="glyphicon glyphicon-hdd"></span> <span class="hidden-sm">DB</span></a></li>
+						<li><a class="navbar-brand" target="_blank" href="editor.php"><span class="glyphicon glyphicon-pencil"></span> <span class="hidden-sm">EDIT</span></a></li>
+						<li><a class="navbar-brand" target="_blank" href="post.php"><span class="glyphicon glyphicon-send"></span> <span class="hidden-sm">POST</span></a></li>
+						<li><a class="navbar-brand" target="_blank" href="ssh.php"><span class="glyphicon glyphicon-console"></span> <span class="hidden-sm">SSH</span></a></li>
+						<li><a class="navbar-brand" target="_blank" href="git.php"><span class="glyphicon glyphicon-star"></span> <span class="hidden-sm">GIT</span></a></li>
+						<li><a class="navbar-brand" target="_blank" href="chess.html"><span class="glyphicon glyphicon-queen"></span> <span class="hidden-sm">CHESS</span></a></li>
+					</ul>
+				</div>
+			</div>
+ 		</div>
+    <div id="app"></div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/mustache.min.js"></script>
+    <script src="js/script.js"></script>
+  </body>
+</html>
