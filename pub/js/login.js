@@ -32,7 +32,7 @@ $(document).ready(function() {
           updateCookie("t",req.token);
           var p = req.token.split(".");
           var u = $.parseJSON(atob(p[0]));
-          $("#profile .user").html(u.User);
+          $("#profile .user").html("<a target='_blank' href='/~"+u.User+"/'>"+u.User+"</a>");
         }
         if(req.pub) {
           $("#profile .pub").html("<span>"+req.pub+"</span>");
