@@ -27,7 +27,7 @@ $(document).ready(function() {
         });
       });
       function profile(req) {
-        app("profile")
+        page("profile")
         if(req.token) {
           updateCookie("t",req.token);
           var p = req.token.split(".");
@@ -39,10 +39,10 @@ $(document).ready(function() {
         }
       }
       function login() {
-        app("login");
+        page("login");
         $("#u").focus();
       }
-      function app(req) {
+      function page(req) {
         $(".body-panel > div").addClass("hidden");
         $("#"+req).removeClass("hidden");
       }
@@ -102,4 +102,3 @@ $(document).ready(function() {
         createCookie(n,v,d);
       }
       function deleteCookie(n) { createCookie(n,"",-1); }
-
