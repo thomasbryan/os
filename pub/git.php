@@ -173,8 +173,9 @@
         var shrapnel = req.f.split("/")
           , last = (shrapnel.length - 1)
           , name = (shrapnel[last].length > 10 ? shrapnel[last].substr(0,7)+"...":shrapnel[last]) 
+          , last = last - 1
+          , name = (name.length == 0 ?  "<span class='glyphicon glyphicon-folder-open'></span> "+(shrapnel[last].length > 10 ? shrapnel[last].substr(0,7)+"...":shrapnel[last]) : name)
           ;
-        if(name.length == 0) name = "<span class='glyphicon glyphicon-folder-open'></span>";
         return "<a href='javascript:void(0);' class='col-xs-12 "+req.c+" btn btn-"+req.t+" btn-xs' data-file='"+req.f+"' title='"+req.f+"'><span class='pull-left glyphicon glyphicon-"+req.a+"'></span> <span class=''>"+name+"</span></a><br>";
       }
     </script>

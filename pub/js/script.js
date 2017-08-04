@@ -13,7 +13,7 @@ function state(req) {
     case "#ssh":
     case "#video":
     case "#home":break;
-    default: req = "#home"; break;
+    default: req = "#home"; history.pushState(null,null,req); break;
   }
   var uri = req.split("#");
   app.app = uri[1];
