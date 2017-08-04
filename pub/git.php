@@ -49,7 +49,7 @@
         action("push&project="+$(this).closest(".project").data("project")+"&email="+$("#e").val()+"&name="+$("#n").val());
       });
       $(document).on("click",".d",function(e) {
-        action("pull");
+        action("pull&project="+$(this).closest(".project").data("project"));
       });
       $(document).on("click",".diff",function(e) {
         var project = $(this).closest(".project").data("project");

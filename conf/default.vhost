@@ -11,5 +11,10 @@ server {
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     fastcgi_pass  unix:/run/php/php7.0-fpm.sock;
   }
+  location ~ ^/~(.+?)(/.*)?$ {
+    alias /var/www/src/users/$1$2;
+    index  index.html index.htm;
+    autoindex on;
+  }
   allow all;
 }
