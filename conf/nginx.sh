@@ -2,7 +2,12 @@
   prod="/etc/nginx/conf.d/"
   stage="/var/www/src/"
   conf="projects.vhost"
-  touch $prod$conf $stage$conf
+  if [! -f $prod$conf ];then 
+    touch $prod$conf
+  fi
+  if [! -f $stage$conf ];then 
+    touch $stage$conf
+  fi
   # check changes production and stage config
   diff $prod$conf $stage$conf > /dev/null
   if [ $? -eq 1 ];then
@@ -39,4 +44,4 @@
       echo `date +"[%d/%b/%Y:%H:%M:%S] success"` >> $cache"log"
       /etc/init.d/nginx reload
     fi
-  fi 
+  fi
