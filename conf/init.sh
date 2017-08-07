@@ -17,6 +17,9 @@ chmod 0600 $conf
 
 chown -R www-data:www-data $ssh
 
+mkdir /var/www/.cache/
+chown -R www-data:www-data /var/www/.cache/
+
 mkdir /var/www/src/audio/
 mkdir /var/www/src/users/
 mkdir /var/www/src/repos/

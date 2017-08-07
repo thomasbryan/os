@@ -534,14 +534,20 @@
     if(!empty($url) ) {
       exec($p.'youtube-dl --get-id '.$url,$id,$ret);
       if(!$ret) {
-        if(file_exists($this->p.$this->m)) $meta = json_decode(file_get_contents($this->p.$this->m),true);
-        $meta[$id] = $n;
-        file_put_contents($this->p.$this->m,json_encode($meta));
-        chdir($this->p);
-        $res = exec($p.'youtube-dl -w -x --id --audio-format mp3 '.$url);
-        chmod($id.'.mp3',0666);
-        chdir($this->d);
-        $res = $this->refresh();
+        if(count($id) == 1) {
+          if(file_exists($this->p.$this->m)) $meta = json_decode(file_get_contents($this->p.$this->m),true);
+          $meta[$id[0]] = $n;
+          file_put_contents($this->p.$this->m,json_encode($meta));
+          chdir($this->p);
+          exec($p.'youtube-dl -w -x --id --audio-format mp3 '.$url,$dl,$err);
+          if(!$err) {
+            chmod($id[0].'.mp3',0666);
+            chdir($this->d);
+            $res = $this->refresh();
+          }
+        }else{
+          echo 'Multiple IDs: Playlist?';
+        }
       }else{
         if(empty($p)) $res = $this->install($url,$n);
       }
