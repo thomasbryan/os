@@ -1,19 +1,28 @@
 <script id="tpl-greeting" type="text/html">
-<h2>Audio</h2>
-<dl>
-<dt>Name</dt>
-<dd>{{name}}</dd>
-<dt>Time</dt>
-<dd>{{timeNow}}</dd>
-</dl>
-<h3>
-<a href="javascript:void(0);"><span class="glyphicon glyphicon-home"></span></a>
-<a href="javascript:audioplay();"><span class="glyphicon glyphicon-play"></span></a>
-<a href="javascript:void(0);"><span class="glyphicon glyphicon-pause"></span></a>
-<a href="javascript:void(0);"><span class="glyphicon glyphicon-next"></span></a>
-<a href="javascript:void(0);"><span class="glyphicon glyphicon-shuffle"></span></a>
-<a href="javascript:void(0);"><span class="glyphicon glyphicon-volume-down"></span></a>
-<a href="javascript:void(0);"><span class="glyphicon glyphicon-volume-up"></span></a>
-<a href="javascript:void(0);"><span class="glyphicon glyphicon-list"></span></a>
-</h3>
+<div class="container-fluid audio">
+  <div class="row-fluid">
+    <div id="controls" class="col-xs-12">
+        <a href="javascript:audioplay();"><span class="glyphicon glyphicon-play"></span></a>
+        <a href="javascript:void(0);"><span class="glyphicon glyphicon-pause"></span></a>
+        <a href="javascript:void(0);"><span class="glyphicon glyphicon-forward"></span></a>
+        <a href="javascript:void(0);"><span class="glyphicon glyphicon-random"></span></a>
+        <a href="javascript:void(0);"><span class="glyphicon glyphicon-volume-down"></span></a>
+        <a href="javascript:void(0);"><span class="glyphicon glyphicon-volume-up"></span></a>
+        <a href="javascript:void(0);"><span class="glyphicon glyphicon-list"></span></a>
+    </div>
+  </div>
+  <div id="lists" class="row-fluid">
+    <div class="col-sm-8">
+      <h5></h5>
+      <div id="r" class="list-group"></div>
+    </div>
+    <div class="col-sm-4">
+      <h5><span class="glyphicon glyphicon-list"></span> <span id="playlist"></span></h5>
+      <div id="p" class="list-group"></div>
+    </div>
+  </div>
+</div>
+<nav class="navbar navbar-default navbar-fixed-bottom">
+  <div id="tl"><div id="t" class="navbar-inverse"></div><span id="l"></span></div>
+</nav>
 </script>
