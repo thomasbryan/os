@@ -18,12 +18,12 @@ function state(req) {
   var uri = req.split("#");
   app.app = uri[1];
   $.getScript("js/"+uri[1]+".js");
+  $("#slidemenu ul.nav li").removeClass("active");
+  $("#slidemenu ul.nav ."+uri[1]).addClass("active");
   if($(".navbar-toggle").hasClass("slide-active")) $(".navbar-toggle").click();
 }
 $(document).on("submit","form",function(e) {
   e.preventDefault();
-  console.log("something to do with the app i am on.");
-  console.log(app.app);
 });
 
 $(document).ready(function () {
@@ -38,6 +38,9 @@ $(document).ready(function () {
   var slidewidth = '80%';
   var menuneg = '-100%';
   var slideneg = '-80%';
+  if($("#slidemenu").height() > $(window).height())
+    $(".navbar.navbar-fixed-top.slide-active").css({"position":"fixed"});
+
   $("#slide-nav").on("click", toggler, function (e) {
     var selected = $(this).hasClass('slide-active');
     $('#slidemenu').stop().animate({

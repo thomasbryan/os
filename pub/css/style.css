@@ -1,6 +1,3 @@
-#app {
-  padding-top: 70px;
-}
 /* adjust body when menu is open */
 body.slide-active {
     overflow-x: hidden
@@ -133,6 +130,7 @@ body.slide-active {
 	}
 }
 
+#app > .home.jumbotron { margin-top:-20px; }
 #app > .home td, th { text-align:center; }
 #app > .home thead th a { display:block; }
 #app > .home thead th a:hover, thead th a:focus { text-decoration:none; }
@@ -148,6 +146,10 @@ body.slide-active {
 #app > .home .table>thead>tr>td,
 #app > .home .table>thead>tr>th 
 { border-top:0px; }
+
+#app > .audio #controls { margin-top: -20px; position: fixed; z-index: 100;height: 40px; line-height: 40px; background:#fff; font-size: 18px; }
+#app > .audio #controls > a { margin-right: 15px; }
+#app > .audio #lists { margin-bottom: 70px; }
 
       //body { padding: 70px 0; overflow: hidden; }
       //.form-group { margin: 9px; }
