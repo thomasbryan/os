@@ -260,9 +260,11 @@
           data: app
         }).done(function(res) {
           var stale = false;
-          $.each($("#p a"),function(k,v) {
-            if($(this).data("f") == res.f) stale = true;
-          });
+          if(res.c > $("#p a").length) {
+            $.each($("#p a"),function(k,v) {
+              if($(this).data("f") == res.f) stale = true;
+            });
+          }
           if(stale) {
             fo();
           }else{
@@ -637,7 +639,7 @@
         return $this->fetch($req,$id,$l);
       }
       if(file_exists($this->p.$this->m)) $meta=json_decode(file_get_contents($this->p.$this->m),true);
-      $res = array('f' => $id, 'n' => (isset($meta[$mp3[$id]]) ? $meta[$mp3[$id]] : $mp3[$id]));
+      $res = array('c'=>count($mp3),'f' => $id, 'n' => (isset($meta[$mp3[$id]]) ? $meta[$mp3[$id]] : $mp3[$id]));
     }
     return $res;
   }
