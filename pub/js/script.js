@@ -22,8 +22,9 @@ function state(req) {
   $("#slidemenu ul.nav ."+uri[1]).addClass("active");
   if($(".navbar-toggle").hasClass("slide-active")) $(".navbar-toggle").click();
 }
-$(document).on("submit","form",function(e) {
+$(document).on("submit","form#search",function(e) {
   e.preventDefault();
+  console.log(app.app);
 });
 
 $(document).ready(function () {
@@ -66,3 +67,16 @@ $(document).ready(function () {
     }
   });
 });
+function action(req) {
+  //if req.req
+  $.ajax({
+    type: "POST",
+    url: "/api.php?app="+app.app,
+    data: req.req
+  }).done(function(res) {
+    //if req.done
+    window[req.done](res);
+    console.log(res);
+  }).fail(function() {
+  });
+}

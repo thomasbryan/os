@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  action({"req":"","done":"audioplay"});
     console.log("audio initialize.");
     var templateData = {
       "playlist": [
@@ -7,36 +8,6 @@ $(document).ready(function() {
     $.get("htm/audio.htm", function(templates) {
       var template = $(templates).filter('#tpl-greeting').html();
       $("#app").html(Mustache.render(template, templateData));
-$("#p").html(
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"+
-"<a class='list-group-item'>a</a>"
-      );
     });
 });
 function audioplay() {

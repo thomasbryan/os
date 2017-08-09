@@ -1,3 +1,4 @@
+.form-group { margin: 9px; }
 /* adjust body when menu is open */
 body.slide-active {
     overflow-x: hidden
@@ -70,7 +71,6 @@ body.slide-active {
 	    position: absolute;
 	    padding-left: 0;
 	    z-index: 2;
-	    top: -8px;
 	    margin: 0;
 	}
 	#slide-nav #slidemenu .navbar-nav {
@@ -149,7 +149,7 @@ body.slide-active {
 
 #app > .audio #controls { margin-top: -20px; position: fixed; z-index: 100;height: 40px; line-height: 40px; background:#fff; font-size: 18px; }
 #app > .audio #controls > a { margin-right: 15px; }
-#app > .audio #lists { margin-bottom: 70px; }
+#app > .audio #lists { margin-top: 20px;margin-bottom: 70px; }
 
       //body { padding: 70px 0; overflow: hidden; }
       //.form-group { margin: 9px; }
