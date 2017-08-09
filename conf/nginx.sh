@@ -2,10 +2,10 @@
   prod="/etc/nginx/conf.d/"
   stage="/var/www/src/"
   conf="projects.vhost"
-  if [! -f $prod$conf ];then 
+  if [ ! -f $prod$conf ];then 
     touch $prod$conf
   fi
-  if [! -f $stage$conf ];then 
+  if [ ! -f $stage$conf ];then 
     touch $stage$conf
   fi
   # check changes production and stage config
