@@ -18,6 +18,7 @@ function state(req) {
   var uri = req.split("#");
   app.app = uri[1];
   $.getScript("js/"+uri[1]+".js");
+
   $("#slidemenu ul.nav li").removeClass("active");
   $("#slidemenu ul.nav ."+uri[1]).addClass("active");
   if($(".navbar-toggle").hasClass("slide-active")) $(".navbar-toggle").click();
@@ -67,16 +68,24 @@ $(document).ready(function () {
     }
   });
 });
-function action(req) {
-  //if req.req
+function action(data,done) {
+  if(data===undefined) data = "";
   $.ajax({
     type: "POST",
-    url: "/api.php?app="+app.app,
-    data: req.req
+    url: "api.php?app="+app.app,
+    data: data
   }).done(function(res) {
-    //if req.done
-    window[req.done](res);
-    console.log(res);
-  }).fail(function() {
+    if(done===undefined) {
+      msg(true,res);
+    }else{
+      window[done](res);
+    }
+  }).fail(function(res) {
+    msg(false,res.responseText);
   });
+}
+function msg(req,res) {
+  $("#e").removeClass("alert-success").addClass("alert-danger");
+  if(req) $("#e").removeClass("alert-danger").addClass("alert-success");
+  $("#e").html("<strong></strong> "+res+"!").show().removeClass("hidden").delay(5000).fadeOut(500);
 }

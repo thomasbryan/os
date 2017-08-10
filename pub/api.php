@@ -1,11 +1,51 @@
 <?php $api = new API();
 class API {
   function __construct() {
-    if(!isset($_GET['app'])) $_GET['app'] = '';
-    switch($_GET['app']) {
-      case 'audio': $audio = new AUDIO(); break;
-      default: header('HTTP/1.0 404 Not Found');break;
+    $res = false;
+    if($_SERVER['REQUEST_METHOD']==='POST') {
+      if(isset($_GET['app'])) {
+        # authentication required.
+        if(isset($_COOKIE)) {
+          if(isset($_COOKIE['t'])) {
+            $token = $_COOKIE['t'];
+            $key = parse_ini_file('../src/conf.ini');
+            if(isset($key['key'])) {
+              $shrapnel = explode('.',$token);
+              if(count($shrapnel) == 2) {
+                if($shrapnel[1] == base64_encode(hash_hmac('sha256',$shrapnel[0],$key['key']))) {
+                  $claim = json_decode(base64_decode($shrapnel[0]));
+                  switch($_GET['app']) {
+		    case 'audio': $res = new AUDIO(); break;
+                    case 'auth': $res = new AUTH(); break;
+		    case 'edit': $res = new EDIT(); break;
+		    case 'git': $res = new GIT(); break;
+		    case 'post': $res = new POST(); break;
+		    case 'ssh': $res = new SSH(); break;
+		    case 'video': $res = new VIDEO(); break;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }else{
+        /*
+		return token for valid user name and password.
+        */
+      }
     }
+    if($res) {
+      header('Content-type: application/json');
+      if(array_key_exists('callback', $_GET) == TRUE) {
+        $res=json_encode($res);
+        print $_GET['callback'].'('.$res.')'; 
+      }else{
+        echo json_encode($res);
+      }
+    }else{
+      http_response_code(400);
+    }
+    exit;
   }
 } #/API
 class AUDIO {
@@ -16,18 +56,7 @@ class AUDIO {
   # required: youtube-dl
   # required: libav-tools
   function __construct() {
-    if($_SERVER['REQUEST_METHOD']==='POST') {
       $res = false;
-      if(isset($_COOKIE)) {
-        if(isset($_COOKIE['t'])) {
-          $token = $_COOKIE['t'];
-          $key = parse_ini_file('../src/conf.ini');
-          if(isset($key['key'])) {
-            $shrapnel = explode('.',$token);
-            if(count($shrapnel) == 2) {
-              if($shrapnel[1] == base64_encode(hash_hmac('sha256',$shrapnel[0],$key['key']))) {
-                $claim = json_decode(base64_decode($shrapnel[0]));
-
                 $this->d = dirname(__FILE__);
                 if(!isset($_POST['req'])) $_POST['req'] = '';
                 switch($_POST['req']) {
@@ -43,13 +72,7 @@ class AUDIO {
                   case 'trash': $res = $this->trash($_POST['f']);break;
                   case 'refresh': $res = $this->refresh();break;
                 }
-              }
-            }
-          }
-        }
-      }
-      $this->json($res);
-    }
+      return $res;
   }
   private function create($req='') {
     $res = false;
@@ -281,4 +304,20 @@ class AUDIO {
     }
     exit;
   } 
-} #/AUDIO ?>
+} #/AUDIO 
+class AUTH {
+#profile: tokens, ssh keys
+#crud users
+#crud roles
+} #/AUTH
+class EDIT {
+} #/EDIT
+class GIT {
+} #/GIT
+class POST {
+} #/POST
+class SSH {
+} #/SSH
+class VIDEO {
+} #/VIDEO
+?>

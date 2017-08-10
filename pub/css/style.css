@@ -130,6 +130,10 @@ body.slide-active {
 	}
 }
 
+#e { position: fixed; right: 1em; z-index: 9000; max-width: 97%; }
+#e.alert-danger strong:before { content: "Error:"; } 
+#e.alert-success strong:before { content: "Success:"; } 
+
 #app > .home.jumbotron { margin-top:-20px; }
 #app > .home td, th { text-align:center; }
 #app > .home thead th a { display:block; }
