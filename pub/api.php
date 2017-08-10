@@ -4,7 +4,6 @@ class API {
     $res = false;
     if($_SERVER['REQUEST_METHOD']==='POST') {
       if(isset($_GET['app'])) {
-        # authentication required.
         if(isset($_COOKIE)) {
           if(isset($_COOKIE['t'])) {
             $token = $_COOKIE['t'];
@@ -15,13 +14,13 @@ class API {
                 if($shrapnel[1] == base64_encode(hash_hmac('sha256',$shrapnel[0],$key['key']))) {
                   $claim = json_decode(base64_decode($shrapnel[0]));
                   switch($_GET['app']) {
-		    case 'audio': $res = new AUDIO(); break;
+		                case 'audio': $res = new AUDIO(); break;
                     case 'auth': $res = new AUTH(); break;
-		    case 'edit': $res = new EDIT(); break;
-		    case 'git': $res = new GIT(); break;
-		    case 'post': $res = new POST(); break;
-		    case 'ssh': $res = new SSH(); break;
-		    case 'video': $res = new VIDEO(); break;
+		                case 'edit': $res = new EDIT(); break;
+		                case 'git': $res = new GIT(); break;
+		                case 'post': $res = new POST(); break;
+		                case 'ssh': $res = new SSH(); break;
+		                case 'video': $res = new VIDEO(); break;
                   }
                 }
               }
@@ -29,9 +28,11 @@ class API {
           }
         }
       }else{
+        if(isset($_POST['u']) && isset($_POST['p'])) {
         /*
-		return token for valid user name and password.
+          return token for valid user name and password.
         */
+        }
       }
     }
     if($res) {
