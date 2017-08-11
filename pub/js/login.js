@@ -12,19 +12,18 @@ $(document).ready(function() {
     });
 });
 
-      function err(req) {
-        $("#e").html("<strong>Error:</strong> "+req+"!").show().removeClass("hidden").delay(5000).fadeOut(500);
-      }
       $(document).ready(function() {
         if(window.location.href.indexOf("http://")==0) $("#w").removeClass("hidden");
+
         $.ajax({
           type: "POST",
-          url: "/auth.php"
+          url: "api.php?app=auth"
         }).done(function(res) {
           profile(res);
         }).fail(function() {
           login();
         });
+
       });
       function profile(req) {
         page("profile")
@@ -62,43 +61,16 @@ $(document).ready(function() {
           e = true;
         }
         if(e) {
-          err("Required Fields");
+          msg(false,"Required Fields");
         }else{
           $.ajax({
             type: "POST",
+            url: "api.php",
             data: "req=read&u="+u+"&p="+p
           }).done(function(res) {
             profile(res);
           }).fail(function() {
-            err("Invalid Login");
+            msg(false,"Invalid Login");
           });
         }
       });
-      function createCookie(n,v,d) {
-        var e = ""
-          , t = new Date()
-          , s = ""
-          ;
-        if(d) {
-          t.setTime(t.getTime() + (d * 24 * 60 * 60 * 1000));
-          e = "; expires=" + t.toGMTString();
-        }
-        if(window.location.href.indexOf("https://")==0) s = "secure";
-        document.cookie = encodeURIComponent(n)+"="+encodeURIComponent(v)+e+"; path=/;"+s;
-      }
-      function readCookie(n) {
-        var e = encodeURIComponent(n) + "="
-          , d = document.cookie.split(';')
-          ;
-        for(var i = 0; i < d.length; i++) {
-          var c = d[i];
-          while(c.charAt(0) === ' ') c = c.substring(1, c.length);
-          if(c.indexOf(e) === 0) return decodeURIComponent(c.substring(e.length,c.length));
-        }
-        return null;
-      }
-      function updateCookie(n,v,d) {
-        deleteCookie(n);
-        createCookie(n,v,d);
-      }
-      function deleteCookie(n) { createCookie(n,"",-1); }

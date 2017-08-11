@@ -84,6 +84,24 @@ function action(data,done) {
     msg(false,res.responseText);
   });
 }
+function user() {
+  var e = encodeURIComponent("t") + "="
+    , d = document.cookie.split(';')
+    ;
+  for(var i = 0; i < d.length; i++) {
+    var c = d[i];
+    while(c.charAt(0) === ' ') c = c.substring(1, c.length);
+    if(c.indexOf(e) === 0) {
+      var t = decodeURIComponent(c.substring(e.length,c.length)).split(".")
+        , u = $.parseJSON(atob(t[0]))
+        ;
+      return u.User;
+          //var p = req.token.split(".");
+          //var u = $.parseJSON(atob(p[0]));
+    }
+  }
+  return null;
+}
 function msg(req,res) {
   $("#e").removeClass("alert-success").addClass("alert-danger");
   if(req) $("#e").removeClass("alert-danger").addClass("alert-success");
