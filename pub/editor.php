@@ -269,7 +269,7 @@
           k = keys[i];
           switch(req[k].t) {
             default:type="file";break;
-            case "d":type = "folder-close";break;
+            case "d":type = "folder-open";break;
             case "i":type = "picture";break;
           }
           res += "<a class='list-group-item' data-n='"+req[k].n+"' data-f='"+k+"' title='"+k+"'><span class='glyphicon glyphicon-"+type+"'></span> "+(t ? k : req[k].n);
