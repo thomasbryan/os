@@ -68,7 +68,7 @@ $(document).ready(function () {
     }
   });
 });
-function action(data,done) {
+function action(data,done,fail) {
   if(data===undefined) data = "";
   $.ajax({
     type: "POST",
@@ -81,7 +81,11 @@ function action(data,done) {
       window[done](res);
     }
   }).fail(function(res) {
-    msg(false,res.responseText);
+    if(fail===undefined) {
+      msg(false,res.responseText);
+    }else{
+      window[fail]();
+    }
   });
 }
 function user() {

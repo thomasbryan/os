@@ -1,14 +1,15 @@
 <script id="tpl-greeting" type="text/html">
 <div class="container-fluid audio">
+  <div id="body"></div>
   <div class="row-fluid">
     <div id="controls" class="col-xs-12">
-        <a href="javascript:audioplay();"><span class="glyphicon glyphicon-play"></span></a>
-        <a href="javascript:void(0);"><span class="glyphicon glyphicon-pause"></span></a>
-        <a href="javascript:void(0);"><span class="glyphicon glyphicon-forward"></span></a>
-        <a href="javascript:void(0);"><span class="glyphicon glyphicon-random"></span></a>
-        <a href="javascript:void(0);"><span class="glyphicon glyphicon-volume-down"></span></a>
-        <a href="javascript:void(0);"><span class="glyphicon glyphicon-volume-up"></span></a>
-        <a href="javascript:void(0);"><span class="glyphicon glyphicon-list"></span></a>
+        <a href="javascript:pp();"><span class="glyphicon glyphicon-play"></span></a>
+        <a href="javascript:pp();"><span class="glyphicon glyphicon-pause"></span></a>
+        <a href="javascript:fo();"><span class="glyphicon glyphicon-forward"></span></a>
+        <a href="javascript:ra();"><span class="glyphicon glyphicon-random"></span></a>
+        <a href="javascript:dn();"><span class="glyphicon glyphicon-volume-down"></span></a>
+        <a href="javascript:up();"><span class="glyphicon glyphicon-volume-up"></span></a>
+        <a href="javascript:li();"><span class="glyphicon glyphicon-list"></span></a>
     </div>
   </div>
   <div id="lists" class="row-fluid">
@@ -22,7 +23,7 @@
     </div>
   </div>
 </div>
-<nav class="navbar navbar-default navbar-fixed-bottom">
+<nav class="navbar navbar-default navbar-fixed-bottom audio">
   <div id="tl"><div id="t" class="navbar-inverse"></div><span id="l"></span></div>
 </nav>
 </script>

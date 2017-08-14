@@ -12,15 +12,15 @@ class API {
               $shrapnel = explode('.',$token);
               if(count($shrapnel) == 2) {
                 if($shrapnel[1] == base64_encode(hash_hmac('sha256',$shrapnel[0],$key['key']))) {
-                  $claim = json_decode(base64_decode($shrapnel[0]));
+                  $req = json_decode(base64_decode($shrapnel[0]));
                   switch($_GET['app']) {
-		                case 'audio': $res = new AUDIO(); break;
-                    case 'auth': $res = new AUTH(); break;
-		                case 'edit': $res = new EDIT(); break;
-		                case 'git': $res = new GIT(); break;
-		                case 'post': $res = new POST(); break;
-		                case 'ssh': $res = new SSH(); break;
-		                case 'video': $res = new VIDEO(); break;
+                    case 'audio': $res = new AUDIO($req); break;
+                    case 'auth': $res = new AUTH($req); break;
+                    case 'edit': $res = new EDIT($req); break;
+                    case 'git': $res = new GIT($req); break;
+                    case 'post': $res = new POST($req); break;
+                    case 'ssh': $res = new SSH($req); break;
+                    case 'video': $res = new VIDEO($req); break;
                   }
                 }
               }
@@ -44,16 +44,22 @@ class API {
     }
     exit;
   }
+
+
 } #/API
 class AUDIO {
   private $d = '';
   private $m = 'meta';
   private $l = 'Library';
   private $p = './mp3/';
+  private $req = false;
+  public $res = false;
   # required: youtube-dl
   # required: libav-tools
-  function __construct() {
+  function __construct($req) {
       $res = false;
+      $this->res = $req;
+      return $this->res;
                 $this->d = dirname(__FILE__);
                 if(!isset($_POST['req'])) $_POST['req'] = '';
                 switch($_POST['req']) {
@@ -305,7 +311,7 @@ class AUDIO {
 class AUTH {
   private $conf = '../src/conf.ini';
   private $auth = array();
-  function __construct() {
+  function __construct($req) {
       //set auth key ???
       $res = false;
       if(file_exists($this->conf)) {

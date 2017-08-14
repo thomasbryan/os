@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  //
     var templateData = {
       "name":"thomas",
       "timeNow":"now",
@@ -28,7 +29,6 @@ $(document).ready(function() {
       function profile(req) {
         page("profile")
         if(req.token) {
-          updateCookie("t",req.token);
           var p = req.token.split(".");
           var u = $.parseJSON(atob(p[0]));
           $("#profile .user").html("<a target='_blank' href='/~"+u.User+"/'>"+u.User+"</a>");
@@ -74,3 +74,31 @@ $(document).ready(function() {
           });
         }
       });
+      function createCookie(n,v,d) {
+        var e = ""
+          , t = new Date()
+          , s = ""
+          ;
+        if(d) {
+          t.setTime(t.getTime() + (d * 24 * 60 * 60 * 1000));
+          e = "; expires=" + t.toGMTString();
+        }
+        if(window.location.href.indexOf("https://")==0) s = "secure";
+        document.cookie = encodeURIComponent(n)+"="+encodeURIComponent(v)+e+"; path=/;"+s;
+      }
+      function readCookie(n) {
+        var e = encodeURIComponent(n) + "="
+          , d = document.cookie.split(';')
+          ;
+        for(var i = 0; i < d.length; i++) {
+          var c = d[i];
+          while(c.charAt(0) === ' ') c = c.substring(1, c.length);
+          if(c.indexOf(e) === 0) return decodeURIComponent(c.substring(e.length,c.length));
+        }
+        return null;
+      }
+      function updateCookie(n,v,d) {
+        deleteCookie(n);
+        createCookie(n,v,d);
+      }
+      function deleteCookie(n) { createCookie(n,"",-1); }
