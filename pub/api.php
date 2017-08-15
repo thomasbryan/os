@@ -58,23 +58,21 @@ class AUDIO {
   # required: libav-tools
   function __construct($req) {
       $res = false;
-      $this->res = $req;
-      return $this->res;
-                $this->d = dirname(__FILE__);
-                if(!isset($_POST['req'])) $_POST['req'] = '';
-                switch($_POST['req']) {
-                  default: $res = $this->fetch((isset($_POST['s'])?$_POST['s']:''),(isset($_POST['f'])?$_POST['f']:''),(isset($_POST['l'])?$_POST['l']:''));break;
-                  case 'create': $res = $this->create($_POST['l']);break;
-                  case 'update': $res = $this->update($_POST['f'],$_POST['l']);break;
-                  case 'delete': $res = $this->delete($_POST['l']);break;
-                  case 'download': $res = $this->download($_POST['d'],$_POST['q']);break;
-                  case 'list': $res = $this->files($this->p,false);break;
-                  case 'search': $res = $this->search($_POST['q']);break;
-                  case 'edit': $res = $this->edit($_POST['n'],$_POST['f']);break;
-                  case 'google': $res = $this->google($_POST['y']);break;
-                  case 'trash': $res = $this->trash($_POST['f']);break;
-                  case 'refresh': $res = $this->refresh();break;
-                }
+      $this->d = dirname(__FILE__);
+      if(!isset($_POST['req'])) $_POST['req'] = '';
+      switch($_POST['req']) {
+        default: $res = $this->fetch((isset($_POST['s'])?$_POST['s']:''),(isset($_POST['f'])?$_POST['f']:''),(isset($_POST['l'])?$_POST['l']:''));break;
+        case 'create': $res = $this->create($_POST['l']);break;
+        case 'update': $res = $this->update($_POST['f'],$_POST['l']);break;
+        case 'delete': $res = $this->delete($_POST['l']);break;
+        case 'download': $res = $this->download($_POST['d'],$_POST['q']);break;
+        case 'list': $res = $this->files($this->p,false);break;
+        case 'search': $res = $this->search($_POST['q']);break;
+        case 'edit': $res = $this->edit($_POST['n'],$_POST['f']);break;
+        case 'google': $res = $this->google($_POST['y']);break;
+        case 'trash': $res = $this->trash($_POST['f']);break;
+        case 'refresh': $res = $this->refresh();break;
+      }
       return $res;
   }
   private function create($req='') {

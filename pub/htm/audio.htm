@@ -1,15 +1,26 @@
-<script id="tpl-greeting" type="text/html">
+<script id="tpl-audio" type="text/html">
 <div class="container-fluid audio">
   <div id="body"></div>
-  <div class="row-fluid">
-    <div id="controls" class="col-xs-12">
+  <div class="row">
+    <div id="controls" class="col-sm-12">
+    <table class="table table-bordered">
+    <tr>
+    <th>
         <a href="javascript:pp();"><span class="glyphicon glyphicon-play"></span></a>
         <a href="javascript:pp();"><span class="glyphicon glyphicon-pause"></span></a>
+        </th><th>
         <a href="javascript:fo();"><span class="glyphicon glyphicon-forward"></span></a>
+        </th><th>
         <a href="javascript:ra();"><span class="glyphicon glyphicon-random"></span></a>
+        </th><th>
         <a href="javascript:dn();"><span class="glyphicon glyphicon-volume-down"></span></a>
+        </th><th>
         <a href="javascript:up();"><span class="glyphicon glyphicon-volume-up"></span></a>
+        </th><th>
         <a href="javascript:li();"><span class="glyphicon glyphicon-list"></span></a>
+        </th>
+        </tr>
+        </table>
     </div>
   </div>
   <div id="lists" class="row-fluid">
@@ -26,4 +37,11 @@
 <nav class="navbar navbar-default navbar-fixed-bottom audio">
   <div id="tl"><div id="t" class="navbar-inverse"></div><span id="l"></span></div>
 </nav>
+</script>
+<script id="tpl-audio-results" type="text/html">
+  <a class="g list-group-item" data-f="{{f}}" data-n="{{n}}" data-t="0">{{n}}
+  <button class="update btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Playlist</button>
+  <button class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
+  </a>
+
 </script>
