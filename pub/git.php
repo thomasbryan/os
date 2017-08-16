@@ -91,7 +91,7 @@
         }
         $("#n").val(app.name);
         $("#e").val(app.email);
-        buildstatus();
+        action("cache");
       });
       function action(req) {
         $.ajax({
