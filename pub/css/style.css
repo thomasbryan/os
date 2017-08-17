@@ -152,7 +152,8 @@ body.slide-active {
 { border-top:0px; }
 #app > .audio { margin-top: -1em; }
 #app > .audio #controls { position: fixed; z-index: 100;height: 40px; line-height: 40px; background:#fff; font-size: 18px; }
-#app > .audio #controls > a { margin-right: 15px; color: #9d9d9d; }
+#app > .audio #controls > a { margin-right: 15px; }
+#app > .audio #controls a { color: #9d9d9d;}
 #app > .audio #lists { margin-top: 40px;margin-bottom: 70px; }
 
 #app > .audio button.update { margin-left: 1em; }
