@@ -3,24 +3,15 @@
   <div id="body"></div>
   <div class="row">
     <div id="controls" class="col-sm-12">
-    <table class="table table-bordered">
-    <tr>
-    <th>
-        <a href="javascript:pp();"><span class="glyphicon glyphicon-play"></span></a>
-        <a href="javascript:pp();"><span class="glyphicon glyphicon-pause"></span></a>
-        </th><th>
-        <a href="javascript:fo();"><span class="glyphicon glyphicon-forward"></span></a>
-        </th><th>
-        <a href="javascript:ra();"><span class="glyphicon glyphicon-random"></span></a>
-        </th><th>
-        <a href="javascript:dn();"><span class="glyphicon glyphicon-volume-down"></span></a>
-        </th><th>
-        <a href="javascript:up();"><span class="glyphicon glyphicon-volume-up"></span></a>
-        </th><th>
-        <a href="javascript:li();"><span class="glyphicon glyphicon-list"></span></a>
-        </th>
-        </tr>
-        </table>
+			<div class="col-sm-12 btn-group" role="group" aria-label="...">
+        <button type="button" class="col-sm-2 btn btn-default" onclick="javascript:pp();"><span class="glyphicon glyphicon-play"></span></button>
+        <button type="button" class="col-sm-2 btn btn-default" onclick="javascript:pp();"><span class="glyphicon glyphicon-pause"></span></button>
+        <button type="button" class="col-sm-2 btn btn-default" onclick="javascript:fo();"><span class="glyphicon glyphicon-forward"></span></button>
+        <button type="button" class="col-sm-2 btn btn-default" onclick="javascript:ra();"><span class="glyphicon glyphicon-random"></span></button>
+        <button type="button" class="col-sm-2 btn btn-default" onclick="javascript:dn();"><span class="glyphicon glyphicon-volume-down"></span></button>
+        <button type="button" class="col-sm-2 btn btn-default" onclick="javascript:up();"><span class="glyphicon glyphicon-volume-up"></span></button>
+        <button type="button" class="col-sm-2 btn btn-default" onclick="javascript:li();"><span class="glyphicon glyphicon-list"></span></button>
+			</div>
     </div>
   </div>
   <div id="lists" class="row-fluid">
@@ -43,5 +34,4 @@
   <button class="update btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Playlist</button>
   <button class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
   </a>
-
 </script>
