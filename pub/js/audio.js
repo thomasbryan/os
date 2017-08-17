@@ -190,8 +190,8 @@ function fodone(res) {
 }
 function fofail() {
   msg(false,"Failed to Initialize");
-    audio.p = false;
-    ui();
+  audio.p = false;
+  ui();
 }
 function play(req) {
   audio.f = req.f;

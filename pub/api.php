@@ -14,7 +14,7 @@ class API {
                 if($shrapnel[1] == base64_encode(hash_hmac('sha256',$shrapnel[0],$key['key']))) {
                   $req = json_decode(base64_decode($shrapnel[0]));
                   switch($_GET['app']) {
-                    case 'audio': $res = new AUDIO($req); break;
+                    case 'audio': $res = $this->audio($req); break;
                     case 'auth': $res = new AUTH($req); break;
                     case 'edit': $res = new EDIT($req); break;
                     case 'git': $res = new GIT($req); break;
@@ -28,24 +28,51 @@ class API {
           }
         }
       }else{
-        $res = new AUTH();
+        $res = new AUTH(false);
       }
     }
     if($res) {
       header('Content-type: application/json');
       if(array_key_exists('callback', $_GET) == TRUE) {
         $res=json_encode($res);
-        print $_GET['callback'].'('.$res.')'; 
+        print $_GET['callback'].'('.$this->utf8ize($res).')'; 
       }else{
-        echo json_encode($res);
+        echo json_encode($this->utf8ize($res));
       }
     }else{
       http_response_code(400);
     }
     exit;
   }
-
-
+  private function utf8ize($d) {
+    if (is_array($d)) {
+      foreach ($d as $k => $v) {
+        $d[$k] = $this->utf8ize($v);
+      }
+    } else if (is_string ($d)) {
+      return utf8_encode($d);
+    }
+    return $d;
+  }
+  private function audio($req) {
+    $res = false;
+    $audio = new AUDIO($req);
+    if(!isset($_POST['req'])) $_POST['req'] = '';
+    switch($_POST['req']) {
+      default: $res = $audio->fetch((isset($_POST['s'])?$_POST['s']:''),(isset($_POST['f'])?$_POST['f']:''),(isset($_POST['l'])?$_POST['l']:''));break;
+        case 'create': $res = $audio->create($_POST['l']);break;
+        case 'update': $res = $audio->update($_POST['f'],$_POST['l']);break;
+        case 'delete': $res = $audio->delete($_POST['l']);break;
+        case 'download': $res = $audio->download($_POST['d'],$_POST['q']);break;
+        case 'list': $res = $this->files(false);break;
+        case 'search': $res = $audio->search($_POST['q']);break;
+        case 'edit': $res = $audio->edit($_POST['n'],$_POST['f']);break;
+        case 'google': $res = $audio->google($_POST['y']);break;
+        case 'trash': $res = $audio->trash($_POST['f']);break;
+        case 'refresh': $res = $audio->refresh();break;
+    }
+    return $res;
+  }
 } #/API
 class AUDIO {
   private $d = '';
@@ -57,25 +84,10 @@ class AUDIO {
   # required: youtube-dl
   # required: libav-tools
   function __construct($req) {
-      $res = false;
-      $this->d = dirname(__FILE__);
-      if(!isset($_POST['req'])) $_POST['req'] = '';
-      switch($_POST['req']) {
-        default: $res = $this->fetch((isset($_POST['s'])?$_POST['s']:''),(isset($_POST['f'])?$_POST['f']:''),(isset($_POST['l'])?$_POST['l']:''));break;
-        case 'create': $res = $this->create($_POST['l']);break;
-        case 'update': $res = $this->update($_POST['f'],$_POST['l']);break;
-        case 'delete': $res = $this->delete($_POST['l']);break;
-        case 'download': $res = $this->download($_POST['d'],$_POST['q']);break;
-        case 'list': $res = $this->files($this->p,false);break;
-        case 'search': $res = $this->search($_POST['q']);break;
-        case 'edit': $res = $this->edit($_POST['n'],$_POST['f']);break;
-        case 'google': $res = $this->google($_POST['y']);break;
-        case 'trash': $res = $this->trash($_POST['f']);break;
-        case 'refresh': $res = $this->refresh();break;
-      }
-      return $res;
+    $this->d = dirname(__FILE__);
   }
-  private function create($req='') {
+  #TODO don't expose all functions, move to API class?
+  public function create($req='') {
     $res = false;
     if($req!=$this->l && !empty($req) && !file_exists($this->p.$req.'.json')) {
       file_put_contents($this->p.$req.'.json',json_encode(array()));
@@ -83,7 +95,7 @@ class AUDIO {
     }
     return $res;
   }
-  private function update($f='',$l='') {
+  public function update($f='',$l='') {
     $res = false;
     if($l != $this->l && !empty($l)) {
       if(file_exists($this->p.$l.'.json')) {
@@ -96,7 +108,7 @@ class AUDIO {
     }
     return $res;
   }
-  private function delete($req='') {
+  public function delete($req='') {
     $res = false;
     if($req!=$this->l && !empty($req)) {
       unlink($this->p.$req.'.json');
@@ -104,7 +116,7 @@ class AUDIO {
     }
     return $res;
   }
-  private function download($url='',$n ='',$p = '') {
+  public function download($url='',$n ='',$p = '') {
     $res = false;
     if(!empty($url) ) {
       exec($p.'youtube-dl --get-id '.$url,$id,$ret);
@@ -129,7 +141,7 @@ class AUDIO {
     }
     return $res;
   }
-  private function install($url='',$n='') {
+  public function install($url='',$n='') {
     $p = '/tmp/';
     $c = 'youtube-dl';
     if(!file_exists($p.$c)) {
@@ -150,7 +162,7 @@ class AUDIO {
     }
     return $this->download($url,$n,$p);
   }
-  private function edit($n='',$f='') {
+  public function edit($n='',$f='') {
     $res = false;
     if(file_exists($this->p.$this->l.'.json')) {
       $mp3=json_decode(file_get_contents($this->p.$this->l.'.json'),true);
@@ -163,7 +175,7 @@ class AUDIO {
     }
     return $res;
   }
-  private function search($req) {
+  public function search($req) {
     $res = false;
     if(!empty($req)) {
       $mp3 = json_decode(file_get_contents($this->p.$this->l.'.json'),true);
@@ -179,7 +191,7 @@ class AUDIO {
     }
     return $res;
   }
-  private function fetch($req=false,$id='',$l='') {
+  public function fetch($req=false,$id='',$l='') {
     $res=false;
     if(empty($l)) $l = $this->l;
     if(file_exists($this->p.$l.'.json')) {
@@ -216,7 +228,7 @@ class AUDIO {
     }
     return $res;
   }
-  private function trash($req) {
+  public function trash($req) {
     $res = false;
     if(file_exists($req)) {
       if(file_exists($this->p.$this->l.'.json')) {
@@ -232,7 +244,7 @@ class AUDIO {
     }
     return $res;
   }
-  private function google($req) {
+  public function google($req) {
     if(!empty($req)) {
       //search soundcloud as well.
       $dom = new DOMDocument('1.0');
@@ -253,11 +265,11 @@ class AUDIO {
     }
     return $res;
   }
-  private function files($req,$mp3=true) {
+  public function files($mp3=true) {
     $res = false;
-    if(is_Dir($req)) {
+    if(is_Dir($this->p)) {
       $res = array(); 
-      $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($req));
+      $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->p));
       if($mp3) {
         foreach($rii as $file) {
           if($file->isDir()|| $file->getExtension() != 'mp3') continue;
@@ -272,39 +284,15 @@ class AUDIO {
     }
     return $res;
   }
-  private function refresh() {
+  public function refresh() {
     $res = false;
-    $req=$this->files($this->p);
+    $req=$this->files();
     if($req) {
       file_put_contents($this->p.$this->l.'.json',json_encode($req));
       $res = true;
     }
     return $res;
   }
-  private function utf8ize($d) {
-    if (is_array($d)) {
-      foreach ($d as $k => $v) {
-        $d[$k] = $this->utf8ize($v);
-      }
-    } else if (is_string ($d)) {
-      return utf8_encode($d);
-    }
-    return $d;
-  }
-  private function json($req=false) {
-    if($req) {
-      header("Content-type: application/json");
-      if(array_key_exists('callback', $_GET) == TRUE){
-        $req=json_encode($req);
-        print $_GET['callback']."(".$this->utf8ize($req).")"; 
-      }else{
-        echo json_encode($this->utf8ize($req));
-      }
-    }else{
-      header('HTTP/1.0 404 Not Found');
-    }
-    exit;
-  } 
 } #/AUDIO 
 class AUTH {
   private $conf = '../src/conf.ini';
@@ -382,12 +370,12 @@ class AUTH {
           $res = $this->profile($user);
         }
       }
-      if(count($this->auth)) {
-      #if(!$res) {
-        #if($this->create()) {
-          #$res = $this->read();
-        #}
-      #}
+      if(count($this->auth)==1) {
+        if(!$res) {
+          if($this->create()) {
+            $res = $this->profile($user);
+          }
+        }
       }
     }
     return $res;
@@ -402,6 +390,7 @@ class AUTH {
       $pub = file_get_contents($ssh);
     }
     $res = array(
+      'user' => $req,
       'pub' => $pub
     );
     setcookie('t',$claim.'.'.base64_encode(hash_hmac('sha256',$claim,$this->auth['key'])),time() + 86400);
@@ -418,30 +407,6 @@ class AUTH {
     $res = false;
     return $res;
   }
-  private function utf8ize($d) {
-    if (is_array($d)) {
-      foreach ($d as $k => $v) {
-        $d[$k] = $this->utf8ize($v);
-      }
-    } else if (is_string ($d)) {
-      return utf8_encode($d);
-    }
-    return $d;
-  }
-  private function json($req=false) {
-    if($req) {
-      header("Content-type: application/json");
-      if(array_key_exists('callback', $_GET) == TRUE){
-        $req=json_encode($req);
-        print $_GET['callback']."(".$this->utf8ize($req).")"; 
-      }else{
-        echo json_encode($this->utf8ize($req));
-      }
-    }else{
-      header('HTTP/1.0 404 Not Found');
-    }
-    exit;
-  } 
 } #/AUTH
 class EDIT {
 } #/EDIT
