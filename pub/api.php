@@ -64,7 +64,7 @@ class API {
         case 'update': $res = $audio->update($_POST['f'],$_POST['l']);break;
         case 'delete': $res = $audio->delete($_POST['l']);break;
         case 'download': $res = $audio->download($_POST['d'],$_POST['q']);break;
-        case 'list': $res = $this->files(false);break;
+        case 'list': $res = $audio->files(false);break;
         case 'search': $res = $audio->search($_POST['q']);break;
         case 'edit': $res = $audio->edit($_POST['n'],$_POST['f']);break;
         case 'google': $res = $audio->google($_POST['y']);break;
