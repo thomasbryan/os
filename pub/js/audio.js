@@ -176,6 +176,7 @@ function fo() {
   action(audio,"fodone","fofail");
 }
 function fodone(res) {
+  audio.c = res.c;
   var stale = false;
   if(res.c > $("#p a").length) {
     $.each($("#p a"),function(k,v) {
@@ -243,7 +244,7 @@ function trash() {
 function playlist() {
   $("#p").prepend("<a class='list-group-item'>"+audio.n+"</a>");
   $("#p a").first().attr("data-f",audio.f).attr("data-n",audio.n);
-  if($("#p a").length > 20 ) $("#p a").last().remove();
+  if($("#p a").length > audio.c ) $("#p a").last().remove();
 }
 function ra() {
   audio.s = (audio.s ? false : true);
@@ -378,7 +379,7 @@ $(document).ready(function() {
     var template = $(templates).filter('#tpl-audio').html();
     $("#app").html(Mustache.render(template, templateData));
     if(audio == null) {
-      audio = {"f":"","l":"Library","n":"","p":false,"s":false,"t":0,"v":0.5};
+      audio = {"c":20,"f":"","l":"Library","n":"","p":false,"s":false,"t":0,"v":0.5};
       localStorage.audio = JSON.stringify(audio);
       fo();
     }else{
