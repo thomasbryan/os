@@ -1,13 +1,16 @@
 <?php $api = new API();
 class API {
+  private $conf = '../src/conf.ini';
+  private $users = array();
   function __construct() {
+    date_default_timezone_set('America/Chicago');
     $res = false;
     if($_SERVER['REQUEST_METHOD']==='POST') {
       if(isset($_GET['app'])) {
         if(isset($_COOKIE)) {
           if(isset($_COOKIE['t'])) {
             $token = $_COOKIE['t'];
-            $key = parse_ini_file('../src/conf.ini');
+            $key = parse_ini_file($this->conf);
             if(isset($key['key'])) {
               $shrapnel = explode('.',$token);
               if(count($shrapnel) == 2) {
@@ -15,7 +18,7 @@ class API {
                   $req = json_decode(base64_decode($shrapnel[0]));
                   switch($_GET['app']) {
                     case 'audio': $res = $this->audio($req); break;
-                    case 'auth': $res = new AUTH($req); break;
+                    case 'auth': $res = $this->auth(); break;
                     case 'edit': $res = new EDIT($req); break;
                     case 'git': $res = new GIT($req); break;
                     case 'post': $res = new POST($req); break;
@@ -28,7 +31,7 @@ class API {
           }
         }
       }else{
-        $res = new AUTH(false);
+        $res = $this->auth();
       }
     }
     if($res) {
@@ -73,7 +76,133 @@ class API {
     }
     return $res;
   }
+  private function auth() {
+    //set auth key ???
+    $res = false;
+    if(file_exists($this->conf)) {
+      $this->users = parse_ini_file($this->conf);
+    }else{
+      $s=str_split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+      $key='';
+      foreach(array_rand($s, 32) as $k) $key .= $s[$k];
+      $auth='[app]'."\n".'key = '.$key."\n";
+      file_put_contents($this->conf,$auth);
+      if(file_exists($this->conf)) {
+        $this->users = parse_ini_file($this->conf);
+      }
+    }
+    if(!isset($_POST['req'])) $_POST['req'] = '';
+    switch($_POST['req']) {
+      case 'logout': $res = $this->authLogout();break;
+      case 'create': $res = $this->authCreate();break;
+      default: 
+      case 'read': $res = $this->authRead();break;
+      case 'update': $res = $this->authUpdate();break;
+      case 'delete': $res = $this->authDelete();break;
+    }
+    return $res;
+  }
+  private function authCreate() {
+    // create user only or host???
+    $res = false;
+    $user = false;
+    $pass = false;
+    if(isset($_POST['u'])) $user = $_POST['u'];
+    if(isset($_POST['p'])) $pass = $_POST['p'];
+    // || valid create token 
+    if($user && $pass && (  count($this->users) == 1 )) {
+      $users = '[app]'."\n";
+      foreach($this->users as $k => $v) {
+        $users.=$k.' = '.$v."\n";
+      }
+      $users.=$user.' = '.password_hash($pass,PASSWORD_DEFAULT)."\n";
+      if(file_put_contents($this->conf,$users)) {
+        mkdir('../src/audio/'.$user,0777);
+        mkdir('../src/users/'.$user.'/public_html/',0755,true);
+        mkdir('../src/video/'.$user);
+        exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$user.' -q -N "" -C "'.$user.'"',$res);
+      }
+    }
+    return $res;
+  }
+  private function authRead() {
+    //todo consider auth test
+    $res = false;
+    $token = false;
+    if(isset($_COOKIE['t'])) $token = $_COOKIE['t'];
+    if($token) {
+      if(isset($this->users['key'])) {
+        $shrapnel = explode('.',$token);
+        if(count($shrapnel) == 2) {
+          if($shrapnel[1] == base64_encode(hash_hmac('sha256',$shrapnel[0],$this->users['key']))) {
+            $claim = json_decode(base64_decode($shrapnel[0]));
+            $res = $this->authProfile($claim->User);
+          }
+        }
+      }
+    }else{
+      $user = false;
+      $pass = false;
+      if(isset($_POST['u'])) $user = $_POST['u'];
+      if(isset($_POST['p'])) $pass = $_POST['p'];
+      if(isset($this->users[$user])&&isset($this->users['key'])) {
+        if(password_verify($pass,$this->users[$user])) {
+          $res = $this->authProfile($user);
+        }
+      }
+      if(count($this->users)==1) {
+        if(!$res) {
+          if($this->authCreate()) {
+            $res = $this->authProfile($user);
+          }
+        }
+      }
+    }
+    return $res;
+  }
+  private function authLogout() {
+    if(isset($_COOKIE['t'])) {
+      //todo clear logs.
+      setcookie('t','',0);
+      return true;
+    }
+  }
+  private function authProfile($req) {
+    if(!isset($_COOKIE['t'])) {
+      $json = array('User' => $req,'Expr' => date('U',strtotime('+1 day')));
+      $claim = base64_encode(json_encode($json));
+      file_put_contents(dirname($_SERVER['DOCUMENT_ROOT']).'/src/auth.log','['.date('Y-m-d H:i:s').'] '.$req.':'.$_SERVER['REMOTE_ADDR'].':'.str_replace(':','=',$_SERVER['HTTP_USER_AGENT'])."\n",FILE_APPEND);
+      setcookie('t',$claim.'.'.base64_encode(hash_hmac('sha256',$claim,$this->users['key'])), time() + 86400);
+    }
+
+    $pub = '';
+    $ssh = '/var/www/.ssh/'.$req.'.pub';
+    if(!file_exists($ssh)) {
+      exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$req.' -q -N "" -C "'.$req.'"',$exec);
+    }
+    if(file_exists($ssh)) {
+      $pub = file_get_contents($ssh);
+    }
+    exec('grep "'.$req.'" /var/www/src/auth.log',$logs);
+    return array(
+      'user' => $req,
+      'pub' => $pub,
+      'logs' => $logs,
+    );
+  }
+  private function authUpdate() {
+    //update password
+    //update git host ?
+    //update ???
+    $res = false;
+    return $res;
+  }
+  private function authDelete($req='') {
+    $res = false;
+    return $res;
+  }
 } #/API
+
 class AUDIO {
   private $d = '';
   private $m = 'meta';
@@ -294,120 +423,6 @@ class AUDIO {
     return $res;
   }
 } #/AUDIO 
-class AUTH {
-  private $conf = '../src/conf.ini';
-  private $auth = array();
-  function __construct($req) {
-      //set auth key ???
-      $res = false;
-      if(file_exists($this->conf)) {
-        $this->auth = parse_ini_file($this->conf);
-      }else{
-        $s=str_split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
-        $key='';
-        foreach(array_rand($s, 32) as $k) $key .= $s[$k];
-        $auth='[app]'."\n".'key = '.$key."\n";
-        file_put_contents($this->conf,$auth);
-        if(file_exists($this->conf)) {
-          $this->auth = parse_ini_file($this->conf);
-        }
-      }
-      if(!isset($_POST['req'])) $_POST['req'] = '';
-      switch($_POST['req']) {
-        case 'create': $res = $this->create();break;
-        default: 
-        case 'read': $res = $this->read(); break;
-        case 'update': $res = $this->update();break;
-        case 'delete': $res = $this->delete();break;
-      }
-      return $res;
-  }
-  private function create() {
-    // create user only or host???
-    $res = false;
-    $user = false;
-    $pass = false;
-    if(isset($_POST['u'])) $user = $_POST['u'];
-    if(isset($_POST['p'])) $pass = $_POST['p'];
-    // || valid create token 
-    if($user && $pass && (  count($this->auth) == 1 )) {
-      $users = '[app]'."\n";
-      foreach($this->auth as $k => $v) {
-        $users.=$k.' = '.$v."\n";
-      }
-      $users.=$user.' = '.password_hash($pass,PASSWORD_DEFAULT)."\n";
-      if(file_put_contents($this->conf,$users)) {
-        mkdir('../src/audio/'.$user,0777);
-        mkdir('../src/users/'.$user.'/public_html/',0755,true);
-        mkdir('../src/video/'.$user);
-        exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$user.' -q -N "" -C "'.$user.'"',$res);
-      }
-    }
-    return $res;
-  }
-  private function read() {
-    //todo consider auth test
-    $res = false;
-    $token = false;
-    if(isset($_COOKIE['t'])) $token = $_COOKIE['t'];
-    if($token) {
-      if(isset($this->auth['key'])) {
-        $shrapnel = explode('.',$token);
-        if(count($shrapnel) == 2) {
-          if($shrapnel[1] == base64_encode(hash_hmac('sha256',$shrapnel[0],$this->auth['key']))) {
-            $claim = json_decode(base64_decode($shrapnel[0]));
-            $res = $this->profile($claim->User);
-          }
-        }
-      }
-    }else{
-      $user = false;
-      $pass = false;
-      if(isset($_POST['u'])) $user = $_POST['u'];
-      if(isset($_POST['p'])) $pass = $_POST['p'];
-      if(isset($this->auth[$user])&&isset($this->auth['key'])) {
-        if(password_verify($pass,$this->auth[$user])) {
-          $res = $this->profile($user);
-        }
-      }
-      if(count($this->auth)==1) {
-        if(!$res) {
-          if($this->create()) {
-            $res = $this->profile($user);
-          }
-        }
-      }
-    }
-    return $res;
-  }
-  private function profile($req) {
-    $res = false;
-    $json = array('User' => $req,'Expr' => date('U',strtotime('+1 day')));
-    $claim = base64_encode(json_encode($json));
-    $pub = '';
-    $ssh = '/var/www/.ssh/'.$req.'.pub';
-    if(file_exists($ssh)) {
-      $pub = file_get_contents($ssh);
-    }
-    $res = array(
-      'user' => $req,
-      'pub' => $pub
-    );
-    setcookie('t',$claim.'.'.base64_encode(hash_hmac('sha256',$claim,$this->auth['key'])),time() + 86400);
-    return $res;
-  }
-  private function update() {
-    //update password
-    //update git host ?
-    //update ???
-    $res = false;
-    return $res;
-  }
-  private function delete($req='') {
-    $res = false;
-    return $res;
-  }
-} #/AUTH
 class EDIT {
 } #/EDIT
 class GIT {

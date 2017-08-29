@@ -25,4 +25,6 @@ mkdir /var/www/src/users/
 mkdir /var/www/src/repos/
 mkdir /var/www/src/video/
 
+touch /var/www/src/auth.log
+
 chown -R www-data /var/www/src/

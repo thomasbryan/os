@@ -13,30 +13,29 @@ $(document).ready(function() {
     }).done(function(res) {
       profile(res);
     }).fail(function() {
-      login();
+      page("login");
+      $("#u").focus();
     });
   });
 });
 function profile(req) {
-  page("profile")
   if(req.user) {
     $("#profile .user").html("<a target='_blank' href='/~"+req.user+"/'>"+req.user+"</a>");
-  }
-  if(req.token) {
-    var p = req.token.split(".");
-    var u = $.parseJSON(atob(p[0]));
-    $("#profile .user").html("<a target='_blank' href='/~"+u.User+"/'>"+u.User+"</a>");
   }
   if(req.pub) {
     $("#profile .pub").html("<span>"+req.pub+"</span>");
   }
-}
-function login() {
-  page("login");
-  $("#u").focus();
+  if(req.logs) {
+    var html = "";
+    $.each(req.logs,function(k,v) {
+      html += "<div>"+v+"</div>";
+    });
+    $("#profile .logs").html(html);
+  }
+  page("profile")
 }
 function page(req) {
-  $(".body-panel > div").addClass("hidden");
+  $(".panel-body > div").addClass("hidden");
   $("#"+req).removeClass("hidden");
 }
 $(document).on("submit","form#userpass",function(e) {
@@ -66,4 +65,14 @@ $(document).on("submit","form#userpass",function(e) {
       msg(false,"Invalid Login");
     });
   }
+});
+$(document).on("click","#logout",function() {
+  $.ajax({
+    type: "POST",
+    url: "api.php?app=auth",
+    data: "req=logout"
+  }).done(function(res) {
+    page("login");
+    $("#u").focus();
+  });
 });

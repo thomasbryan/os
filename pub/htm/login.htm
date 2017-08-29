@@ -15,35 +15,47 @@
             <div class="panel-body">
               <div id="login" class="hidden">
                 <form id="userpass">
-                <p class='container'>
-                <div class='row-fluid'>
-                <input type='text' id='u' class='form-control' placeholder='Username' />
+                <p class="container">
+                <div class="row-fluid">
+                <input type="text" id="u" class="form-control" placeholder="Username" />
                 </div >
                 </p >
-                <p class='container'>
-                <div class='row-fluid'>
-                <input type='password' id='p' class='form-control' placeholder='Password' />
+                <p class="container">
+                <div class="row-fluid">
+                <input type="password" id="p" class="form-control" placeholder="Password" />
                 </div >
                 </p >
-                <p class='container'>
-                <div class='row-fluid'>
-                <input type='submit' class='btn btn-primary col-xs-12' id='l' value='Login' />
+                <p class="container">
+                <div class="row-fluid">
+                <input type="submit" class="btn btn-primary col-xs-12" id="l" value="Login" />
                 </div >
                 </p ></form>
               </div>
-              <div id="profile" class="hidden table-responsive">
-                <table class="table">
-                  <tr>
-                    <th>User</th>
-                    <th><span class="glyphicon glyphicon-user"></span></th>
-                    <td class="user"></td>
-                  </tr>
-                  <tr>
-                    <th>SSH</th>
-                    <th><span class="glyphicon glyphicon-certificate"></span></th>
-                    <td class="pub"></td>
-                  </tr>
-                </table>
+              <div id="profile" class="hidden">
+                <div class="table-responsive">
+                  <table class="table">
+                    <tr>
+                      <th>User</th>
+                      <th><span class="glyphicon glyphicon-user"></span></th>
+                      <td class="user"></td>
+                    </tr>
+                    <tr>
+                      <th>SSH</th>
+                      <th><span class="glyphicon glyphicon-certificate"></span></th>
+                      <td class="pub"></td>
+                    </tr>
+                    <tr>
+                      <th>Logs</th>
+                      <th><span class="glyphicon glyphicon-list"></span></th>
+                      <td class="logs"></td>
+                    </tr>
+                  </table>
+                </div>
+                <p class="container">
+                  <div class="row-fluid">
+                    <div id="logout" class="btn btn-primary col-xs-12"> Logout <span class="glyphicon glyphicon-log-out"></span> </div>
+                  </div>
+                </p>
               </div>
             </div>
           </div>
