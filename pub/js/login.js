@@ -76,3 +76,14 @@ $(document).on("click","#logout",function() {
     $("#u").focus();
   });
 });
+$(document).on("click","#update",function() {
+  $.ajax({
+    type: "POST",
+    url: "api.php?app=auth",
+    data: "req=softwareupdate"
+  }).done(function(res) {
+    msg(true,"Software Will Update");
+  }).fail(function() {
+    msg(false,"Software Not Updated");
+  });
+});

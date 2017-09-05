@@ -93,7 +93,9 @@ class API {
     }
     if(!isset($_POST['req'])) $_POST['req'] = '';
     switch($_POST['req']) {
+      case 'softwareupdate': $res = $this->authSoftwareUpdate();break;
       case 'logout': $res = $this->authLogout();break;
+      
       case 'create': $res = $this->authCreate();break;
       default: 
       case 'read': $res = $this->authRead();break;
@@ -166,6 +168,9 @@ class API {
       setcookie('t','',0);
       return true;
     }
+  }
+  private function authSoftwareUpdate() {
+		return touch('../src/update');
   }
   private function authProfile($req) {
     if(!isset($_COOKIE['t'])) {
