@@ -206,6 +206,22 @@ class API {
     $res = false;
     return $res;
   }
+  private function git() {
+		$res = false;
+		if(!isset($_POST['req'])) $_POST['req'] = ''; 
+    switch($_POST['req']) {
+      case 'cache': $res = $this->gitCache();break;
+      case 'diff': $res = $this->gitDiff();break;
+      case 'status': $res = $this->gitStatus();break;
+      case 'config': $res = $this->gitConfig();break;
+      case 'add': $res = $this->gitAdd();break;
+      case 'rem': $res = $this->gitRem();break;
+      case 'pull': $res = $this->gitPull();break;
+			case 'push': $res = $this->gitPush();break;
+    }
+    return $res;
+  }
+  
 } #/API
 
 class AUDIO {
