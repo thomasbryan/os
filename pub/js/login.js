@@ -66,7 +66,7 @@ $(document).on("submit","form#userpass",function(e) {
     });
   }
 });
-$(document).on("click","#logout",function() {
+function logout() {
   $.ajax({
     type: "POST",
     url: "api.php?app=auth",
@@ -75,8 +75,8 @@ $(document).on("click","#logout",function() {
     page("login");
     $("#u").focus();
   });
-});
-$(document).on("click","#update",function() {
+}
+function update() {
   $.ajax({
     type: "POST",
     url: "api.php?app=auth",
@@ -86,4 +86,4 @@ $(document).on("click","#update",function() {
   }).fail(function() {
     msg(false,"Software Not Updated");
   });
-});
+}
