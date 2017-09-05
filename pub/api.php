@@ -187,7 +187,7 @@ class API {
     return array(
       'user' => $req,
       'pub' => $pub,
-      'logs' => $logs,
+      'logs' => array_slice($logs,-5),
     );
   }
   private function authUpdate() {
