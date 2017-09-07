@@ -156,6 +156,8 @@ body.slide-active {
 #app > .audio button.update { margin-left: 1em; }
 #app > .audio #e { position: fixed; right: 1em; z-index: 100; }
 #app > .audio #l { line-height: 50px; }
+#app > .audio #controls { position: fixed; z-index: 50; background: white; }
+#app > .audio #lists { margin-top: 30px; }
 #app > .audio #lists .list-group { margin-bottom: 70px; }
 #app > .audio #t { color: #9d9d9d; height: 100%; line-height: 50px; overflow: hidden; position: absolute; width: 0%; white-space: nowrap; }
 #app > .audio #tl { bottom:0; height: 50px; left:0; position: absolute; right:0; width: 100%; }
