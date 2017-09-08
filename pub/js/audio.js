@@ -161,6 +161,9 @@ $(document).on("click","#p a,#r .g:not(.disabled) button:not(.update)",function(
   $("#n").val(($(this).data("n")===undefined?$(this).parent().data("n"):$(this).data("n"))).focus();
   e.stopPropagation();
 });
+function st() {
+  $("#a").get(0).currentTime = 0;
+}
 function pp() {
   if(audio.p) {
     audio.p = false;
@@ -314,11 +317,11 @@ function playaudio() {
   }
 }
 function ui() {
-  $(".glyphicon-play, .glyphicon-pause").parent().removeClass("hidden");
+  $(".glyphicon-play, .glyphicon-pause").parent().parent().removeClass("hidden");
   if(audio.p) {
-    $(".glyphicon-play").parent().addClass("hidden");
+    $(".glyphicon-play").parent().parent().addClass("hidden");
   }else{
-    $(".glyphicon-pause").parent().addClass("hidden");
+    $(".glyphicon-pause").parent().parent().addClass("hidden");
   }
   if(audio.s) {
     $(".glyphicon-random").addClass("text-info");
