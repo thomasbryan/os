@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -qqmy \
     php7.0-sqlite3 \
     php7.0-mysql \
     php7.0-xml \
+    php7.0-soap \
     php7.0-curl \
     libav-tools \
     git
