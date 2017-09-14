@@ -157,15 +157,5 @@ body.slide-active { overflow-x: hidden}
   //body { padding-top: 100px; }
   //.list-group { padding-right: 0; }
 //}
-//#e { position: fixed; right: 1em; z-index: 100; }
-//#profile .pub {
-  //overflow-wrap: break-word;
-  //word-wrap: break-word;
-  //-ms-word-break: break-all;
-  //word-break: break-all;
-  //word-break: break-word;
-  //-ms-hyphens: auto;
-  //-moz-hyphens: auto;
-  //-webkit-hyphens: auto;
-  //hyphens: auto;
-//}
+#profile .container-fluid { margin-bottom: 1em; }
+#profile .pub { word-break: break-all;}
