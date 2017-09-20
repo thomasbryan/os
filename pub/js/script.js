@@ -100,8 +100,6 @@ function user() {
         , u = $.parseJSON(atob(t[0]))
         ;
       return u.User;
-          //var p = req.token.split(".");
-          //var u = $.parseJSON(atob(p[0]));
     }
   }
   return null;
