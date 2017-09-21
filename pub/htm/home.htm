@@ -44,3 +44,121 @@
   <a href="#git" class="btn btn-default">GIT</a>
 </div>
 </script>
+<script id="tpl-git" type="text/html">
+	<div class="git">
+		<div id="projects" class="col-xs-12 col-sm-4">
+			<ul class="list-group">
+			{{#projects}}
+				<li class="list-group-item">
+					<strong>{{r}}</strong>
+					&nbsp;
+					<span class="label label-success">{{s.length}}</span>
+					<span class="label label-warning">{{n.length}}</span>
+					<span class="label label-danger">{{u.length}}</span>
+					<a href="javascript:void(0);" class="btn btn-xs text-muted pull-right">{{b}}</a>
+					<hr />
+					<div class="row">
+					<a href="javascript:void(0);" class="p btn btn-primary">
+						<span class="glyphicon glyphicon-upload"></span>
+						<span class="hidden-xs hidden-sm">Push</span>
+					</a>
+					<a href="javascript:void(0);" class="d btn btn-info">
+						<span class="glyphicon glyphicon-download"></span>
+						<span class="hidden-xs hidden-sm">Pull</span>
+					</a>
+					<a href="javascript:void(0);" class="diff btn btn-default">
+						<span class="glyphicon glyphicon-duplicate"></span>
+						<span class="hidden-xs hidden-sm">Diff</span>
+					</a>
+					<a href="javascript:void(0);" class="addpush btn btn-success ">
+						<span class="glyphicon glyphicon-plus"></span>
+						<span class="glyphicon glyphicon-upload"></span>
+						<span class="hidden-xs hidden-sm">Add&Push</span>
+					</a>
+					</div>
+				</li>
+			{{/projects}}
+			</ul>
+		</div>
+		<div id="project" class="col-xs-12 col-sm-8">
+		{{#projects}}
+			<div data-project="{{r}}" class="project">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<strong>{{r}}</strong>
+						<span class="pull-right">{{b}}</span>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="status col-sm-4">
+									{{#s}}
+										<a href="javascript:void(0);" class="col-xs-12 s btn btn-success btn-xs" data-file="{{.}}" title="{{.}}">
+											<span class="pull-left glyphicon glyphicon-minus"></span>
+											<span class="">{{.}}</span>
+										</a><br />
+									{{/s}}
+								</div>
+								<div class="status col-sm-4">
+									{{#n}}
+										<a href="javascript:void(0);" class="col-xs-12 n btn btn-warning btn-xs" data-file="{{.}}" title="{{.}}">
+											<span class="pull-left glyphicon glyphicon-plus"></span>
+											<span class="">{{.}}</span>
+										</a><br />
+									{{/n}}
+								</div>
+								<div class="status col-sm-4">
+									{{#u}}
+										<a href="javascript:void(0);" class="col-xs-12 u btn btn-danger btn-xs" data-file="{{.}}" title="{{.}}">
+											<span class="pull-left glyphicon glyphicon-plus"></span>
+											<span class="">{{.}}</span>
+										</a>
+									{{/u}}
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<a href="javascript:void(0);" class="p btn btn-primary col-xs-12">
+								<span class="glyphicon glyphicon-upload"></span>
+								<span class="hidden-xs">Push</span>
+							</a>
+						</div>
+						<div class="col-sm-4">
+							<a href="javascript:void(0);" class="d btn btn-info col-xs-12">
+								<span class="glyphicon glyphicon-download"></span>
+								<span class="hidden-xs">Pull</span>
+							</a>
+						</div>
+						<div class="col-sm-4">
+							<a href="javascript:void(0);" class="diff btn btn-default col-xs-12">
+								<span class="glyphicon glyphicon-duplicate"></span>
+								<span class="hidden-xs">Diff</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		{{/projects}}
+		</div>
+	</div>
+	<nav class="navbar navbar-inverse navbar-fixed-bottom">
+      <div class="container-fluid">
+        <form method="POST">
+          <div class="form-group ">
+            <div class="col-xs-3">
+              <a id="cache" href="javascript:void(0);" class="btn btn-primary col-xs-12"><span class="glyphicon glyphicon-trash"></span> Cache</a>
+            </div>
+            <div class="col-xs-3">
+              <input type="text" id="n" name="n" class="form-control" placeholder="Name" />
+            </div>
+            <div class="col-xs-3">
+              <input type="text" id="m" name="m" class="form-control" placeholder="Email" />
+            </div>
+            <div class="col-xs-3">
+              <a id="config" href="javascript:void(0);" class="btn btn-default col-xs-12">Config</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </nav>
+</script>

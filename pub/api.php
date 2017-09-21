@@ -20,7 +20,7 @@ class API {
                     case 'audio': $res = $this->audio($req); break;
                     case 'auth': $res = $this->auth(); break;
                     case 'edit': $res = new EDIT($req); break;
-                    case 'git': $res = new GIT($req); break;
+                    case 'git': $res = $this->git($req); break;
                     case 'post': $res = new POST($req); break;
                     case 'ssh': $res = new SSH($req); break;
                     case 'video': $res = new VIDEO($req); break;
@@ -206,22 +206,200 @@ class API {
     $res = false;
     return $res;
   }
-  private function git() {
+  private function git($req) {
 		$res = false;
 		if(!isset($_POST['req'])) $_POST['req'] = ''; 
     switch($_POST['req']) {
-      case 'cache': $res = $this->gitCache();break;
-      case 'diff': $res = $this->gitDiff();break;
-      case 'status': $res = $this->gitStatus();break;
-      case 'config': $res = $this->gitConfig();break;
-      case 'add': $res = $this->gitAdd();break;
-      case 'rem': $res = $this->gitRem();break;
-      case 'pull': $res = $this->gitPull();break;
-			case 'push': $res = $this->gitPush();break;
+      case 'cache': $res = $this->gitCache($req->User);break;
+      case 'config': $res = $this->gitConfig($req->User);break;
+      case 'diff': $res = $this->gitDiff($req->User);break;
+      case 'status': $res = $this->gitStatus($req->User);break;
+      case 'add': $res = $this->gitAdd($req->User);break;
+      case 'rem': $res = $this->gitRem($req->User);break;
+      case 'pull': $res = $this->gitPull($req->User);break;
+			case 'push': $res = $this->gitPush($req->User);break;
     }
     return $res;
   }
-  
+  private function gitCache($user) {
+		$cache = '../src/repos/'.$user;
+    if(file_exists($cache)) {
+      unlink($cache);
+    }
+    return true;
+  }
+  private function gitConfig($user) {
+    exec('git config --list',$res);
+    return $res;
+  }
+  private function gitDiff($user) {
+    $res = false;
+    $status = $this->gitStatus($user);
+    if(isset($status[$_POST['project']])) {
+      $path = dirname(__FILE__);
+      chdir($path);
+      chdir('../src/users/'.$user.'/'.$_POST['project']);
+      $exec = 'git diff';
+      exec($exec,$res);
+    }
+    return $res;
+  }
+  private function gitStatus($user) {
+    $res = false;
+    $cache = '../src/repos/'.$user;
+    if(!file_exists($cache)) {
+      exec('find ../src/users/'.$user.' -type d -name ".git"',$dir);
+      $path = dirname(__FILE__);
+      $len = strlen(dirname(getcwd()));
+      $res = array();
+      foreach($dir as $k => $v) {
+        $res[] = $this->gitGitstatus($v,$len,$path,$user);
+      }
+      $git = $res;
+      chdir($path);
+      file_put_contents($cache,serialize($git));
+    }else{
+      $git = unserialize(file_get_contents($cache));
+    }
+    if(isset($_POST['git'])) {
+      if(isset($git[$_POST['git']])) {
+        #todo 
+        #$git[$_POST['git']] = $this->gitstatus();
+        #file_put_contents($file,serialize($git));
+        #$res = $git[$_POST['git']];
+      }
+    }else{
+      $res = $git;
+    }
+    return $res;
+  }
+  private function gitGitstatus($req,$len,$path,$user) {
+    chdir($path);
+    chdir(dirname($req.'/'));
+    $r = substr(getcwd(),($len+12+strlen($user)));
+    exec('git status -sb',$e);
+    $b = '';
+    $s = array();
+    $n = array();
+    $u = array();
+    foreach($e as $kk => $vv) {
+      switch(substr($vv,0,1)) {
+        case ' ':break;
+        case '#':
+        $p = strpos($vv,'...');
+        $b = substr($vv,3,($p===false?strlen($vv):$p-3));
+        break;
+        case '?': $u[] = substr($vv,3); break;
+        default: if(strlen($vv) > 0 ) { $s[] = substr($vv,3); } break;
+      }
+      switch(substr($vv,1,1)) {
+        case '?': case '#': case ' ': break;
+        default: if(strlen($vv) > 0 ) { $n[] = substr($vv,3); } break;
+      }
+    }
+    return array('r'=>$r,'b'=>$b,'s'=>$s,'n'=>$n,'u'=>$u);
+  }
+  private function gitAdd($user) {
+    $res = false;
+    $status = $this->gitStatus($user);
+    if(isset($status[$_POST['project']])) {
+      $valid = false;
+      foreach($status[$_POST['project']]['n'] as $k => $v) {
+        if($v == $_POST['file']) $valid = true;
+      }
+      foreach($status[$_POST['project']]['u'] as $k => $v) {
+        if($v == $_POST['file']) $valid = true;
+      }
+      if($valid) {
+        $prefix = '../src/users/'.$user.'/';
+        $this->gitCache($user);
+        $this->path = dirname(__FILE__);
+        $len = strlen(dirname(getcwd()));
+        chdir($this->path);
+        chdir($prefix.$_POST['project']);
+        exec('git add '.$_POST['file']);
+        $res = true;
+      }
+    }
+    return $res;
+  }
+  private function gitRem($user) {
+    $res = false;
+    $status = $this->gitStatus($user);
+    if(isset($status[$_POST['project']])) {
+      $valid = false;
+      foreach($status[$_POST['project']]['s'] as $k => $v) {
+        if($v == $_POST['file']) $valid = true;
+      }
+      if($valid) {
+        $prefix = '../src/users/'.$user.'/';
+        $this->gitCache($user);
+        $this->path = dirname(__FILE__);
+        $len = strlen(dirname(getcwd()));
+        chdir($this->path);
+        chdir($prefix.$_POST['project']);
+        exec('git reset HEAD "'.$_POST['file'].'"');
+        $res = true;
+      }
+    }
+    return $res;
+  }
+  private function gitPull($user) {
+    $res = false;
+    $status = $this->gitStatus($user);
+    if(isset($status[$_POST['project']])) {
+      $prefix = '../src/users/'.$user.'/';
+      $this->gitCache($user);
+      $this->path = dirname(__FILE__);
+      $len = strlen(dirname(getcwd()));
+      chdir($this->path);
+      chdir($prefix.$_POST['project']);
+      exec('git pull origin '.$status[$_POST['project']]['b']);
+      $res = true;
+    }
+    return $res;
+  }
+  private function gitPush($user) {
+    $res = false;
+    $status = $this->status();
+    if(isset($status[$_POST['project']])) {
+      $count = count($status[$_POST['project']]['s']);
+      if($count) {
+        $prefix = '../src/users/'.$user.'/';
+        $this->gitCache($user);
+        $this->path = dirname(__FILE__);
+        $len = strlen(dirname(getcwd()));
+        chdir($this->path);
+        chdir($prefix.$_POST['project']);
+        $msg = 'Update ';
+        if($count>1) {
+          $msg .= $count.' files';
+        }else{
+          $msg .= str_replace('"','',$status[$_POST['project']]['s'][0]);
+        }
+        $cfg = '';
+        /*
+        if(isset($_POST['name'])) {
+          if(!empty($_POST['name'])) {
+            if(! preg_match('/[^a-zA-Z\ ]/', $_POST['name'])) {
+              $cfg .= '-c user.name="'.$_POST['name'].'" ';
+            }
+          }
+        }
+        if(isset($_POST['email'])) {
+          if(!empty($_POST['email'])) {
+            if(! preg_match('/[^a-zA-Z0-9\@\.]/', $_POST['email'])) {
+              $cfg .= '-c user.email='.$_POST['email'].' ';
+            }
+          }
+        }
+        */
+        $exec = 'git commit '.$cfg.' -m  "'.$msg.'" && git push origin '.$status[$_POST['project']]['b'] ;
+        exec($exec,$res);
+      }
+    }
+    return $res;
+  }
 } #/API
 
 class AUDIO {
@@ -446,8 +624,6 @@ class AUDIO {
 } #/AUDIO 
 class EDIT {
 } #/EDIT
-class GIT {
-} #/GIT
 class POST {
 } #/POST
 class SSH {
