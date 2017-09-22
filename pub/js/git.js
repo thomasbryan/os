@@ -18,12 +18,36 @@ function gitdone(req) {
       $("#projects li:not(.action)[data-repo='"+git.repo+"']").click();
     }
     if(git.grep.length > 0) {
-      //action({"req":"grep","grep":git.grep},"gitgrep");
+			$("#q").val(git.grep);
     }
   });
 }
+$("form#search").on("submit",function(e) {
+  e.preventDefault();
+  if($("#q").val().length > 0) {
+		var repo = $("#project .repo:not(.hidden)").data("repo");
+		git.grep = $("#q").val();
+		localStorage.git = JSON.stringify(git);
+		action({"req":"grep","grep":git.grep,"project":repo},"gitgrep");
+  }
+});
 function gitgrep(req) {
+  $("#q").blur();
   //
+  var html = "<div id='overlay'><div class='panel panel-info'><div class='panel-heading'><a>&nbsp;</a>Grep '"+git.grep+"' '"+req.repo+"'</div><div class='panel-body'>";
+  console.log(req);
+  $.each(req.grep,function(k,v) {
+    var c = "info";
+    
+    //switch(v.charAt(0)) {
+      //case "-": c = "danger"; break;
+      //case "+": c = "success"; break;
+    //}   
+    html += "<span class='text-"+c+"'>"+v.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\ /g,"&nbsp;")+"</span><br />";
+  }); 
+  html+= "</div></div></div>";
+  $("body").append(html);
+  $("#overlay .panel-body").css({"height":Math.ceil($(window).height() * 0.85)+"px"});
 }
 $(document).on("click","#cache",function(e) {
 	action({"req":"cache"},"gitinit");
@@ -80,4 +104,4 @@ function gitdiff(req) {
 
 $(document).on("click","#overlay",function(e) {
 	$("#overlay").remove();
-}); 
+});

@@ -264,10 +264,14 @@ class API {
 				$path = dirname(__FILE__);
 				chdir($path);
 				chdir('../src/users/'.$user.'/'.$_POST['project']);
-				$exec = 'git grep \''.str_replace('\'','\\\'',$_POST['grep']).'\'';
+				//todo properly escape '
+				$exec = 'git grep \''.str_replace('\'','',$_POST['grep']).'\'';
 				exec($exec,$ret);
 				if($ret) {
-					$res = $ret;
+					$res = array(
+						'repo'=> $_POST['project'],
+						'grep' => $ret,
+					);
 				}
 			}
 		}
