@@ -265,7 +265,7 @@ class API {
 				chdir($path);
 				chdir('../src/users/'.$user.'/'.$_POST['project']);
 				//todo properly escape '
-				$exec = 'git grep \''.str_replace('\'','',$_POST['grep']).'\'';
+				$exec = 'git grep -n \''.str_replace('\'','',$_POST['grep']).'\'';
 				exec($exec,$ret);
 				if($ret) {
 					$res = array(
