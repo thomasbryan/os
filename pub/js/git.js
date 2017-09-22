@@ -38,8 +38,7 @@ function gitgrep(req) {
   $("#q").blur();
   var html = "<div id='overlay'><div class='panel panel-info'><div class='panel-heading'><a>&nbsp;</a>Grep '"+git.grep+"' '"+req.repo+"'</div><div class='panel-body'>";
   $.each(req.grep,function(k,v) {
-    var c = "info";
-    html += "<span class='text-"+c+"'>"+v.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\ /g,"&nbsp;")+"</span><br />";
+    html += "<div class='line'>"+v.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\ /g,"&nbsp;")+"</div>";
   }); 
   html+= "</div></div></div>";
   $("body").append(html);
