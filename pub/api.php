@@ -213,6 +213,7 @@ class API {
       case 'cache': $res = $this->gitCache($req->User);break;
       case 'config': $res = $this->gitConfig($req->User);break;
       case 'diff': $res = $this->gitDiff($req->User);break;
+			case 'grep': $res = $this->gitGrep($req->User);break;
       case 'status': $res = $this->gitStatus($req->User);break;
       case 'all': $res = $this->gitAll($req->User);break;
       case 'add': $res = $this->gitAdd($req->User);break;
@@ -248,11 +249,29 @@ class API {
             'repo' => $_POST['project'],
             'diff' => $ret,
           );
+          //return mustache template formed data
         }
         continue;
       }
     }
     return $res;
+  }
+  private function gitGrep($user) {
+		$res = false;
+		$status = $this->gitStatus($user);
+		foreach($status as $k => $v) {
+			if($v['r'] == $_POST['project']) {
+				$path = dirname(__FILE__);
+				chdir($path);
+				chdir('../src/users/'.$user.'/'.$_POST['project']);
+				$exec = 'git grep \''.str_replace('\'','\\\'',$_POST['grep']).'\'';
+				exec($exec,$ret);
+				if($ret) {
+					$res = $ret;
+				}
+			}
+		}
+		return $res;
   }
   private function gitStatus($user) {
     $res = false;
