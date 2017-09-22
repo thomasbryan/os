@@ -49,31 +49,31 @@
 		<div id="projects" class="col-xs-12 col-sm-4">
 			<ul class="list-group">
 			{{#projects}}
-				<li class="list-group-item">
-					<strong>{{r}}</strong>
-					&nbsp;
+				<li data-repo="{{r}}" class="list-group-item repo">
+					<strong>{{r}}</strong>&nbsp;<br />
+					<a href="javascript:void(0);" class="text-muted">{{b}}</a>
+          <div class="pull-right">
 					<span class="label label-success">{{s.length}}</span>
 					<span class="label label-warning">{{n.length}}</span>
 					<span class="label label-danger">{{u.length}}</span>
-					<a href="javascript:void(0);" class="btn btn-xs text-muted pull-right">{{b}}</a>
+          </div>
 					<hr />
 					<div class="status">
-						<a href="javascript:void(0);" class="p btn btn-primary">
+						<a data-action="push" href="javascript:void(0);" class="action push-{{s.length}} btn btn-primary">
 							<span class="glyphicon glyphicon-upload"></span>
-							<span class="hidden-xs hidden-sm">Push</span>
+							<span class="hidden-xs hidden-sm">PUSH</span>
 						</a>
-						<a href="javascript:void(0);" class="d btn btn-info">
+						<a data-action="pull" href="javascript:void(0);" class="action btn btn-info">
 							<span class="glyphicon glyphicon-download"></span>
-							<span class="hidden-xs hidden-sm">Pull</span>
+							<span class="hidden-xs hidden-sm">PULL</span>
 						</a>
-						<a href="javascript:void(0);" class="diff btn btn-default">
+						<a data-action="diff" href="javascript:void(0);" class="action diff-{{n.length}}{{u.length}} btn btn-default">
 							<span class="glyphicon glyphicon-duplicate"></span>
-							<span class="hidden-xs hidden-sm">Diff</span>
+							<span class="hidden-xs hidden-sm">DIFF</span>
 						</a>
-						<a href="javascript:void(0);" class="addpush btn btn-success ">
+						<a data-action="all" href="javascript:void(0);" class="action all-{{s.length}}{{n.length}}{{u.length}} btn btn-success ">
 							<span class="glyphicon glyphicon-plus"></span>
-							<span class="glyphicon glyphicon-upload"></span>
-							<span class="hidden-xs hidden-sm">Add&Push</span>
+							<span class="hidden-xs hidden-sm">PUSH</span>
 						</a>
 					</div>
 				</li>
@@ -82,7 +82,7 @@
 		</div>
 		<div id="project" class="col-xs-12 col-sm-8">
 		{{#projects}}
-			<div data-project="{{r}}" class="project">
+			<div data-repo="{{r}}" class="hidden repo">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<strong>{{r}}</strong>
@@ -93,7 +93,7 @@
 							<div class="col-xs-12">
 								<div class="status col-sm-4">
 									{{#s}}
-										<a href="javascript:void(0);" class="col-xs-12 s btn btn-success btn-xs" data-file="{{.}}" title="{{.}}">
+										<a data-action="rem" href="javascript:void(0);" class="action col-xs-12 btn btn-success btn-xs" data-file="{{.}}" title="{{.}}">
 											<span class="pull-left glyphicon glyphicon-minus"></span>
 											<span class="">{{.}}</span>
 										</a><br />
@@ -101,7 +101,7 @@
 								</div>
 								<div class="status col-sm-4">
 									{{#n}}
-										<a href="javascript:void(0);" class="col-xs-12 n btn btn-warning btn-xs" data-file="{{.}}" title="{{.}}">
+										<a data-action="add" href="javascript:void(0);" class="action col-xs-12 btn btn-warning btn-xs" data-file="{{.}}" title="{{.}}">
 											<span class="pull-left glyphicon glyphicon-plus"></span>
 											<span class="">{{.}}</span>
 										</a><br />
@@ -109,7 +109,7 @@
 								</div>
 								<div class="status col-sm-4">
 									{{#u}}
-										<a href="javascript:void(0);" class="col-xs-12 u btn btn-danger btn-xs" data-file="{{.}}" title="{{.}}">
+										<a data-action="add" href="javascript:void(0);" class="action col-xs-12 btn btn-danger btn-xs" data-file="{{.}}" title="{{.}}">
 											<span class="pull-left glyphicon glyphicon-plus"></span>
 											<span class="">{{.}}</span>
 										</a>
@@ -118,19 +118,19 @@
 							</div>
 						</div>
 						<div class="col-sm-4">
-							<a href="javascript:void(0);" class="p btn btn-primary col-xs-12">
+							<a data-action="push" href="javascript:void(0);" class="action push-{{s.length}} btn btn-primary col-xs-12">
 								<span class="glyphicon glyphicon-upload"></span>
 								<span class="hidden-xs">Push</span>
 							</a>
 						</div>
 						<div class="col-sm-4">
-							<a href="javascript:void(0);" class="d btn btn-info col-xs-12">
+							<a data-action="pull" href="javascript:void(0);" class="action btn btn-info col-xs-12">
 								<span class="glyphicon glyphicon-download"></span>
 								<span class="hidden-xs">Pull</span>
 							</a>
 						</div>
 						<div class="col-sm-4">
-							<a href="javascript:void(0);" class="diff btn btn-default col-xs-12">
+							<a data-action="diff" href="javascript:void(0);" class="action diff-{{n.length}}{{u.length}} btn btn-default col-xs-12">
 								<span class="glyphicon glyphicon-duplicate"></span>
 								<span class="hidden-xs">Diff</span>
 							</a>

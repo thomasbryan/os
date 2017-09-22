@@ -144,10 +144,11 @@ body.slide-active { overflow-x: hidden}
 #app > .audio #lists .list-group { margin-bottom: 70px; }
 #app > .audio #t { color: #9d9d9d; height: 100%; line-height: 50px; overflow: hidden; position: absolute; width: 0%; white-space: nowrap; }
 #app > .audio #tl { bottom:0; height: 50px; left:0; position: absolute; right:0; width: 100%; }
+#app > .git #projects, #app > .git #project { margin-bottom: 50px; }
+#app > .git #project > div { position: fixed; width: inherit; padding-right: 3em; }
 #app > .git .status .btn { margin-bottom: 0.5em; }
+#app > .git .push-0, #app > .git .diff-00, #app > .git .all-000 { display: none; }
 
-//body { padding: 70px 0; overflow: hidden; }
-//.form-group { margin: 9px; }
 //.list-group:last-child { padding-right: 0; }
 //.list-group { margin-bottom: 0; }
 //.list-group a:last-child { margin-bottom: 20px; }
@@ -157,5 +158,7 @@ body.slide-active { overflow-x: hidden}
   //body { padding-top: 100px; }
   //.list-group { padding-right: 0; }
 //}
+#overlay { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9000; background: rgba(0,0,0,0.5); padding: 3em; }
+#overlay .panel-body { overflow: auto; }
 #profile .container-fluid { margin-bottom: 1em; }
 #profile .pub { word-break: break-all;}
