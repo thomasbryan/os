@@ -326,9 +326,7 @@ class API {
         continue;
       }
     }
-    if($valid) {
-      $res = $this->gitPush($user);
-    }
+    $res = $this->gitPush($user);
     return $res;
   }
   private function gitAdd($user) {
