@@ -24,25 +24,18 @@ function gitdone(req) {
 }
 $("form#search").on("submit",function(e) {
   e.preventDefault();
+	git.grep = $("#q").val();
+	localStorage.git = JSON.stringify(git);
   if($("#q").val().length > 0) {
 		var repo = $("#project .repo:not(.hidden)").data("repo");
-		git.grep = $("#q").val();
-		localStorage.git = JSON.stringify(git);
 		action({"req":"grep","grep":git.grep,"project":repo},"gitgrep");
   }
 });
 function gitgrep(req) {
   $("#q").blur();
-  //
   var html = "<div id='overlay'><div class='panel panel-info'><div class='panel-heading'><a>&nbsp;</a>Grep '"+git.grep+"' '"+req.repo+"'</div><div class='panel-body'>";
-  console.log(req);
   $.each(req.grep,function(k,v) {
     var c = "info";
-    
-    //switch(v.charAt(0)) {
-      //case "-": c = "danger"; break;
-      //case "+": c = "success"; break;
-    //}   
     html += "<span class='text-"+c+"'>"+v.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\ /g,"&nbsp;")+"</span><br />";
   }); 
   html+= "</div></div></div>";
