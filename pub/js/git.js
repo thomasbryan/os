@@ -40,6 +40,7 @@ function gitgrep(req) {
   }); 
   html+= "</div></div></div>";
   $("body").append(html);
+  $(".navbar, #app").addClass("hidden");
   $("#overlay .panel-body").css({"height":Math.ceil($(window).height() * 0.85)+"px"});
 }
 $(document).on("click","#cache",function(e) {
@@ -92,9 +93,11 @@ function gitdiff(req) {
   }); 
   html+= "</div></div></div>";
   $("body").append(html);
+  $(".navbar, #app").addClass("hidden");
   $("#overlay .panel-body").css({"height":Math.ceil($(window).height() * 0.85)+"px"});
 }
 
 $(document).on("click","#overlay",function(e) {
+	$(".navbar, #app").removeClass("hidden");
 	$("#overlay").remove();
 });
