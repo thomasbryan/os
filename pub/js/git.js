@@ -8,7 +8,7 @@ $(document).ready(function() {
 	gitinit();
 });
 function gitinit() {
-	action({"req":"status"},"gitdone");
+	action({"req":"status"},"gitdone","gitfail");
 }
 function gitdone(req) {
 	$.get("htm/home.htm", function(templates) {
@@ -21,6 +21,9 @@ function gitdone(req) {
 			$("#q").val(git.grep);
     }
   });
+}
+function gitfail() {
+	action({"req":"cache"});
 }
 $("form#search").on("submit",function(e) {
   e.preventDefault();

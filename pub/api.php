@@ -472,6 +472,7 @@ class API {
           */
           $exec = 'git commit '.$cfg.' -m  "'.$msg.'" && git push origin '.$v['b'];
           exec($exec,$res);
+          $res = true;
           //todo echo error 
         }
         continue;
