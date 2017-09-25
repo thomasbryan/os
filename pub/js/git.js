@@ -11,9 +11,23 @@ function gitinit() {
 	action({"req":"status"},"gitdone","gitfail");
 }
 function gitdone(req) {
+	/* Order repos by max items */
+	var project = {}
+		, projects = []
+		;
+	$.each(req,function(k,v) {
+		var c = Math.max.apply(Math, [v.s.length, v.n.length, v.u.length] );
+		if(project[c] === undefined) project[c] = [];
+		project[c].push(v);
+	});
+	$.each(project,function(k,v) {
+		$.each(v,function(kk,vv) {
+			projects.unshift(vv);
+		});
+	});
 	$.get("htm/home.htm", function(templates) {
 		var template = $(templates).filter('#tpl-git').html();
-		$("#app").html(Mustache.render(template,{"projects":req}));
+		$("#app").html(Mustache.render(template,{"projects":projects}));
     if(git.repo.length > 0) {
       $("#projects li:not(.action)[data-repo='"+git.repo+"']").click();
     }
