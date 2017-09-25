@@ -215,6 +215,7 @@ class API {
       case 'diff': $res = $this->gitDiff($req->User);break;
 			case 'grep': $res = $this->gitGrep($req->User);break;
       case 'status': $res = $this->gitStatus($req->User);break;
+      case 'log': $res = $this->gitLog($req->User);break;
       case 'all': $res = $this->gitAll($req->User);break;
       case 'add': $res = $this->gitAdd($req->User);break;
       case 'rem': $res = $this->gitRem($req->User);break;
@@ -331,6 +332,24 @@ class API {
       }
     }
     return array('r'=>$r,'b'=>$b,'s'=>$s,'n'=>$n,'u'=>$u);
+  }
+  private function gitLog($user) {
+		$res = false;
+    $status = $this->gitStatus($user);
+    foreach($status as $k => $v) {
+      if($v['r'] == $_POST['project']) {
+				$prefix = '../src/users/'.$user.'/';
+				$this->gitCache($user);
+				$path = dirname(__FILE__);
+				$len = strlen(dirname(getcwd()));
+				chdir($path);
+				chdir($prefix.$_POST['project']);
+				exec('git log',$log);
+				$res = array('repo'=>$_POST['project'],'log'=>$log);
+				continue;
+      }
+    }
+    return $res;
   }
   private function gitAll($user) {
     $res = false;

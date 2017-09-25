@@ -82,6 +82,7 @@ $(document).on("click",".action",function(e) {
     case "push": gitpush(repo); break;
     case "pull": action({"req":"pull","project":repo},"gitinit"); break;
     case "diff": action({"req":"diff","project":repo},"gitdiff"); break;
+    case "log": action({"req":"log","project":repo},"gitlog"); break;
   }
 });
 function gitpush(req) {
@@ -103,7 +104,16 @@ function gitdiff(req) {
   $(".navbar, #app").addClass("hidden");
   $("#overlay .panel-body").css({"height":Math.ceil($(window).height() * 0.85)+"px"});
 }
-
+function gitlog(req) {
+  var html = "<div id='overlay'><div class='panel panel-info'><div class='panel-heading'><a>&nbsp;</a>Log '"+req.repo+"'</div><div class='panel-body'>";
+  $.each(req.log,function(k,v) {
+    html += "<div class='line'>"+v.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\ /g,"&nbsp;")+"</div>";
+  }); 
+  html+= "</div></div></div>";
+  $("body").append(html);
+  $(".navbar, #app").addClass("hidden");
+  $("#overlay .panel-body").css({"height":Math.ceil($(window).height() * 0.85)+"px"});
+}
 $(document).on("click","#overlay",function(e) {
 	$(".navbar, #app").removeClass("hidden");
 	$("#overlay").remove();
