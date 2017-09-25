@@ -17,6 +17,7 @@ function state(req) {
   }
   var uri = req.split("#");
   app.app = uri[1];
+  document.title = "OS/"+app.app;
   $.getScript("js/"+uri[1]+".js");
 
   $("#slidemenu ul.nav li").removeClass("active");

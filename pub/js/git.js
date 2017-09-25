@@ -76,26 +76,17 @@ $(document).on("click",".action",function(e) {
   e.stopPropagation();
   var repo = $(this).closest(".repo").data("repo");
   switch($(this).data("action")) {
-    case "all":
-      action({"req":"all","project":repo},"gitinit");
-    break;
-    case "add":
-      action({"req":"add","project":repo,"file":$(this).data("file")},"gitinit");
-    break;
-    case "rem":
-      action({"req":"rem","project":repo,"file":$(this).data("file")},"gitinit");
-    break;
-    case "push":
-      action({"req":"push","project":repo},"gitinit");
-    break;
-    case "pull":
-      action({"req":"pull","project":repo},"gitinit");
-    break;
-    case "diff":
-      action({"req":"diff","project":repo},"gitdiff");
-    break;
+    case "all": action({"req":"all","project":repo},"gitpush"); break;
+    case "add": action({"req":"add","project":repo,"file":$(this).data("file")},"gitinit"); break;
+    case "rem": action({"req":"rem","project":repo,"file":$(this).data("file")},"gitinit"); break;
+    case "push": gitpush(repo); break;
+    case "pull": action({"req":"pull","project":repo},"gitinit"); break;
+    case "diff": action({"req":"diff","project":repo},"gitdiff"); break;
   }
 });
+function gitpush(req) {
+	action({"req":"push","project":req},"gitinit");
+}
 function gitdiff(req) {
   //TODO template?
   var html = "<div id='overlay'><div class='panel panel-info'><div class='panel-heading'><a>&nbsp;</a>Diff '"+req.repo+"'</div><div class='panel-body'>";

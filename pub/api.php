@@ -346,8 +346,7 @@ class API {
         foreach($repo['u'] as $k => $v) {
           $valid = $this->gitGitAdd(array('repo'=>$_POST['project'],'user'=>$user,'file'=>$v));
         }
-				$this->gitPush($user);
-				$res = true;
+				$res = $_POST['project'];
         continue;
       }
     }
