@@ -3,6 +3,7 @@ class API {
   private $conf = '../src/conf.ini';
   private $users = array();
   function __construct() {
+		#$this->debug();
     date_default_timezone_set('America/Chicago');
     $res = false;
     if($_SERVER['REQUEST_METHOD']==='POST') {
@@ -498,6 +499,14 @@ class API {
     }
     return $res;
   }
+  # DEBUG MODE #
+  private function debug() {
+    set_time_limit(30);
+    error_reporting(E_ALL);
+    ini_set('error_reporting', E_ALL);
+    ini_set('display_errors',1);
+  }
+
 } #/API
 
 class AUDIO {
