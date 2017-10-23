@@ -21,6 +21,7 @@ mkdir /var/www/.cache/
 chown -R www-data:www-data /var/www/.cache/
 
 mkdir /var/www/src/audio/
+mkdir /var/www/src/magic/
 mkdir /var/www/src/users/
 mkdir /var/www/src/repos/
 mkdir /var/www/src/video/
