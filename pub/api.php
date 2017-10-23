@@ -121,6 +121,7 @@ class API {
       $users.=$user.' = '.password_hash($pass,PASSWORD_DEFAULT)."\n";
       if(file_put_contents($this->conf,$users)) {
         mkdir('../src/audio/'.$user,0777);
+        mkdir('../src/magic/'.$user);
         mkdir('../src/users/'.$user.'/public_html/',0755,true);
         mkdir('../src/video/'.$user);
         exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$user.' -q -N "" -C "'.$user.'"',$res);
