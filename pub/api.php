@@ -20,6 +20,7 @@ class API {
                   switch($_GET['app']) {
                     case 'audio': $res = $this->audio($req); break;
                     case 'auth': $res = $this->auth(); break;
+                    case 'automagic': $res = $this->automagic($req); break;
                     case 'edit': $res = new EDIT($req); break;
                     case 'git': $res = $this->git($req); break;
                     case 'post': $res = new POST($req); break;
@@ -206,6 +207,53 @@ class API {
   }
   private function authDelete($req='') {
     $res = false;
+    return $res;
+  }
+  private function automagic($req) {
+    $res = false;
+    /* TODO
+
+
+    list methods
+
+    create actions
+    read actions
+    update actions
+    delete actions
+
+    list actions
+
+    create workflows
+    read workflows
+    update workflows
+    delete workflows
+
+    exec workflows
+
+    export workflows
+    import workflows
+
+    #######[home view]
+    [workflow 1][schedule][run]
+    [workflow 2][schedule][run]
+    [workflow 3][schedule][run]
+    [create workflow]
+    #######[create/update workflow]
+    [show list of actions]
+    [create action]
+    [title]
+    [action 1][edit][--][down]
+    [action 2][edit][up][down]
+    [action 3][edit][up][----]
+    [save]
+    #######[create/update action]
+    [show list of methods]
+    [title]
+    [method name]
+    [method data]
+    [save]
+    #######
+    */
     return $res;
   }
   private function git($req) {

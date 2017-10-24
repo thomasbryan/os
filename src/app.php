@@ -3,11 +3,12 @@ class automagic {
   function __construct() {
     if(PHP_SAPI==='cli') {
       if($_SERVER['argc']==2) {
-        chdir(dirname(__FILE__));
-        if(file_exists($_SERVER['argv'][1])) {
+        chdir(dirname(__FILE__).'/magic');
+        $workflow = $_SERVER['argv'][1];
+        if(file_exists($workflow)) {
           $req=false;
           $res=false;
-          $json = json_decode(file_get_contents($_SERVER['argv'][1]));
+          $json = json_decode(file_get_contents($workflow));
           if($json) {
             foreach($json as $file) {
               if(file_exists($file)) {
@@ -21,6 +22,7 @@ class automagic {
                 }
               }
             }
+            file_put_contents($workflow.'-'.time(),json_encode($res));
           }
         }
       }
@@ -38,6 +40,37 @@ class automagic {
   private function email($req=false,$res=false) {
   }
   private function ssh($req=false,$res=false) {
+    $path = '../phpseclib/phpseclib';
+    $ssh = $path.'/Net/SSH2.php';
+    $rsa = $path.'/Crypt/RSA.php';
+    if(file_exists($ssh)&&file_exists($rsa)) {
+      set_include_path(get_include_path().PATH_SEPARATOR.$path);
+      include($ssh);
+      include($rsa);
+      $host = $res['host'];
+      $user = $res['user'];
+      if(!empty($user) && !empty($host)) {
+        $pass = $res['pass'];
+        $key = $res['key'];
+        $phrase = $res['phrase'];
+        $ssh = new Net_SSH2($host);
+        if(empty($key)) {
+          if(!$ssh->login($user,$pass)) {
+            return false;
+          }
+        }else{
+          $rsa = new Crypt_RSA();
+          $rsa->setPassword($phrase);
+          $rsa->loadKey($key);
+          if(!$ssh->login($user,$rsa)) {
+            return false;
+          }
+        }
+        //ssh->settimeout(1);
+        return explode("\n",$ssh->exec($req));
+      }
+    }
+    return false;
   }
 
   private function escape($req=false,$res=false) {
