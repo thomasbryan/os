@@ -244,10 +244,8 @@ class API {
       case 'runWorkflows':
         $file = $_POST['n'].'.json';
         if(file_exists($file)) {
-          $exec = '/usr/bin/php '.dirname(dirname(__FILE__)).'/src/app.php '.$req->User.'/'.$file.' > /dev/null 2>/dev/null &';
-          exec($exec);
+          exec('/usr/bin/php '.dirname(dirname(__FILE__)).'/src/app.php '.$req->User.'/'.$file.' > /dev/null 2>/dev/null &');
           $res = 'Workflow Ran';
-          $res = $exec;
         }
       break;
       case 'deleteWorkflows':
