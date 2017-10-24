@@ -1,6 +1,12 @@
 $(document).ready(function() {
   action({"req":"listWorkflows"},"listWorkflows");
 });
+$(document).on("click","#method a",function() {
+  $("#method a").removeClass("active");
+  $(this).addClass("active");
+  $("#attributes > div").addClass("hidden");
+  $("#method-"+$(this).data("method")).removeClass("hidden");
+});
 function listWorkflows(req) {
   $.get("htm/home.htm", function(templates) {
     var template = $(templates).filter('#tpl-automagic').html();

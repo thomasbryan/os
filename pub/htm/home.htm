@@ -116,8 +116,6 @@
       <input class="form-control" type="text" placeholder="Name" />
       <hr />
       <div class="list"></div>
-      <hr />
-      <div class="input"></div>
       <nav class="navbar navbar-inverse navbar-fixed-bottom">
         <a class="navbar-brand" href="javascript:view('actions');">
           <span class="glyphicon glyphicon-plus-sign"></span> New Workflow
@@ -140,11 +138,23 @@
   </div>
 </script>
 <script id="tpl-automagic-methods" type="text/html">
-  <div class="container-fluid">
+  <div id="method" class="container-fluid">
   {{#methods}}
-    <a class="btn btn-default">
-      {{.}}
+    <a data-method="{{i}}" class="btn btn-default">
+      {{n}}
     </a>
+  {{/methods}}
+  </div>
+  <hr />
+  <div id="attributes" class="container-fluid">
+  {{#methods}}
+    <div id="method-{{i}}" class="hidden">
+    {{#a}}
+      {{#textarea}}
+        <textarea class="form-control" placeholder="{{.}}"></textarea>
+      {{/textarea}}
+    {{/a}}
+    </div>
   {{/methods}}
   </div>
 </script>

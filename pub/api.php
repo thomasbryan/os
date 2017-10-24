@@ -264,33 +264,42 @@ class API {
       break;
       case 'listMethods':
         $res = array('methods' => array(
-          //'loop',
-          'Say',
-          //'curl',
-          //'email',
-          'SSH',
-          'Escape',
-          'Insert',
-          'Single',
-          'Select',
-          'Update',
+          array(
+            'n'=> 'Say',
+            'i'=> 'say',
+            'a'=> array('textarea'=>'Say'),
+          ),
+          array(
+            'n'=> 'SSH',
+            'i'=> 'ssh',
+            'a'=> array('textarea'=>'SSH'),
+          ),
+          array(
+            'n'=> 'Escape',
+            'i'=> 'escape',
+            'a'=> array('textarea'=>'Escape'),
+          ),
+          array(
+            'n'=> 'Insert',
+            'i'=> 'insert',
+          //insert object {"sql","tbl"}
+          ),
+          array(
+            'n'=> 'Single',
+            'i'=> 'single',
+            'a'=> array('textarea'=>'Single'),
+          ),
+          array(
+            'n'=> 'Select',
+            'i'=> 'select',
+            'a'=> array('textarea'=>'Select'),
+          ),
+          array(
+            'n'=> 'Update',
+            'i'=> 'update',
+          //update object {"set","tbl","sql"}
+          ),
         ));
-        /*
-          loop n/a
-          say string or object
-          curl n/a
-          email n/a
-          ssh string
-          escape string
-          insert object {"sql","tbl"}
-          single string
-          select string
-          update object {"set","tbl","sql"}
-        */
-      break;
-      case 'readMethods':
-        //switch
-        //return required template input
       break;
     }
     return $res;
