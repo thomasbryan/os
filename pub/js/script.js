@@ -6,6 +6,7 @@ function state(req) {
   switch(req) {
 		case "#login":
     case "#audio":
+    case "#automagic":
     case "#chess":
     case "#edit":
     case "#git":

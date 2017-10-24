@@ -211,49 +211,88 @@ class API {
   }
   private function automagic($req) {
     $res = false;
-    /* TODO
+    chdir('../src/magic/'.$req->User.'/');
+    if(!isset($_POST['req'])) $_POST['req'] = '';
+    switch($_POST['req']) {
+      case 'createWorkflows':
+        $file = $_POST['n'].'.json';
+        if(!file_exists($file)) {
+          $res = file_put_contents($file,$_POST['d']);
+        }
+      break;
+      case 'listWorkflows':
+        $res = array('workflows'=>array());
+        foreach(glob('*.json') as $file) {
+          $res['workflows'][] = substr($file,0,-5);
+        }
+      break;
+      case 'readWorkflows':
+        $file = $_POST['n'].'.json';
+        if(file_exists($file)) {
+          //glob($file.'-*');
+          //end
+          $res = json_decode(file_get_contents($file));
+        }
+      break;
+      case 'runWorkflows':
+        $file = $_POST['n'].'.json';
+        if(file_exists($file)) {
+          //exec php ../src/app.php $req->User.'/'.$_POST['n'].'.json > 2>/dev/null &');
+        }
+      break;
+      case 'deleteWorkflows':
+        $res = unlink($_POST['n'].'.json');
+      break;
+      case 'exportWorkflows':
+      break;
+      case 'importWorkflows':
+      break;
 
-
-    list methods
-
-    create actions
-    read actions
-    update actions
-    delete actions
-
-    list actions
-
-    create workflows
-    read workflows
-    update workflows
-    delete workflows
-
-    exec workflows
-
-    export workflows
-    import workflows
-
-    #######[home view]
-    [workflow 1][schedule][run]
-    [workflow 2][schedule][run]
-    [workflow 3][schedule][run]
-    [create workflow]
-    #######[create/update workflow]
-    [show list of actions]
-    [create action]
-    [title]
-    [action 1][edit][--][down]
-    [action 2][edit][up][down]
-    [action 3][edit][up][----]
-    [save]
-    #######[create/update action]
-    [show list of methods]
-    [title]
-    [method name]
-    [method data]
-    [save]
-    #######
-    */
+      case 'createActions':
+      //invalidate cache
+      break;
+      case 'listActions':
+      //cache
+        $res = array('actions'=>array());
+        foreach(glob('*/*.json') as $file) {
+          $res['actions'][] = substr($file,0,-5);
+        }
+      break;
+      case 'readActions':
+      break;
+      case 'deleteActions':
+      break;
+      case 'listMethods':
+        $res = array('methods' => array(
+          //'loop',
+          'Say',
+          //'curl',
+          //'email',
+          'SSH',
+          'Escape',
+          'Insert',
+          'Single',
+          'Select',
+          'Update',
+        ));
+        /*
+          loop n/a
+          say string or object
+          curl n/a
+          email n/a
+          ssh string
+          escape string
+          insert object {"sql","tbl"}
+          single string
+          select string
+          update object {"set","tbl","sql"}
+        */
+      break;
+      case 'readMethods':
+        //switch
+        //return required template input
+      break;
+    }
     return $res;
   }
   private function git($req) {
