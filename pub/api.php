@@ -217,7 +217,11 @@ class API {
       case 'createWorkflows':
         $file = $_POST['n'].'.json';
         if(!file_exists($file)) {
-          $res = file_put_contents($file,$_POST['d']);
+          $data = '';
+          if(isset($_POST['d'])) $data = $_POST['d'];
+          if(file_put_contents($file,json_encode($data))) {
+            $res = 'workflows';
+          }
         }
       break;
       case 'listWorkflows':
@@ -247,20 +251,70 @@ class API {
       break;
       case 'importWorkflows':
       break;
-
       case 'createActions':
-      //invalidate cache
+        $err = 'Unable to Save Action';
+        $name = '';
+        if(isset($_POST['n'])) $name = $_POST['n'];
+        $method = '';
+        if(isset($_POST['m'])) $method = $_POST['m'];
+        switch($method) {
+          case 'say':
+          case 'ssh':
+          case 'escape':
+          case 'insert':
+          case 'single':
+          case 'select':
+          case 'update':
+            $data = '';
+            if(isset($_POST['d'])) $data = $_POST['d'];
+            if(!empty($data)) {
+              $valid = json_decode($data);
+              switch(json_last_error()) {
+                case JSON_ERROR_NONE: break;
+                default: $data = json_encode($data); break;
+              }
+              if(!is_dir($method)) mkdir($method);
+              $file = $method.'/'.$name.'.json';
+              if(!file_exists($file)) {
+                if(file_put_contents($file,$data)) {
+                  $err = '';
+                  $res = 'actions';
+                  unlink($res);
+                }
+              }
+            }
+          break;
+        }
+        if(!empty($err)) echo $err;
       break;
       case 'listActions':
-      //cache
-        $res = array('actions'=>array());
-        foreach(glob('*/*.json') as $file) {
-          $res['actions'][] = substr($file,0,-5);
+        $f = 'actions';
+        if(file_exists($f)) {
+          $res = json_decode(file_get_contents($f));
+        }else{
+          $res = array('actions'=>array());
+          foreach(glob('*/*.json') as $file) {
+            $res['actions'][] = substr($file,0,-5);
+          }
+          file_put_contents($f,json_encode($res));
         }
       break;
       case 'readActions':
+        if(isset($_POST['f'])) {
+          $f = $_POST['f'].'.json';
+          if(file_exists($f)) {
+            $res = json_decode(file_get_contents($f));
+          }
+        }    
       break;
       case 'deleteActions':
+        if(isset($_POST['f'])) {
+          $f = $_POST['f'].'.json';
+          if(file_exists($f)) {
+            //unlink($f);
+
+          }
+        }
       break;
       case 'listMethods':
         $res = array('methods' => array(

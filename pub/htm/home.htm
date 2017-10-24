@@ -57,7 +57,7 @@
       {{/workflows}}
       </div>
       <nav class="navbar navbar-inverse navbar-fixed-bottom">
-        <a class="navbar-brand pull-right" href="javascript:createWorkflow();">
+        <a class="navbar-brand pull-right" href="javascript:createWorkflows();">
           <span class="glyphicon glyphicon-plus-sign"></span> New Workflow
         </a>
       </nav>
@@ -84,24 +84,24 @@
     <div class="actions hidden">
       <div class="list"></div>
       <hr />
-      <input class="form-control" type="text" placeholder="Name" />
+      <input id="workflowName" class="form-control" type="text" placeholder="Name" />
       <hr />
-      <div class="action"></div>
+      <div class="action list-group"></div>
       <nav class="navbar navbar-inverse navbar-fixed-bottom">
         <a class="navbar-brand text-center" href="javascript:view('workflows');">
           <span class="glyphicon glyphicon-list"></span> Workflows
         </a>
-        <a class="navbar-brand" href="javascript:createAction();">
+        <a class="navbar-brand" href="javascript:createActions();">
           <span class="glyphicon glyphicon-plus-sign"></span> New Action
         </a>
-        <a class="navbar-brand pull-right" href="javascript:void(0);">
+        <a class="navbar-brand pull-right" href="javascript:createWorkflow();">
           <span class="glyphicon glyphicon-floppy-disk"></span> Save
         </a>
       </nav>
     </div>
     <div class="action hidden">
       <div class="row">
-        <div class="content col-xs-12">content</div>
+        <pre class="content col-xs-12"></pre>
       </div>
       <nav class="navbar navbar-inverse navbar-fixed-bottom">
         <a class="navbar-brand" href="javascript:view('actions');">
@@ -113,14 +113,14 @@
       </nav>
     </div>
     <div class="methods hidden">
-      <input class="form-control" type="text" placeholder="Name" />
+      <input id="actionName" class="form-control" type="text" placeholder="Name" />
       <hr />
       <div class="list"></div>
       <nav class="navbar navbar-inverse navbar-fixed-bottom">
         <a class="navbar-brand" href="javascript:view('actions');">
           <span class="glyphicon glyphicon-plus-sign"></span> New Workflow
         </a>
-        <a class="navbar-brand pull-right" href="javascript:void(0);">
+        <a class="navbar-brand pull-right" href="javascript:createAction();">
           <span class="glyphicon glyphicon-floppy-disk"></span> Save
         </a>
       </nav>
@@ -130,9 +130,9 @@
 <script id="tpl-automagic-actions" type="text/html">
   <div class="list-group">
   {{#actions}}
-    <a class="list-group-item">
+    <a data-action="{{.}}" class="list-group-item">
       {{.}}
-      <button onclick="javascript:readAction('{{.}}');" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-eye-open"></span> View</button>
+      <button onclick="javascript:readActions('{{.}}');" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-eye-open"></span> View</button>
     </a>
   {{/actions}}
   </div>
