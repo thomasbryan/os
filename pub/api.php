@@ -233,19 +233,30 @@ class API {
       case 'readWorkflows':
         $file = $_POST['n'].'.json';
         if(file_exists($file)) {
-          //glob($file.'-*');
-          //end
-          $res = json_decode(file_get_contents($file));
+          $out = glob($file.'-*');
+          $res = array(
+            'n'=>$_POST['n'],
+            'req'=>json_decode(file_get_contents($file)),
+            'res'=>file_get_contents(end($out)),
+          );
         }
       break;
       case 'runWorkflows':
         $file = $_POST['n'].'.json';
         if(file_exists($file)) {
-          //exec php ../src/app.php $req->User.'/'.$_POST['n'].'.json > 2>/dev/null &');
+          $exec = '/usr/bin/php '.dirname(dirname(__FILE__)).'/src/app.php '.$req->User.'/'.$file.' > /dev/null 2>/dev/null &';
+          exec($exec);
+          $res = 'Workflow Ran';
+          $res = $exec;
         }
       break;
       case 'deleteWorkflows':
-        $res = unlink($_POST['n'].'.json');
+        $file = $_POST['n'].'.json';
+        if(file_exists($file)) {
+          if(unlink($file)) {
+            $res = 'workflows';
+          }
+        }
       break;
       case 'exportWorkflows':
       break;
@@ -311,8 +322,9 @@ class API {
         if(isset($_POST['f'])) {
           $f = $_POST['f'].'.json';
           if(file_exists($f)) {
-            //unlink($f);
-
+            if(unlink($f)) {
+              $res = true;
+            }
           }
         }
       break;

@@ -10,7 +10,9 @@ class automagic {
           $res=false;
           $json = json_decode(file_get_contents($workflow));
           if($json) {
+            chdir(dirname($workflow));
             foreach($json as $file) {
+              $file = $file.'.json';
               if(file_exists($file)) {
                 $req = json_decode(file_get_contents($file));
                 $parts = explode('/',$file);
@@ -22,6 +24,7 @@ class automagic {
                 }
               }
             }
+            chdir(dirname(__FILE__).'/magic');
             file_put_contents($workflow.'-'.time(),json_encode($res));
           }
         }
