@@ -43,19 +43,19 @@ class automagic {
   private function email($req=false,$res=false) {
   }
   private function ssh($req=false,$res=false) {
-    $path = '../phpseclib/phpseclib';
+    $path = dirname(__FILE__).'/../phpseclib/phpseclib';
     $ssh = $path.'/Net/SSH2.php';
     $rsa = $path.'/Crypt/RSA.php';
     if(file_exists($ssh)&&file_exists($rsa)) {
       set_include_path(get_include_path().PATH_SEPARATOR.$path);
       include($ssh);
       include($rsa);
-      $host = $res['host'];
-      $user = $res['user'];
+      $host = $res->host;
+      $user = $res->user;
       if(!empty($user) && !empty($host)) {
-        $pass = $res['pass'];
-        $key = $res['key'];
-        $phrase = $res['phrase'];
+        $pass = $res->pass;
+        $key = $res->key;
+        $phrase = $res->phrase;
         $ssh = new Net_SSH2($host);
         if(empty($key)) {
           if(!$ssh->login($user,$pass)) {
