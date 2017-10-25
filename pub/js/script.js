@@ -4,7 +4,6 @@ $(window).on("hashchange", function (e) {
 }).trigger("hashchange");
 function state(req) {
   switch(req) {
-		case "#login":
     case "#audio":
     case "#automagic":
     case "#chess":
