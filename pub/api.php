@@ -234,10 +234,12 @@ class API {
         $file = $_POST['n'].'.json';
         if(file_exists($file)) {
           $out = glob($file.'-*');
+          $resp = '';
+          if(count($out) > 0) $resp = file_get_contents(end($out));
           $res = array(
             'n'=>$_POST['n'],
             'req'=>json_decode(file_get_contents($file)),
-            'res'=>file_get_contents(end($out)),
+            'res'=>$resp,
           );
         }
       break;
