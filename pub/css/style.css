@@ -192,3 +192,4 @@ body.slide-active { overflow-x: hidden}
 #overlay .line { word-break: break-word; margin-bottom: 0.25em; }
 #profile .container-fluid { margin-bottom: 1em; }
 #profile .pub { word-break: break-all;}
+#profile { margin-bottom: 50px; }
