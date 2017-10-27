@@ -114,6 +114,35 @@ body.slide-active { overflow-x: hidden}
 	.navbar-header { left: 0!important}
 }
 
+#userpass {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+#userpass .form-signin-heading,
+#userpass .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+#userpass .form-control:focus {
+  z-index: 2;
+}
+#userpass input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+#userpass input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
 #e { position: fixed; right: 1em; z-index: 9000; max-width: 97%; }
 #e.alert-danger strong:before { content: "Error:"; } 
 #e.alert-success strong:before { content: "Success:"; } 

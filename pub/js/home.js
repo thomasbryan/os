@@ -120,7 +120,8 @@ function render() {
 }
 function profile(req) {
   if(req.user) {
-    $("#profile .user").html("<a target='_blank' href='/~"+req.user+"/'>"+req.user+"</a>");
+    $("#user").attr("href","/~"+req.user+"/").attr("target","_blank");
+    $("#user .user").html(req.user);
   }
   if(req.pub) {
     $("#profile .pub").html("<span>"+req.pub+"</span>");
@@ -135,8 +136,8 @@ function profile(req) {
   page("profile")
 }
 function page(req) {
-  $(".panel-body > div").addClass("hidden");
-  $("#"+req).removeClass("hidden");
+  $(".page").addClass("hidden");
+  $("."+req).removeClass("hidden");
 }
 $(document).on("submit","form#userpass",function(e) {
   e.preventDefault();

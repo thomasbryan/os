@@ -9,38 +9,22 @@
 	<a target="_blank" href="ssh.php" class="btn btn-default"><span class="glyphicon glyphicon-console"></span> SSH</a>
 </div>
 <br />
-<div class="container">
+<div class="login page hidden container">
+	<form id="userpass">
+    <label for="u" class="sr-only">Email address</label>
+    <input type="text" id="u" class="form-control" placeholder="Username" required="" />
+    <label for="p" class="sr-only">Password</label>
+    <input type="password" id="p" class="form-control" placeholder="Password" required="" />
+    <input type="submit" class="btn btn-lg btn-primary btn-block" id="l" value="Login" />
+  </form>
+</div>
+<div id="profile" class="profile page hidden container">
   <div class="row-fluid">
     <div class="col-sm-8 col-sm-offset-2">
       <div class="panel panel-info">
         <div class="panel-heading"><span class="glyphicon glyphicon-user"></span> User Profile</div>
         <div class="panel-body">
-          <div id="login" class="hidden">
-            <form id="userpass">
-            <p class="container">
-            <div class="row-fluid">
-            <input type="text" id="u" class="form-control" placeholder="Username" />
-            </div>
-            </p>
-            <p class="container">
-            <div class="row-fluid">
-            <input type="password" id="p" class="form-control" placeholder="Password" />
-            </div>
-            </p>
-            <p class="container">
-            <div class="row-fluid">
-            <input type="submit" class="btn btn-primary col-xs-12" id="l" value="Login" />
-            </div>
-            </p>
-            </form>
-          </div>
-          <div id="profile" class="hidden">
-            <div class="container-fluid">
-              <div class="row-fluid">
-                <div class="col-sm-3 col-xs-12"><strong>User <span class="glyphicon glyphicon-user"></span></strong></div>
-                <div class="col-sm-9 col-xs-12 user"></div>
-              </div>
-            </div>
+          <div class="">
             <div class="container-fluid">
               <div class="row-fluid">
                 <div class="col-sm-3 col-xs-12"><strong>SSH <span class="glyphicon glyphicon-certificate"></span></strong></div>
@@ -53,22 +37,23 @@
                 <div class="col-sm-9 col-xs-12 logs"></div>
               </div>
             </div>
-            <div class="container-fluid">
-              <div class="row-fluid">
-                <div class="col-sm-6 col-xs-12">
-                  <a href="javascript:update();" class="btn btn-default col-xs-12"> Update <span class="glyphicon glyphicon-download"></span> </a>
-                </div>
-                <div class="col-sm-6 col-xs-12">
-                  <a href="javascript:logout();" class="btn btn-primary col-xs-12"> Logout <span class="glyphicon glyphicon-log-out"></span> </a>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+<nav class="navbar navbar-inverse navbar-fixed-bottom">
+  <a id="user" class="profile page hidden navbar-brand" href="javascript:void(0);">
+    <span class="glyphicon glyphicon-user"></span> <span class="user">User</span>
+  </a>
+  <a class="profile page hidden navbar-brand" href="javascript:update();">
+    <span class="glyphicon glyphicon-download"></span> Update
+  </a>
+  <a class="profile page hidden navbar-brand pull-right" href="javascript:logout();">
+    <span class="glyphicon glyphicon-log-out"></span> Logout
+  </a>
+</nav>
 </script>
 <script id="tpl-calendar" type="text/html">
   <div class="container">
