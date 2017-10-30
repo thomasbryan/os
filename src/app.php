@@ -39,6 +39,27 @@ class automagic {
   }
 
   private function curl($req=false,$res=false) {
+    $curl = false;
+    if(isset($req['url'])) {
+      $ch = curl_init();
+      //CURLOPT_COOKIEJAR
+      //CURLOPT_COOKIEFILE
+      $opt = array(
+        CURLOPT_URL => $req['url'],
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_USERAGENT => 'curl',
+      );
+      if(isset($res['post'])) {
+        $opt[CURLOPT_POST]=1;
+        $opt[CURLOPT_POSTFIELDS]=$res['post'];
+      }
+      curl_setopt_array($ch, $opt);
+      $curl = curl_exec($ch);
+      $info = curl_getinfo($ch);
+      $err = curl_error($ch);
+      curl_close($ch);
+    }
+    return $curl;
   }
   private function email($req=false,$res=false) {
   }

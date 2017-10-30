@@ -243,6 +243,7 @@ class API {
         if(isset($_POST['m'])) $method = $_POST['m'];
         switch($method) {
           case 'say':
+          case 'curl':
           case 'ssh':
           case 'escape':
           case 'insert':
@@ -307,6 +308,11 @@ class API {
             'n'=> 'Say',
             'i'=> 'say',
             'a'=> array('textarea'=>'Say'),
+          ),
+          array(
+            'n'=> 'CURL',
+            'i'=> 'curl',
+            'a'=> array('textarea'=>'CURL'),
           ),
           array(
             'n'=> 'SSH',
