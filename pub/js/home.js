@@ -159,7 +159,7 @@ $(document).on("submit","form#userpass",function(e) {
     $.ajax({
       type: "POST",
       url: "api.php",
-      data: "req=read&u="+u+"&p="+p
+      data: "u="+u+"&p="+p
     }).done(function(res) {
       profile(res);
     }).fail(function() {

@@ -115,9 +115,9 @@ body.slide-active { overflow-x: hidden}
 }
 
 #userpass {
-    max-width: 330px;
-    padding: 15px;
-    margin: 0 auto;
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto 50px;
 }
 #userpass .form-signin-heading,
 #userpass .form-control {
