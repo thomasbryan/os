@@ -80,6 +80,14 @@ class API {
             $ini.=$k.' = '.$v."\n";
           }
           if(file_put_contents($file,$ini)) {
+            if(count($users) == 1) {
+              $this->sys['admin'] = $user;
+              $ini = '';
+              foreach($this->sys as $k => $v) {
+                $ini.=$k.' = '.$v."\n";
+              }
+              file_put_contents('../src/sys.ini',$ini);
+            }
             $this->roles[$user] = '';
             $ini = '';
             foreach($this->roles as $k => $v) {

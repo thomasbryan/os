@@ -312,7 +312,7 @@
       if(isset($_COOKIE)) {
         if(isset($_COOKIE['t'])) {
           $token = $_COOKIE['t'];
-          $key = parse_ini_file('../src/conf.ini');
+          $key = parse_ini_file('../src/sys.ini');
           if(isset($key['key'])) {
             $shrapnel = explode('.',$token);
             if(count($shrapnel) == 2) {
