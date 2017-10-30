@@ -3,9 +3,7 @@
 <div class="container">
   <a href="#video" class="btn btn-default">VIDEO</a>
   <a href="#edit" class="btn btn-default">EDIT</a>
-  <a href="#post" class="btn btn-default">POST</a>
   <a href="#ssh" class="btn btn-default">SSH</a>
-	<a target="_blank" href="post.php" class="btn btn-default"><span class="glyphicon glyphicon-send"></span> POST</a>
 	<a target="_blank" href="ssh.php" class="btn btn-default"><span class="glyphicon glyphicon-console"></span> SSH</a>
 </div>
 <br />
@@ -95,15 +93,29 @@
 <script id="tpl-automagic" type="text/html">
   <div class="automagic container">
     <div class="workflows">
-      <div class="list-group">
-      {{#workflows}}
-        <a data-workflow="{{.}}" class="list-group-item">
-          {{.}}
-          <button style="margin-left:1em;" class="hidden btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-play"></span> Run</button>
-          <button class="hidden btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-calendar"></span> Schedule</button>
-        </a>
-      {{/workflows}}
-      </div>
+      <table class="table">
+        <thead>
+          <tr><th>Workflow</th><th colspan="3">Actions</th></tr>
+        </thead>
+        <tbody>
+        {{#workflows}}
+          <tr data-workflow="{{.}}">
+            <td data-action="read">
+              <a class="btn btn-primary btn-block">{{.}}</a>
+            </td>
+            <td data-action="remove">
+              <a class="btn btn-default btn-block hidden"><span class="glyphicon glyphicon-trash"></span> Remove</a>
+            </td>
+            <td data-action="schedule">
+              <a class="btn btn-default btn-block hidden"><span class="glyphicon glyphicon-calendar"></span> Schedule</a>
+            </td>
+            <td data-action="run">
+              <a class="btn btn-default btn-block"><span class="glyphicon glyphicon-play"></span> Run</button></a>
+            </td>
+          </tr>
+        {{/workflows}}
+        </tbody>
+      </table>
       <nav class="navbar navbar-inverse navbar-fixed-bottom">
         <a class="navbar-brand pull-right" href="javascript:createWorkflows();">
           <span class="glyphicon glyphicon-plus-sign"></span> New Workflow
@@ -180,14 +192,26 @@
   </div>
 </script>
 <script id="tpl-automagic-actions" type="text/html">
-  <div class="list-group">
-  {{#actions}}
-    <a data-action="{{.}}" class="list-group-item">
-      {{.}}
-      <button onclick="javascript:readActions('{{.}}');" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-eye-open"></span> View</button>
-    </a>
-  {{/actions}}
-  </div>
+  <table class="table">
+    <thead>
+      <tr><th>Action</th><th colspan="2">Actions</th></tr>
+    </thead>
+    <tbody>
+    {{#actions}}
+      <tr data-action="{{.}}">
+        <td data-action="add">
+          <a class="btn btn-primary btn-block">{{.}}</a>
+        </td>
+        <td data-action="remove">
+          <a class="btn btn-default btn-block hidden"><span class="glyphicon glyphicon-trash"></span> Remove</a>
+        </td>
+        <td data-action="read">
+          <a class="btn btn-default btn-block"><span class="glyphicon glyphicon-eye-open"></span> View</button></a>
+        </td>
+      </tr>
+    {{/actions}}
+    </tbody>
+  </table>
 </script>
 <script id="tpl-automagic-methods" type="text/html">
   <div id="method" class="container-fluid">

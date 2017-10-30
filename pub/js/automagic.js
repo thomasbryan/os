@@ -8,17 +8,28 @@ $(document).on("click","#method a",function() {
   $("#method-"+$(this).data("method")).removeClass("hidden");
   $("#method-"+$(this).data("method")+" textarea").focus();
 });
-$(document).on("click",".workflows .list-group a:not(button)",function() {
-  action({"req":"readWorkflows","n":$(this).data("workflow")},"readWorkflows");
-  view("workflow");
+$(document).on("click",".workflows td a:not(.hidden)",function() {
+  var workflow = $(this).closest("tr").data("workflow");
+  switch($(this).closest("td").data("action")) {
+    case "read":
+      action({"req":"readWorkflows","n":workflow},"readWorkflows");
+    break;
+    case "run":
+      action({"req":"runWorkflows","n":workflow});
+    break;
+  }
 });
-$(document).on("click",".actions .list a:not(button)",function() {
-  var actions = $(this).data("action")
-    , num = $(".actions .action.list-group div").length
-    ;
-  if(!$(this).hasClass("active")) {
-    $(".actions .action.list-group").append("<div data-action='"+actions+"' class='action-"+num+" list-group-item'>"+actions+"<button onclick='javascript:deleteAction("+num+");' class='btn btn-danger btn-xs pull-right'><span class='glyphicon glyphicon-trash'></span> Remove</button></div>");
-    $(this).addClass("active action-"+num);
+$(document).on("click",".actions .list td a:not(.hidden)",function() {
+  var actions = $(this).closest("tr").data("action");
+  switch($(this).closest("td").data("action")) {
+    case "add":
+      var num = $(".actions .action.list-group div").length
+      if(!$(this).hasClass("active")) {
+        $(".actions .action.list-group").append("<div data-action='"+actions+"' class='action-"+num+" list-group-item'>"+actions+"<button onclick='javascript:deleteAction("+num+");' class='btn btn-danger btn-xs pull-right'><span class='glyphicon glyphicon-trash'></span> Remove</button></div>");
+        $(this).addClass("active action-"+num);
+      }
+    break;
+    case "read": readActions(actions); break;
   }
 });
 function listWorkflows(req) {
@@ -54,13 +65,13 @@ function createWorkflow() {
   }
 }
 function readWorkflows(req) {
-  console.log(req);
   $("#workflow-req").html("");
   $.each(req.req,function(k,v) {
     $("#workflow-req").append(v+"\n");
   });
   $("#workflow-res").html(req.res);
   $("#workflow-run").data("n",req.n);
+  view("workflow");
 }
 function runWorkflows() {
   action({"req":"runWorkflows","n":$("#workflow-run").data("n")});
