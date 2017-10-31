@@ -240,6 +240,18 @@
 <script id="tpl-git" type="text/html">
 	<div class="git">
 		<div id="projects" class="col-xs-12 col-sm-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<strong><span class="glyphicon glyphicon-cog"></span> Profile</strong>
+          </div>
+					<div class="panel-body">
+            <input type="text" id="n" name="n" class="form-control" placeholder="Name" />
+            <br />
+            <input type="text" id="m" name="m" class="form-control" placeholder="Email" />
+            <hr />
+            <a id="config" href="javascript:void(0);" class="btn btn-default btn-block"><span class="glyphicon glyphicon-floppy-disk"></span> Save</a>
+          </div>
+        </div>
 			<ul class="list-group">
 			{{#projects}}
 				<li data-repo="{{r}}" class="list-group-item repo">
@@ -279,7 +291,7 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<strong>{{r}}</strong>
-						<a data-action="log" href="javascript:void(0);" class="action btn btn-default"><span class="glyphicon glyphicon-list"></span></a>
+						<a data-action="log" href="javascript:void(0);" class="action btn btn-default btn-xs"><span class="glyphicon glyphicon-list"></span></a>
 						<span class="pull-right">{{b}}</span>
 					</div>
 					<div class="panel-body">
@@ -336,23 +348,26 @@
 		</div>
 	</div>
 	<nav class="navbar navbar-inverse navbar-fixed-bottom">
-      <div class="container-fluid">
-        <form method="POST">
-          <div class="form-group ">
-            <div class="col-xs-3">
-              <a id="cache" href="javascript:void(0);" class="btn btn-primary col-xs-12"><span class="glyphicon glyphicon-trash"></span> Cache</a>
-            </div>
-            <div class="col-xs-3">
-              <input type="text" id="n" name="n" class="form-control" placeholder="Name" />
-            </div>
-            <div class="col-xs-3">
-              <input type="text" id="m" name="m" class="form-control" placeholder="Email" />
-            </div>
-            <div class="col-xs-3">
-              <a id="config" href="javascript:void(0);" class="btn btn-default col-xs-12">Config</a>
+    <div class="container-fluid">
+      <form id="clone">
+        <div class="form-group ">
+          <div class="col-xs-3">
+            <a id="cache" href="javascript:void(0);" class="btn btn-primary col-xs-12"><span class="glyphicon glyphicon-trash"></span> Cache</a>
+          </div>
+          <div class="col-xs-9">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="input-group">
+                  <input id="url" type="text" class="form-control" placeholder="URL">
+                  <span class="input-group-btn">
+                    <input class="btn btn-default" type="submit" value="Clone" />
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        </form>
-      </div>
-    </nav>
+        </div>
+      </form>
+    </div>
+  </nav>
 </script>

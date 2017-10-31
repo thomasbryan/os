@@ -363,6 +363,7 @@ class API {
 		$res = false;
 		if(!isset($_POST['req'])) $_POST['req'] = ''; 
     switch($_POST['req']) {
+      case 'clone': $res = $this->gitClone($req->User);break;
       case 'cache': $res = $this->gitCache($req->User);break;
       case 'config': $res = $this->gitConfig($req->User);break;
       case 'diff': $res = $this->gitDiff($req->User);break;
@@ -374,6 +375,26 @@ class API {
       case 'rem': $res = $this->gitRem($req->User);break;
       case 'pull': $res = $this->gitPull($req->User);break;
 			case 'push': $res = $this->gitPush($req->User);break;
+    }
+    return $res;
+  }
+  private function gitClone($user) {
+    $res = false;
+    if(isset($_POST['url'])) {
+      $url = str_replace(' ','',$_POST['url']);
+      if(!filter_var($url, FILTER_VALIDATE_URL) === false) {
+        $path = dirname(__FILE__);
+        chdir($path);
+        chdir('../src/users/'.$user.'/');
+        exec('git clone '.$url.' 2>&1',$out,$ret);
+        if($ret == 0) {
+          chdir($path);
+          $this->gitCache($user);
+          $res = $out;
+        }else{
+          echo implode('<br />',$out);
+        }
+      }
     }
     return $res;
   }

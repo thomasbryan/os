@@ -62,6 +62,10 @@ function gitgrep(req) {
 $(document).on("click","#cache",function(e) {
 	action({"req":"cache"},"gitinit");
 });
+$(document).on("submit","form#clone",function(e) {
+  e.preventDefault();
+  action({"req":"clone","url":$("#url").val()},"gitinit");
+});
 $(document).on("click","#projects li:not(.action)",function(e) {
   e.stopPropagation();
   var repo = $(this).data("repo");
