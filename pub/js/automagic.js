@@ -14,6 +14,8 @@ $(document).on("click",".workflows td a:not(.hidden)",function() {
     case "read":
       action({"req":"readWorkflows","n":workflow},"readWorkflows");
     break;
+    case "remove":
+    break;
     case "run":
       action({"req":"runWorkflows","n":workflow});
     break;
@@ -23,11 +25,14 @@ $(document).on("click",".actions .list td a:not(.hidden)",function() {
   var actions = $(this).closest("tr").data("action");
   switch($(this).closest("td").data("action")) {
     case "add":
-      var num = $(".actions .action.list-group div").length
+      var num = $(".actions .action tr").length
       if(!$(this).hasClass("active")) {
-        $(".actions .action.list-group").append("<div data-action='"+actions+"' class='action-"+num+" list-group-item'>"+actions+"<button onclick='javascript:deleteAction("+num+");' class='btn btn-danger btn-xs pull-right'><span class='glyphicon glyphicon-trash'></span> Remove</button></div>");
+        $(".actions .action tbody").append("<tr data-action='"+actions+"' class='action-"+num+"'><td><div onclick='javascript:deleteAction("+num+");' class='btn-group col-xs-12'><div class='btn btn-default col-xs-10'>"+actions+"</div><div class='btn btn-danger col-xs-2'><span class='glyphicon glyphicon-trash'></span> Remove</div></div></td></tr>");
         $(this).addClass("active action-"+num);
       }
+    break;
+    case "remove":
+      action({"req":"deleteActions","f":actions},"deleteActions");
     break;
     case "read": readActions(actions); break;
   }
@@ -51,20 +56,21 @@ function createWorkflow() {
   if(name.length == 0) {
     err += "Name Required,";
   }
-  if($(".actions .action.list-group").html().length == 0) {
+  if($(".actions .action tr").html().length == 0) {
     err += "Action Required,";
   }
   if(err.length > 0) {
     msg(false,err.replace(/,\s*$/,""));
   }else{
     var data = [];
-    $.each($(".actions .action.list-group .list-group-item"),function(k,v) {
+    $.each($(".actions .action tr"),function(k,v) {
       data.push($(this).data("action"));
     });
     action({"req":"createWorkflows","n":name,"d":data},"view");
   }
 }
 function readWorkflows(req) {
+  $("#workflow-n").html(req.n);
   $("#workflow-req").html("");
   $.each(req.req,function(k,v) {
     $("#workflow-req").append(v+"\n");
@@ -72,6 +78,9 @@ function readWorkflows(req) {
   $("#workflow-res").html(req.res);
   $("#workflow-run").data("n",req.n);
   view("workflow");
+}
+function deleteWorkflows() {
+  action({"req":"deleteWorkflows","n":$("#workflow-run").data("n")},"view");
 }
 function runWorkflows() {
   action({"req":"runWorkflows","n":$("#workflow-run").data("n")});
@@ -118,8 +127,11 @@ function createAction() {
   }
 }
 function deleteAction(req) {
-  $(".actions .action.list-group .action-"+req).remove();
+  $(".actions .action tr.action-"+req).remove();
   $(".action-"+req).removeClass("active action-"+req);
+}
+function deleteActions(req) {
+  $(".actions .list tr[data-action='"+req+"']").remove();
 }
 function listMethods(req) {
   $.get("htm/home.htm", function(templates) {
@@ -129,7 +141,6 @@ function listMethods(req) {
 }
 function readActions(req) {
   action({"req":"readActions","f":req},"readAction");
-  view("action");
 }
 function readAction(req) {
   try {
@@ -137,7 +148,8 @@ function readAction(req) {
   } catch(err) {
     var json = JSON.stringify(req);
   }       
-  $(".action .content").html(json);
+  $(".action pre.content").html(json);
+  view("action");
 }
 function view(req) {
   $(".automagic > div").addClass("hidden");

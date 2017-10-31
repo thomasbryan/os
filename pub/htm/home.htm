@@ -95,16 +95,16 @@
     <div class="workflows">
       <table class="table">
         <thead>
-          <tr><th>Workflow</th><th colspan="3">Actions</th></tr>
+          <tr><th colspan="4">Workflows</th></tr>
         </thead>
         <tbody>
         {{#workflows}}
           <tr data-workflow="{{.}}">
+            <td data-action="remove">
+              <a class="btn btn-danger "><span class="glyphicon glyphicon-trash"></span> Remove</a>
+            </td>
             <td data-action="read">
               <a class="btn btn-primary btn-block">{{.}}</a>
-            </td>
-            <td data-action="remove">
-              <a class="btn btn-default btn-block hidden"><span class="glyphicon glyphicon-trash"></span> Remove</a>
             </td>
             <td data-action="schedule">
               <a class="btn btn-default btn-block hidden"><span class="glyphicon glyphicon-calendar"></span> Schedule</a>
@@ -124,6 +124,9 @@
     </div>
     <div class="workflow hidden">
       <div class="row">
+        <div class="col-xs-12">
+          <h2 id="workflow-n" class="text-center"></h2>
+        </div>
         <div class="col-sm-6">
           <h3>Request</h3>
           <pre id="workflow-req"></pre>
@@ -137,7 +140,7 @@
         <a class="navbar-brand text-center" href="javascript:view('workflows');">
           <span class="glyphicon glyphicon-list"></span> Workflows
         </a>
-        <a class="navbar-brand" href="javascript:void(0);">
+        <a class="navbar-brand" href="javascript:deleteWorkflows();">
           <span class="glyphicon glyphicon-trash"></span> Remove
         </a>
         <a id="workflow-run" class="navbar-brand pull-right" href="javascript:runWorkflows();">
@@ -150,7 +153,7 @@
       <hr />
       <input id="workflowName" class="form-control" type="text" placeholder="Name" />
       <hr />
-      <div class="action list-group"></div>
+      <div class="action"><table class="table"><tbody></tbody></table></div>
       <nav class="navbar navbar-inverse navbar-fixed-bottom">
         <a class="navbar-brand text-center" href="javascript:view('workflows');">
           <span class="glyphicon glyphicon-list"></span> Workflows
@@ -194,7 +197,7 @@
 <script id="tpl-automagic-actions" type="text/html">
   <table class="table">
     <thead>
-      <tr><th>Action</th><th colspan="2">Actions</th></tr>
+      <tr><th colspan="3">Actions</th></tr>
     </thead>
     <tbody>
     {{#actions}}
@@ -203,7 +206,7 @@
           <a class="btn btn-primary btn-block">{{.}}</a>
         </td>
         <td data-action="remove">
-          <a class="btn btn-default btn-block hidden"><span class="glyphicon glyphicon-trash"></span> Remove</a>
+          <a class="btn btn-danger btn-block"><span class="glyphicon glyphicon-trash"></span> Remove</a>
         </td>
         <td data-action="read">
           <a class="btn btn-default btn-block"><span class="glyphicon glyphicon-eye-open"></span> View</button></a>

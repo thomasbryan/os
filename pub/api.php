@@ -1,5 +1,6 @@
 <?php $api = new API();
 class API {
+  private $req = array();
   private $sys = array();
   private $roles = array();
   function __construct() {
@@ -23,7 +24,6 @@ class API {
                 case 'automagic': $res = $this->automagic($req); break;
                 case 'edit': $res = new EDIT($req); break;
                 case 'git': $res = $this->git($req); break;
-                case 'post': $res = new POST($req); break;
                 case 'ssh': $res = new SSH($req); break;
                 case 'video': $res = new VIDEO($req); break;
               }
@@ -114,20 +114,18 @@ class API {
       file_put_contents('../src/auth.log','['.date('Y-m-d H:i:s').'] '.$req.':'.$_SERVER['REMOTE_ADDR'].':'.str_replace(':','=',$_SERVER['HTTP_USER_AGENT'])."\n",FILE_APPEND);
       setcookie('t',$claim.'.'.base64_encode(hash_hmac('sha256',$claim,$this->sys['key'])), time() + 86400);
     }
-    $pub = '';
-    $ssh = '/var/www/.ssh/'.$req.'.pub';
+    return true;
+  }
+  private function authSSH() {
+    $res = false;
+    $ssh = '/var/www/.ssh/'.$this->req->User.'.pub';
     if(!file_exists($ssh)) {
-      exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$req.' -q -N "" -C "'.$req.'"',$exec);
+      exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$this->req->User.' -q -N "" -C "'.$this->req->User.'"',$exec);
     }
     if(file_exists($ssh)) {
-      $pub = file_get_contents($ssh);
+      $res = file_get_contents($ssh);
     }
-    exec('grep "'.$req.'" ../src/auth.log',$logs);
-    return array(
-      'user' => $req,
-      'pub' => $pub,
-      'logs' => array_slice($logs,-5),
-    );
+    return $res;
   }
   private function audio($req) {
     $res = false;
@@ -149,9 +147,12 @@ class API {
     return $res;
   }
   private function auth($req) {
+    $this->req = $req;
     $res = false;
     if(!isset($_POST['req'])) $_POST['req'] = '';
     switch($_POST['req']) {
+      case 'ssh': $res = $this->authSSH();break;
+      case 'logs': $res = $this->authLogs();break;
       case 'softwareupdate': $res = $this->authSoftwareUpdate();break;
       case 'logout': $res = $this->authLogout();break;
       default: 
@@ -159,6 +160,11 @@ class API {
       case 'update': $res = $this->authUpdate();break;
       case 'delete': $res = $this->authDelete();break;
     }
+    return $res;
+  }
+  private function authLogs() {
+    $res = false;
+    exec('grep "'.$this->req->User.'" ../src/auth.log | tail -n 5',$res);
     return $res;
   }
   private function authLogout() {
@@ -297,8 +303,12 @@ class API {
           $f = $_POST['f'].'.json';
           if(file_exists($f)) {
             if(unlink($f)) {
-              $res = true;
+              $res = $_POST['f'];
+              unlink('actions');
             }
+          }else{
+            $res = $_POST['f'];
+            unlink('actions');
           }
         }
       break;
@@ -873,8 +883,6 @@ class AUDIO {
 } #/AUDIO 
 class EDIT {
 } #/EDIT
-class POST {
-} #/POST
 class SSH {
 } #/SSH
 class VIDEO {

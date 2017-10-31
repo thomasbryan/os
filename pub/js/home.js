@@ -119,20 +119,8 @@ function render() {
   });
 }
 function profile(req) {
-  if(req.user) {
-    $("#user").attr("href","/~"+req.user+"/").attr("target","_blank");
-    $("#user .user").html(req.user);
-  }
-  if(req.pub) {
-    $("#profile .pub").html("<span>"+req.pub+"</span>");
-  }
-  if(req.logs) {
-    var html = "";
-    $.each(req.logs,function(k,v) {
-      html += "<div>"+v+"</div>";
-    });
-    $("#profile .logs").html(html);
-  }
+  $("#user").attr("href","/~"+user()+"/").attr("target","_blank");
+  $("#user .user").html(user());
   page("profile")
 }
 function page(req) {
