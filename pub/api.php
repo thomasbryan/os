@@ -36,6 +36,40 @@ class API {
         $res = $this->token();
       }
     }
+    # TODO revise logic
+    if($_SERVER['REQUEST_METHOD']==='GET') {
+      $this->sys = parse_ini_file('../src/sys.ini');
+      $this->roles = parse_ini_file('../src/roles.ini');
+      if(isset($_COOKIE)) {
+        if(isset($_COOKIE['t'])) {
+          $token = $_COOKIE['t'];
+          $shrapnel = explode('.',$token);
+          if(count($shrapnel) == 2) {
+            if($shrapnel[1] == base64_encode(hash_hmac('sha256',$shrapnel[0],$this->sys['key']))) {
+              $this->req = json_decode(base64_decode($shrapnel[0]));
+              if(!isset($_GET['app'])) $_GET['app'] = '';
+              switch($_GET['app']) {
+                case 'audio':
+                  if(isset($_GET['f'])) {
+                    //todo better file validation
+                    $f = '../src/audio/'.$this->req->User.'/'.$_GET['f'];
+                    if(file_exists($f)) {
+                      header('Content-type: audio/mpeg');
+                      header('Content-length: ' . filesize($f));
+                      header('Content-Disposition: filename="' . $_GET['f']);
+                      header('X-Pad: avoid browser bug');
+                      header('Cache-Control: no-cache');
+                      readfile($f);
+                      exit;
+                    }
+                  }
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
     if($res) {
       header('Content-type: application/json');
       if(array_key_exists('callback', $_GET) == TRUE) {
@@ -130,6 +164,7 @@ class API {
   private function audio($req) {
     $res = false;
     $audio = new AUDIO($req);
+    $audio->user = $req;
     if(!isset($_POST['req'])) $_POST['req'] = '';
     switch($_POST['req']) {
       default: $res = $audio->fetch((isset($_POST['s'])?$_POST['s']:''),(isset($_POST['f'])?$_POST['f']:''),(isset($_POST['l'])?$_POST['l']:''));break;
@@ -687,8 +722,10 @@ class AUDIO {
   private $m = 'meta';
   private $l = 'Library';
   private $p = './mp3/';
+  // '../src/audio/';
   private $req = false;
   public $res = false;
+  public $user = array();
   # required: youtube-dl
   # required: libav-tools
   function __construct($req) {

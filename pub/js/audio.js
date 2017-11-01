@@ -300,6 +300,7 @@ function playaudio() {
   var init=1;
   $("#a").attr("src","").remove();
   if(audio.f!== undefined) {
+    //api.php?app=audio&f=
     $("#body").append("<audio id='a'><source src='"+decodeURIComponent(audio.f).replace(/'/g,'%27')+"' type='audio/mp3'></audio>");
     $("#a").get(0).volume = audio.v;
     $("#a").get(0).addEventListener("ended",function() { 
