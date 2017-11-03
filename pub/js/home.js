@@ -155,6 +155,16 @@ $(document).on("submit","form#userpass",function(e) {
     });
   }
 });
+function quotas() {
+  action({"req":"quotas"},"quotasdone");
+}
+function quotasdone(req) {
+  console.log(req);
+  $.get("htm/home.htm", function(templates) {
+    var template = $(templates).filter('#tpl-quotas').html();
+    $("#app .quota").html(Mustache.render(template,{"quotas":req}));
+  });
+}
 function logout() {
   $.ajax({
     type: "POST",

@@ -25,6 +25,12 @@
           <div class="">
             <div class="container-fluid">
               <div class="row-fluid">
+                <div class="col-sm-3 col-xs-12"><strong>Quotas <span class="glyphicon glyphicon-hdd"></span></strong></div>
+                <div class="col-sm-9 col-xs-12 quota"><a class="btn btn-primary" href="javascript:quotas();">Retreive Quota</a></div>
+              </div>
+            </div>
+            <div class="container-fluid">
+              <div class="row-fluid">
                 <div class="col-sm-3 col-xs-12"><strong>SSH <span class="glyphicon glyphicon-certificate"></span></strong></div>
                 <div class="col-sm-9 col-xs-12 pub"></div>
               </div>
@@ -89,6 +95,21 @@
       </div>
     </div>
   </div>
+</script>
+<script id="tpl-quotas" type="text/html">
+  <table class="table table-bordered"><tr>
+  {{#quotas}}
+    <td title="{{n}}">
+    <span class="glyphicon glyphicon-{{i}}"></span>
+    {{#p}} 
+      {{p}}% 
+    {{/p}}
+    {{^p}}
+      <span class="text-success glyphicon glyphicon-check"></span>
+    {{/p}}
+    </td>
+  {{/quotas}}
+  </tr></table>
 </script>
 <script id="tpl-automagic" type="text/html">
   <div class="automagic container">

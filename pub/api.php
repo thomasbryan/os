@@ -3,6 +3,12 @@ class API {
   private $req = array();
   private $sys = array();
   private $roles = array();
+  private $quota = array(
+    'audio' => 102400,
+    'magic' => 10240,
+    'users' => 51200,
+    'video' => 512000,
+  );
   function __construct() {
 		#$this->debug();
     date_default_timezone_set('America/Chicago');
@@ -23,6 +29,7 @@ class API {
                 case 'auth': $res = $this->auth($req); break;
                 case 'automagic': $res = $this->automagic($req); break;
                 case 'edit': $res = new EDIT($req); break;
+                case 'home': $res = $this->auth($req); break;
                 case 'git': $res = $this->git($req); break;
                 case 'ssh': $res = new SSH($req); break;
                 case 'video': $res = new VIDEO($req); break;
@@ -150,17 +157,6 @@ class API {
     }
     return true;
   }
-  private function authSSH() {
-    $res = false;
-    $ssh = '/var/www/.ssh/'.$this->req->User.'.pub';
-    if(!file_exists($ssh)) {
-      exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$this->req->User.' -q -N "" -C "'.$this->req->User.'"',$exec);
-    }
-    if(file_exists($ssh)) {
-      $res = file_get_contents($ssh);
-    }
-    return $res;
-  }
   private function audio($req) {
     $res = false;
     $audio = new AUDIO($req);
@@ -182,10 +178,16 @@ class API {
     return $res;
   }
   private function auth($req) {
+    $req->Role = $this->roles[$req->User];
+    $req->Quota = $this->quota;
+    if($req->Role) {
+      //TODO get quota for role...
+    }
     $this->req = $req;
     $res = false;
     if(!isset($_POST['req'])) $_POST['req'] = '';
     switch($_POST['req']) {
+      case 'quotas': $res = $this->authQuotas();break;
       case 'ssh': $res = $this->authSSH();break;
       case 'logs': $res = $this->authLogs();break;
       case 'softwareupdate': $res = $this->authSoftwareUpdate();break;
@@ -194,6 +196,41 @@ class API {
       case 'read': $res = $this->profile($req->User);break;
       case 'update': $res = $this->authUpdate();break;
       case 'delete': $res = $this->authDelete();break;
+    }
+    return $res;
+  }
+  private function authQuotas() {
+    $res = array(
+      array('n'=>'Audio','d'=>'audio','i'=>'music'),
+      array('n'=>'Documents','d'=>'users','i'=>'file'),
+      array('n'=>'Scripts','d'=>'magic','i'=>'list'),
+      array('n'=>'Videos','d'=>'video','i'=>'film'),
+    );
+    foreach($res as $k => $v) {
+      $d = '../src/'.$v['d'].'/'.$this->req->User.'/';
+      if(file_exists($d)) {
+        $quota = $this->req->Quota[$v['d']];
+        if($quota > 0) {
+          $size = 0;
+          exec('du -s '.$d.'|cut -f1',$exec);
+          if($exec[$k]) $size = (int) $exec[$k];
+          $res[$k]['p'] = number_format(($size / $quota ) * 100,2);
+        }
+        unset($res[$k]['d']);
+      }else{
+        unset($res[$k]);
+      }
+    }
+    return $res;
+  }
+  private function authSSH() {
+    $res = false;
+    $ssh = '/var/www/.ssh/'.$this->req->User.'.pub';
+    if(!file_exists($ssh)) {
+      exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$this->req->User.' -q -N "" -C "'.$this->req->User.'"',$exec);
+    }
+    if(file_exists($ssh)) {
+      $res = file_get_contents($ssh);
     }
     return $res;
   }
@@ -732,6 +769,7 @@ class AUDIO {
   }
   #TODO don't expose all functions, move to API class?
   public function create($req='') {
+    //check quota of user based on role.
     $res = false;
     if(isset($this->user->User)) {
       $u = $this->user->User.'/';
