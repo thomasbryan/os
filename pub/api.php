@@ -168,16 +168,16 @@ class API {
     if(!isset($_POST['req'])) $_POST['req'] = '';
     switch($_POST['req']) {
       default: $res = $audio->fetch((isset($_POST['s'])?$_POST['s']:''),(isset($_POST['f'])?$_POST['f']:''),(isset($_POST['l'])?$_POST['l']:''));break;
-        case 'create': $res = $audio->create($_POST['l']);break;
-        case 'update': $res = $audio->update($_POST['f'],$_POST['l']);break;
-        case 'delete': $res = $audio->delete($_POST['l']);break;
-        case 'download': $res = $audio->download($_POST['d'],$_POST['q']);break;
-        case 'list': $res = $audio->files(false);break;
-        case 'search': $res = $audio->search($_POST['q']);break;
-        case 'edit': $res = $audio->edit($_POST['n'],$_POST['f']);break;
-        case 'google': $res = $audio->google($_POST['y']);break;
-        case 'trash': $res = $audio->trash($_POST['f']);break;
-        case 'refresh': $res = $audio->refresh();break;
+      case 'create': $res = $audio->create($_POST['l']);break;
+      case 'update': $res = $audio->update($_POST['f'],$_POST['l']);break;
+      case 'delete': $res = $audio->delete($_POST['l']);break;
+      case 'download': $res = $audio->download($_POST['d'],$_POST['q']);break;
+      case 'list': $res = $audio->files(false);break;
+      case 'search': $res = $audio->search($_POST['q']);break;
+      case 'edit': $res = $audio->edit($_POST['n'],$_POST['f']);break;
+      case 'google': $res = $audio->google($_POST['y']);break;
+      case 'trash': $res = $audio->trash($_POST['f']);break;
+      case 'refresh': $res = $audio->refresh();break;
     }
     return $res;
   }
@@ -721,8 +721,7 @@ class AUDIO {
   private $d = '';
   private $m = 'meta';
   private $l = 'Library';
-  private $p = './mp3/';
-  // '../src/audio/';
+  private $p = '../src/audio/';
   private $req = false;
   public $res = false;
   public $user = array();
@@ -734,54 +733,66 @@ class AUDIO {
   #TODO don't expose all functions, move to API class?
   public function create($req='') {
     $res = false;
-    if($req!=$this->l && !empty($req) && !file_exists($this->p.$req.'.json')) {
-      file_put_contents($this->p.$req.'.json',json_encode(array()));
-      $res = true;
+    if(isset($this->user->User)) {
+      $u = $this->user->User.'/';
+      if($req!=$this->l && !empty($req) && !file_exists($this->p.$u.$req.'.json')) {
+        file_put_contents($this->p.$u.$req.'.json',json_encode(array()));
+        $res = true;
+      }
     }
     return $res;
   }
   public function update($f='',$l='') {
     $res = false;
-    if($l != $this->l && !empty($l)) {
-      if(file_exists($this->p.$l.'.json')) {
-        $mp3=json_decode(file_get_contents($this->p.$this->l.'.json'),true);
-        $list = json_decode(file_get_contents($this->p.$l.'.json'),true);
-        $list[$f] = $mp3[$f];
-        file_put_contents($this->p.$l.'.json',json_encode($list));
-        $res = true;
+    if(isset($this->user->User)) {
+      $u = $this->user->User.'/';
+      if($l != $this->l && !empty($l)) {
+        if(file_exists($this->p.$u.$l.'.json')) {
+          $mp3=json_decode(file_get_contents($this->p.$u.$this->l.'.json'),true);
+          $list = json_decode(file_get_contents($this->p.$u.$l.'.json'),true);
+          $list[$f] = $mp3[$f];
+          file_put_contents($this->p.$u.$l.'.json',json_encode($list));
+          $res = true;
+        }
       }
     }
     return $res;
   }
   public function delete($req='') {
     $res = false;
-    if($req!=$this->l && !empty($req)) {
-      unlink($this->p.$req.'.json');
-      $res = true;
+    if(isset($this->user->User)) {
+      $u = $this->user->User.'/';
+      if($req!=$this->l && !empty($req)) {
+        unlink($this->p.$u.$req.'.json');
+        $res = true;
+      }
     }
     return $res;
   }
   public function download($url='',$n ='',$p = '') {
     $res = false;
-    if(!empty($url) ) {
-      exec($p.'youtube-dl --get-id '.$url,$id,$ret);
-      if(!$ret) {
-        if(count($id) == 1) {
-          if(file_exists($this->p.$this->m)) $meta = json_decode(file_get_contents($this->p.$this->m),true);
-          $meta[$id[0]] = $n;
-          file_put_contents($this->p.$this->m,json_encode($meta));
-          chdir($this->p);
-          exec($p.'youtube-dl -w -x --id --audio-format mp3 '.$url,$dl,$err);
-          if(!$err) {
-            chmod($id[0].'.mp3',0666);
-            chdir($this->d);
-            $res = $this->refresh();
+    if(isset($this->user->User)) {
+      $u = $this->user->User.'/';
+      if(!empty($url) ) {
+        exec($p.'youtube-dl --get-id '.$url,$id,$ret);
+        if(!$ret) {
+          if(count($id) == 1) {
+            if(file_exists($this->p.$u.$this->m)) $meta = json_decode(file_get_contents($this->p.$u.$this->m),true);
+            $meta[$id[0]] = $n;
+            file_put_contents($this->p.$u.$this->m,json_encode($meta));
+            chdir($this->p.$u);
+            exec($p.'youtube-dl -w -x --id --audio-format mp3 '.$url,$dl,$err);
+            if(!$err) {
+              chmod($id[0].'.mp3',0666);
+              chdir($this->d);
+              $res = $this->refresh();
+            }
+          }else{
+            echo 'Multiple IDs: Playlist?';
           }
         }else{
-          echo 'Multiple IDs: Playlist?';
+          if(empty($p)) $res = $this->install($url,$n);
         }
-      }else{
-        if(empty($p)) $res = $this->install($url,$n);
       }
     }
     return $res;
@@ -809,28 +820,34 @@ class AUDIO {
   }
   public function edit($n='',$f='') {
     $res = false;
-    if(file_exists($this->p.$this->l.'.json')) {
-      $mp3=json_decode(file_get_contents($this->p.$this->l.'.json'),true);
-      if(isset($mp3[$f])) {
-        if(file_exists($this->p.$this->m)) $meta = json_decode(file_get_contents($this->p.$this->m),true);
-        $meta[$mp3[$f]] = $n;
-        file_put_contents($this->p.$this->m,json_encode($meta));
-        $res = true;
+    if(isset($this->user->User)) {
+      $u = $this->user->User.'/';
+      if(file_exists($this->p.$u.$this->l.'.json')) {
+        $mp3=json_decode(file_get_contents($this->p.$u.$this->l.'.json'),true);
+        if(isset($mp3[$f])) {
+          if(file_exists($this->p.$u.$this->m)) $meta = json_decode(file_get_contents($this->p.$u.$this->m),true);
+          $meta[$mp3[$f]] = $n;
+          file_put_contents($this->p.$u.$this->m,json_encode($meta));
+          $res = true;
+        }
       }
     }
     return $res;
   }
   public function search($req) {
     $res = false;
-    if(!empty($req)) {
-      $mp3 = json_decode(file_get_contents($this->p.$this->l.'.json'),true);
-      if(file_exists($this->p.$this->m)) {
-        $meta = json_decode(file_get_contents($this->p.$this->m),true);
-      }
-      foreach($mp3 as $k => $v) {
-        $n = (isset($meta[$v]) ? $meta[$v] : $v);
-        if(preg_match('/'.$req.'/i',$n)) {
-          $res[] = array( 'f' => $k, 'n' => $n);
+    if(isset($this->user->User)) {
+      $u = $this->user->User.'/';
+      if(!empty($req)) {
+        $mp3 = json_decode(file_get_contents($this->p.$u.$this->l.'.json'),true);
+        if(file_exists($this->p.$u.$this->m)) {
+          $meta = json_decode(file_get_contents($this->p.$u.$this->m),true);
+        }
+        foreach($mp3 as $k => $v) {
+          $n = (isset($meta[$v]) ? $meta[$v] : $v);
+          if(preg_match('/'.$req.'/i',$n)) {
+            $res[] = array( 'f' => $k, 'n' => $n);
+          }
         }
       }
     }
@@ -838,52 +855,60 @@ class AUDIO {
   }
   public function fetch($req=false,$id='',$l='') {
     $res=false;
-    if(empty($l)) $l = $this->l;
-    if(file_exists($this->p.$l.'.json')) {
-      $mp3=json_decode(file_get_contents($this->p.$l.'.json'),true);
-    }else{
-      # ???
-      $this->refresh();
-    }
-    if(empty($id)) {
-      $id = key($mp3);
-    }else{
-      if($req == 'true') {
-        $r = array_rand($mp3,2);
-        if($r[0]!=$id) {
-          $id = $r[0];
-        }else{
-          $id = $r[1];
-        }
+    if(isset($this->user->User)) {
+      $u = $this->user->User.'/';
+      if(empty($l)) $l = $this->l;
+      if(file_exists($this->p.$u.$l.'.json')) {
+        $mp3=json_decode(file_get_contents($this->p.$u.$l.'.json'),true);
       }else{
-        while(key($mp3) !== $id) next($mp3);
-        next($mp3);
+        # ???
+        $mp3 = $this->refresh();
+      }
+      if(empty($id)) {
         $id = key($mp3);
-        if($id==null) $mp3 = false;
+      }else{
+        if($req == 'true') {
+          $r = array_rand($mp3,2);
+          if($r[0]!=$id) {
+            $id = $r[0];
+          }else{
+            $id = $r[1];
+          }
+        }else{
+          while(key($mp3) !== $id) next($mp3);
+          next($mp3);
+          $id = key($mp3);
+          if($id==null) $mp3 = false;
+        }
       }
-    }
-    if($mp3) {
-      if(!file_exists($id)) {
-        unset($mp3[$id]);
-        file_put_contents($this->p.$l.'.json',json_encode($mp3));
-        return $this->fetch($req,$id,$l);
+      if($mp3) {
+        chdir($this->p.$u);
+        if(!file_exists($id)) {
+          unset($mp3[$id]);
+          file_put_contents($this->p.$u.$l.'.json',json_encode($mp3));
+          return $this->fetch($req,$id,$l);
+        }
+        chdir($this->d);
+        if(file_exists($this->p.$u.$this->m)) $meta=json_decode(file_get_contents($this->p.$u.$this->m),true);
+        $res = array('c'=>count($mp3),'f' => $id, 'n' => (isset($meta[$mp3[$id]]) ? $meta[$mp3[$id]] : $mp3[$id]));
       }
-      if(file_exists($this->p.$this->m)) $meta=json_decode(file_get_contents($this->p.$this->m),true);
-      $res = array('c'=>count($mp3),'f' => $id, 'n' => (isset($meta[$mp3[$id]]) ? $meta[$mp3[$id]] : $mp3[$id]));
     }
     return $res;
   }
   public function trash($req) {
     $res = false;
-    if(file_exists($req)) {
-      if(file_exists($this->p.$this->l.'.json')) {
-        $mp3=json_decode(file_get_contents($this->p.$this->l.'.json'),true);
-        if(file_exists($this->p.$this->m)) $meta = json_decode(file_get_contents($this->p.$this->m),true);
-        if(isset($meta)) unset($meta[$mp3[$req]]);
-        unlink($req);
-        if(!file_exists($req)) {
-          file_put_contents($this->p.$this->m,json_encode($meta));
-          $res = $this->refresh();
+    if(isset($this->user->User)) {
+      $u = $this->user->User.'/';
+      if(file_exists($req)) {
+        if(file_exists($this->p.$u.$this->l.'.json')) {
+          $mp3=json_decode(file_get_contents($this->p.$u.$this->l.'.json'),true);
+          if(file_exists($this->p.$u.$this->m)) $meta = json_decode(file_get_contents($this->p.$u.$this->m),true);
+          if(isset($meta)) unset($meta[$mp3[$req]]);
+          unlink($req);
+          if(!file_exists($req)) {
+            file_put_contents($this->p.$u.$this->m,json_encode($meta));
+            $res = $this->refresh();
+          }
         }
       }
     }
@@ -912,29 +937,37 @@ class AUDIO {
   }
   public function files($mp3=true) {
     $res = false;
-    if(is_Dir($this->p)) {
-      $res = array(); 
-      $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->p));
-      if($mp3) {
-        foreach($rii as $file) {
-          if($file->isDir()|| $file->getExtension() != 'mp3') continue;
-          $res[$file->getPathname()] = $file->getBasename('.mp3'); 
+    if(isset($this->user->User)) {
+      $u = $this->user->User.'/';
+      if(is_Dir($this->p.$u)) {
+        chdir($this->p.$u);
+        $res = array(); 
+        $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('.'));
+        if($mp3) {
+          foreach($rii as $file) {
+            if($file->isDir()|| $file->getExtension() != 'mp3') continue;
+            $res[$file->getPathname()] = $file->getBasename('.mp3'); 
+          }
+        }else{
+          foreach($rii as $file) {
+            if($file->isDir()|| $file->getExtension() != 'json') continue;
+            $res[] = $file->getBasename('.json'); 
+          }
         }
-      }else{
-        foreach($rii as $file) {
-          if($file->isDir()|| $file->getExtension() != 'json') continue;
-          $res[] = $file->getBasename('.json'); 
-        }
+        chdir($this->d);
       }
     }
     return $res;
   }
   public function refresh() {
     $res = false;
-    $req=$this->files();
-    if($req) {
-      file_put_contents($this->p.$this->l.'.json',json_encode($req));
-      $res = true;
+    if(isset($this->user->User)) {
+      $u = $this->user->User.'/';
+      $req=$this->files();
+      if($req) {
+        file_put_contents($this->p.$u.$this->l.'.json',json_encode($req));
+        $res = $req;
+      }
     }
     return $res;
   }
