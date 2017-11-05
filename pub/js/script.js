@@ -540,6 +540,9 @@ function chessready() {
 function editready() {
   $("#app").html("edit");
 }
+function videoready() {
+  $("#app").html("video");
+}
 var git = localStorage.git;
 function gitready() {
   if(git == null) {
@@ -817,7 +820,21 @@ function quotas() {
 }
 function quotasdone(req) {
   tpl("#app .quota","#tpl-quotas",{"quotas":req});
-  console.log(req);
+}
+function ssh() {
+  ajax({"req":"ssh"},"sshdone");
+}
+function sshdone(req) {
+  $("#app .ssh").html(req);
+}
+function logs() {
+  ajax({"req":"logs"},"logsdone");
+}
+function logsdone(req) {
+  $("#app .log").html("");
+  $.each(req,function(k,v) {
+    $("#app .log").append(v);
+  });
 }
 function logout() {
   $.ajax({
@@ -840,12 +857,6 @@ function update() {
     msg(false,"Software Not Updated");
   });
 }
-function postready() {
-  $("#app").html("Post");
-}
-function sshready() {
-  $("#app").html("ssh");
-}
 function videoredy() {
   $("#app").html("video");
 }
@@ -860,8 +871,6 @@ function state(req) {
     case "#chess":
     case "#edit":
     case "#git":
-    case "#post":
-    case "#ssh":
     case "#video":
     case "#home":break;
     default: req = "#home"; history.pushState(null,null,req); break;
