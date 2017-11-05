@@ -37,7 +37,7 @@ $("form#search").on("submit",function(e) {
 });
 $("form#edit").on("submit",function(e) {
   e.preventDefault();
-  action($(this).serialize());
+  ajax($(this).serialize());
   $(".edit").addClass("hidden");
   $("body").removeClass("body-edit");
 });
@@ -66,7 +66,7 @@ function google() {
   $("#q").blur();
   $("#r .g.disabled").remove();
   search(true);
-  action("req=google&y="+$("#q").val(),"googledone","googlefail");
+  ajax("req=google&y="+$("#q").val(),"googledone","googlefail");
 }
 function googledone(res) {
   search(false);
@@ -176,7 +176,7 @@ function pp() {
   ui();
 }
 function fo() {
-  action(audio,"fodone","fofail");
+  ajax(audio,"fodone","fofail");
 }
 function fodone(res) {
   audio.c = res.c;
@@ -374,13 +374,7 @@ $(document).keyup(function(e) {
 });
 var audio = localStorage.audio;
 function audioready() {
-  var templateData = {
-    "playlist": [
-      ],
-  };
-  $.get("htm/audio.htm", function(templates) {
-    var template = $(templates).filter('#tpl-audio').html();
-    $("#app").html(Mustache.render(template, templateData));
+  tpl("#app","#tpl-audio",{});
     if(audio == null) {
       audio = {"c":20,"f":"","l":"Library","n":"","p":false,"s":false,"t":0,"v":0.5};
       localStorage.audio = JSON.stringify(audio);
@@ -391,10 +385,9 @@ function audioready() {
       playaudio();
       ui();
     }
-  });
 }
 function automagicready() {
-  action({"req":"listWorkflows"},"listWorkflows");
+  ajax({"req":"listWorkflows"},"listWorkflows");
 }
 $(document).on("click","#method a",function() {
   $("#method a").removeClass("active");
@@ -407,12 +400,12 @@ $(document).on("click",".workflows td a:not(.hidden)",function() {
   var workflow = $(this).closest("tr").data("workflow");
   switch($(this).closest("td").data("action")) {
     case "read":
-      action({"req":"readWorkflows","n":workflow},"readWorkflows");
+      ajax({"req":"readWorkflows","n":workflow},"readWorkflows");
     break;
     case "remove":
     break;
     case "run":
-      action({"req":"runWorkflows","n":workflow});
+      ajax({"req":"runWorkflows","n":workflow});
     break;
   }
 });
@@ -427,19 +420,16 @@ $(document).on("click",".actions .list td a:not(.hidden)",function() {
       }
     break;
     case "remove":
-      action({"req":"deleteActions","f":actions},"deleteActions");
+      ajax({"req":"deleteActions","f":actions},"deleteActions");
     break;
     case "read": readActions(actions); break;
   }
 });
 function listWorkflows(req) {
-  $.get("htm/home.htm", function(templates) {
-    var template = $(templates).filter('#tpl-automagic').html();
-    $("#app").html(Mustache.render(template, req));
-  });
+  tpl("#app","#tpl-automagic",req);
 }
 function createWorkflows() {
-  action({"req":"listActions"},"listActions");
+  ajax({"req":"listActions"},"listActions");
   view("actions");
   $(".automagic > .actions input").val("").focus();
   $(".automagic > .actions > .action.list-group").html("");
@@ -461,7 +451,7 @@ function createWorkflow() {
     $.each($(".actions .action tr"),function(k,v) {
       data.push($(this).data("action"));
     });
-    action({"req":"createWorkflows","n":name,"d":data},"view");
+    ajax({"req":"createWorkflows","n":name,"d":data},"view");
   }
 }
 function readWorkflows(req) {
@@ -475,20 +465,17 @@ function readWorkflows(req) {
   view("workflow");
 }
 function deleteWorkflows() {
-  action({"req":"deleteWorkflows","n":$("#workflow-run").data("n")},"view");
+  ajax({"req":"deleteWorkflows","n":$("#workflow-run").data("n")},"view");
 }
 function runWorkflows() {
-  action({"req":"runWorkflows","n":$("#workflow-run").data("n")});
+  ajax({"req":"runWorkflows","n":$("#workflow-run").data("n")});
 }
 function listActions(req) {
-  $.get("htm/home.htm", function(templates) {
-    var template = $(templates).filter('#tpl-automagic-actions').html();
-    $("#app .automagic > .actions .list").html(Mustache.render(template, req));
-  });
+  tpl("#app .automagic > .actions .list","#tpl-automagic-actions",req);
 }
 function createActions() {
   if($("#app .automagic > .methods .list").html().length == 0) {
-    action({"req":"listMethods"},"listMethods");
+    ajax({"req":"listMethods"},"listMethods");
   }
   view("methods");
   $(".automagic > .methods input").val("").focus();
@@ -516,7 +503,7 @@ function createAction() {
       if(data.length == 0) {
         msg(false,"Data Required");
       }else{
-        action({"req":"createActions","n":name,"m":method,"d":data},"view");
+        ajax({"req":"createActions","n":name,"m":method,"d":data},"view");
       }
     }
   }
@@ -529,13 +516,10 @@ function deleteActions(req) {
   $(".actions .list tr[data-action='"+req+"']").remove();
 }
 function listMethods(req) {
-  $.get("htm/home.htm", function(templates) {
-    var template = $(templates).filter('#tpl-automagic-methods').html();
-    $("#app .automagic > .methods .list").html(Mustache.render(template, req));
-  });
+  tpl("#app .automagic > .methods .list","#tpl-automagic-methods",req);
 }
 function readActions(req) {
-  action({"req":"readActions","f":req},"readAction");
+  ajax({"req":"readActions","f":req},"readAction");
 }
 function readAction(req) {
   try {
@@ -566,7 +550,7 @@ function gitready() {
 	gitinit();
 }
 function gitinit() {
-	action({"req":"status"},"gitdone","gitfail");
+	ajax({"req":"status"},"gitdone","gitfail");
 }
 function gitdone(req) {
 	/* Order repos by max items */
@@ -583,19 +567,16 @@ function gitdone(req) {
 			projects.unshift(vv);
 		});
 	});
-	$.get("htm/home.htm", function(templates) {
-		var template = $(templates).filter('#tpl-git').html();
-		$("#app").html(Mustache.render(template,{"projects":projects}));
-    if(git.repo.length > 0) {
-      $("#projects li:not(.action)[data-repo='"+git.repo+"']").click();
-    }
-    if(git.grep.length > 0) {
-			$("#q").val(git.grep);
-    }
-  });
+  tpl("#app","#tpl-git",{"projects":projects});
+  if(git.repo.length > 0) {
+    $("#projects li:not(.action)[data-repo='"+git.repo+"']").click();
+  }
+  if(git.grep.length > 0) {
+	  $("#q").val(git.grep);
+  }
 }
 function gitfail() {
-	action({"req":"cache"});
+	ajax({"req":"cache"});
 }
 $("form#search").on("submit",function(e) {
   e.preventDefault();
@@ -603,7 +584,7 @@ $("form#search").on("submit",function(e) {
 	localStorage.git = JSON.stringify(git);
   if($("#q").val().length > 0) {
 		var repo = $("#project .repo:not(.hidden)").data("repo");
-		action({"req":"grep","grep":git.grep,"project":repo},"gitgrep");
+		ajax({"req":"grep","grep":git.grep,"project":repo},"gitgrep");
   }
 });
 function gitgrep(req) {
@@ -618,11 +599,15 @@ function gitgrep(req) {
   $("#overlay .panel-body").css({"height":Math.ceil($(window).height() * 0.85)+"px"});
 }
 $(document).on("click","#cache",function(e) {
-	action({"req":"cache"},"gitinit");
+	ajax({"req":"cache"},"gitinit");
 });
 $(document).on("submit","form#clone",function(e) {
   e.preventDefault();
-  action({"req":"clone","url":$("#url").val()},"gitinit");
+  ajax({"req":"clone","url":$("#url").val()},"gitinit");
+});
+$(document).on("submit","form.config",function(e) {
+  e.preventDefault();
+  ajax($(this).serialize());
 });
 $(document).on("click","#projects li:not(.action)",function(e) {
   e.stopPropagation();
@@ -638,17 +623,17 @@ $(document).on("click",".action",function(e) {
   e.stopPropagation();
   var repo = $(this).closest(".repo").data("repo");
   switch($(this).data("action")) {
-    case "all": action({"req":"all","project":repo},"gitpush"); break;
-    case "add": action({"req":"add","project":repo,"file":$(this).data("file")},"gitinit"); break;
-    case "rem": action({"req":"rem","project":repo,"file":$(this).data("file")},"gitinit"); break;
+    case "all": ajax({"req":"all","project":repo},"gitpush"); break;
+    case "add": ajax({"req":"add","project":repo,"file":$(this).data("file")},"gitinit"); break;
+    case "rem": ajax({"req":"rem","project":repo,"file":$(this).data("file")},"gitinit"); break;
     case "push": gitpush(repo); break;
-    case "pull": action({"req":"pull","project":repo},"gitinit"); break;
-    case "diff": action({"req":"diff","project":repo},"gitdiff"); break;
-    case "log": action({"req":"log","project":repo},"gitlog"); break;
+    case "pull": ajax({"req":"pull","project":repo},"gitinit"); break;
+    case "diff": ajax({"req":"diff","project":repo},"gitdiff"); break;
+    case "log": ajax({"req":"log","project":repo},"gitlog"); break;
   }
 });
 function gitpush(req) {
-	action({"req":"push","project":req},"gitinit");
+	ajax({"req":"push","project":req},"gitinit");
 }
 function gitdiff(req) {
   //TODO template?
@@ -777,28 +762,18 @@ function homeready() {
   }else{
     if(typeof home === 'string') home = JSON.parse(home);
   }
-  $.get("htm/home.htm", function(templates) {
-    var template = $(templates).filter('#tpl-home').html();
-    $("#app").html(Mustache.render(template, {}));
-    render();
-    $.ajax({
-      type: "POST",
-      url: "api.php?app=auth"
-    }).done(function(res) {
-      profile(res);
-    }).fail(function() {
-      page("login");
-      $("#u").focus();
-    });
-  });
+  tpl("#app","#tpl-home",{});
+  render();
+  ajax({},"profile","homefail");
+}
+function homefail() {
+  page("login");
+  $("#u").focus();
 }
 function render() {
-  $.get("htm/home.htm", function(templates) {
-    var template = $(templates).filter('#tpl-calendar').html();
-    $("#app .home.jumbotron").html(Mustache.render(template, monthly()));
-    clearTimeout(clock);
-    startTime();
-  });
+  tpl("#app .home.jumbotron","#tpl-calendar",monthly());
+  clearTimeout(clock);
+  startTime();
 }
 function profile(req) {
   $("#user").attr("href","/~"+user()+"/").attr("target","_blank");
@@ -838,14 +813,11 @@ $(document).on("submit","form#userpass",function(e) {
   }
 });
 function quotas() {
-  action({"req":"quotas"},"quotasdone");
+  ajax({"req":"quotas"},"quotasdone");
 }
 function quotasdone(req) {
+  tpl("#app .quota","#tpl-quotas",{"quotas":req});
   console.log(req);
-  $.get("htm/home.htm", function(templates) {
-    var template = $(templates).filter('#tpl-quotas').html();
-    $("#app .quota").html(Mustache.render(template,{"quotas":req}));
-  });
 }
 function logout() {
   $.ajax({
@@ -910,46 +882,45 @@ $(document).on("submit","form#search",function(e) {
 });
 
 $(document).ready(function () {
-  //stick in the fixed 100% height behind the navbar but don't wrap it
-  $('#slide-nav.navbar-inverse').after($('<div class="inverse" id="navbar-height-col"></div>'));
-  $('#slide-nav.navbar-default').after($('<div id="navbar-height-col"></div>'));  
-  // Enter your ids or classes
-  var toggler = '.navbar-toggle';
-  var pagewrapper = '#page-content';
-  var navigationwrapper = '.navbar-header';
-  var menuwidth = '100%'; // the menu inside the slide menu itself
-  var slidewidth = '80%';
-  var menuneg = '-100%';
-  var slideneg = '-80%';
+  $("#slide-nav.navbar-inverse").after($('<div class="inverse" id="navbar-height-col"></div>'));
+  $("#slide-nav.navbar-default").after($('<div id="navbar-height-col"></div>'));  
+  var toggler = ".navbar-toggle"
+    , pagewrapper = "#page-content"
+    , navigationwrapper = ".navbar-header"
+    , menuwidth = "100%" 
+    , slidewidth = "80%"
+    , menuneg = "-100%"
+    , slideneg = "-80%"
+    ;
   if($("#slidemenu").height() > $(window).height())
     $(".navbar.navbar-fixed-top.slide-active").css({"position":"fixed"});
 
   $("#slide-nav").on("click", toggler, function (e) {
-    var selected = $(this).hasClass('slide-active');
-    $('#slidemenu').stop().animate({
-      left: selected ? menuneg : '0px'
+    var selected = $(this).hasClass("slide-active");
+    $("#slidemenu").stop().animate({
+      left: selected ? menuneg : "0px"
     });
-    $('#navbar-height-col').stop().animate({
-      left: selected ? slideneg : '0px'
+    $("#navbar-height-col").stop().animate({
+      left: selected ? slideneg : "0px"
     });
     $(pagewrapper).stop().animate({
-      left: selected ? '0px' : slidewidth
+      left: selected ? "0px" : slidewidth
     });
     $(navigationwrapper).stop().animate({
-      left: selected ? '0px' : slidewidth
+      left: selected ? "0px" : slidewidth
     });
-    $(this).toggleClass('slide-active', !selected);
-    $('#slidemenu').toggleClass('slide-active');
-    $('#page-content, .navbar, body, .navbar-header').toggleClass('slide-active');
+    $(this).toggleClass("slide-active", !selected);
+    $("#slidemenu").toggleClass("slide-active");
+    $("#page-content, .navbar, body, .navbar-header").toggleClass("slide-active");
   });
-  var selected = '#slidemenu, #page-content, body, .navbar, .navbar-header';
+  var selected = "#slidemenu, #page-content, body, .navbar, .navbar-header";
   $(window).on("resize", function () {
-    if ($(window).width() > 767 && $('.navbar-toggle').is(':hidden')) {
-      $(selected).removeClass('slide-active');
+    if ($(window).width() > 767 && $(".navbar-toggle").is(":hidden")) {
+      $(selected).removeClass("slide-active");
     }
   });
 });
-function action(data,done,fail) {
+function ajax(data,done,fail) {
   if(data===undefined) data = "";
   $.ajax({
     type: "POST",
@@ -969,13 +940,16 @@ function action(data,done,fail) {
     }
   });
 }
+function tpl(src,dst,req) {
+  $(src).html(Mustache.render($(dst).html(),req));
+}
 function user() {
   var e = encodeURIComponent("t") + "="
-    , d = document.cookie.split(';')
+    , d = document.cookie.split(";")
     ;
   for(var i = 0; i < d.length; i++) {
     var c = d[i];
-    while(c.charAt(0) === ' ') c = c.substring(1, c.length);
+    while(c.charAt(0) === " ") c = c.substring(1, c.length);
     if(c.indexOf(e) === 0) {
       var t = decodeURIComponent(c.substring(e.length,c.length)).split(".")
         , u = $.parseJSON(atob(t[0]))

@@ -478,7 +478,23 @@ class API {
     return true;
   }
   private function gitConfig($user) {
-    exec('git config --list',$res);
+    $res = false;
+    $status = $this->gitStatus($user);
+    foreach($status as $k => $v) {
+      if($v['r'] == $_POST['project']) {
+        chdir(dirname(__FILE__));
+        chdir('../src/users/'.$user.'/'.$_POST['project']);
+        if(isset($_POST['email'])) {
+          $email = str_replace('"','',$_POST['email']);
+          exec('git config --local --replace-all user.email "'.$email.'"',$res);
+        }
+        if(isset($_POST['name'])) {
+          $name = str_replace('"','',$_POST['name']);
+          exec('git config --local --replace-all user.name "'.$name.'"',$res);
+        }
+        return true;
+      }
+    }
     return $res;
   }
   private function gitDiff($user) {
@@ -559,6 +575,7 @@ class API {
     $r = substr(getcwd(),($len+12+strlen($user)));
     exec('git status -sb',$e);
     $b = '';
+    $c = array();
     $s = array();
     $n = array();
     $u = array();
@@ -577,7 +594,13 @@ class API {
         default: if(strlen($vv) > 0 ) { $n[] = substr($vv,3); } break;
       }
     }
-    return array('r'=>$r,'b'=>$b,'s'=>$s,'n'=>$n,'u'=>$u);
+    exec('git config --local --get-regexp user*',$a);
+    foreach($a as $k => $v) {
+      $v = str_replace('user.','',$v);
+      $p = strpos($v,' ');
+      if($p !== false) $c[substr($v,0,$p)] = substr($v,$p+1);
+    }
+    return array('c'=>$c,'r'=>$r,'b'=>$b,'s'=>$s,'n'=>$n,'u'=>$u);
   }
   private function gitLog($user) {
 		$res = false;
