@@ -9,6 +9,8 @@ class API {
     'users' => 51200,
     'video' => 512000,
   );
+  private $d = '';
+  private $p = '../src/users/';
   function __construct() {
 		#$this->debug();
     date_default_timezone_set('America/Chicago');
@@ -28,10 +30,9 @@ class API {
                 case 'audio': $res = $this->audio($req); break;
                 case 'auth': $res = $this->auth($req); break;
                 case 'automagic': $res = $this->automagic($req); break;
-                case 'edit': $res = new EDIT($req); break;
+                case 'edit': $res = $this->edit($req); break;
                 case 'home': $res = $this->auth($req); break;
                 case 'git': $res = $this->git($req); break;
-                case 'ssh': $res = new SSH($req); break;
                 case 'video': $res = new VIDEO($req); break;
               }
             }
@@ -767,6 +768,125 @@ class API {
     }
     return $res;
   }
+  private function edit($req) {
+    $res = false;
+    chdir($this->p.$req->User.'/');
+    $this->d = getcwd().'/';
+    if(!isset($_POST['req'])) $_POST['req'] = '';
+    switch($_POST['req']) {
+      case 'search': $res = $this->search($_POST['q']);break;
+      case 'create': $res = $this->create($_POST['f'],$_POST['n']);break;
+      case 'read': $res = $this->read($_POST['f']);break;
+      case 'update': $res = $this->update($_POST['f'],$_POST['d']);break;
+      case 'delete': $res = $this->delete($_POST['f']);break;
+    }
+    return $res;
+  }
+  private function search($req) {
+    $res = false;
+    if(!empty($req)) {
+      $res = array();
+      $count = strlen($this->d);
+      $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->d,FilesystemIterator::SKIP_DOTS));
+      foreach($files as $file) {
+        $f = substr($file->getPathname(),$count);
+        $pos = strpos($f, $req);
+        if($pos !== false) {
+          $res[$f] = array('n'=>$file->getFilename(),'t'=>($file->isDir()?'d':'f'));
+        }
+      }
+    }
+    return $res;
+  }
+  private function create($f='',$n='') {
+    $res = false;
+    if(!empty($n)) {
+      if($this->valid($f)) {
+        chdir(realpath($this->d.$f));
+        if(substr($n,-1)=='/') {
+          mkdir($n);
+        }else{
+          touch($n);
+          chmod($n,0664);
+        }
+        $res = true;
+      }
+    }
+    return $res;
+  }
+  private function read($req='') {
+    $res = false;
+    if($this->valid($req)) {
+      $req = realpath($this->d.$req);
+      if(is_dir($req)) {
+        $res = array(); 
+        $count = strlen($this->d);
+        $files = new DirectoryIterator($req);
+        foreach($files as $file) {
+          if($file->isDot()) continue;
+          if(file_exists($file->getPathname())) $m = mime_content_type($file->getPathname());
+          switch($m) {
+            case 'directory':$t='d';break;
+            default:
+              $p = explode('/',$m);
+              switch($p[0]) {
+                default: $t='f';break;
+                case 'image':$t='i';break;
+              }
+            break;
+          }
+          $res[substr($file->getPathname(),$count)] = array('n'=>$file->getFilename(),'t'=>$t);
+        }
+        if(empty($res)) $res=true;
+      }else{
+        $m = mime_content_type($req);
+        $p = explode('/',$m);
+        switch($p[0]) {
+          case 'image': $res='data:'.$m.';base64,'.base64_encode(file_get_contents($req)); break;
+          default: $res=explode("\n",file_get_contents($req)); break;
+        }
+      }
+    }
+    return $res;
+  }
+  private function update($f='',$d='') {
+    $res = false;
+    if($this->valid($f)) {
+      $f = realpath($this->d.$f);
+      file_put_contents($f, $d);
+      $res = true;
+    }
+    return $res;
+  }
+  private function delete($req='') {
+    $res = false;
+    if($this->valid($req)) {
+      $req = realpath($this->d.$req);
+      if(is_dir($req)) {
+        rmdir($req);
+      }else{
+        unlink($req);
+      }
+      $res = true;
+    }
+    return $res;
+  }
+  private function valid($req=false) {
+    $res = false;
+    if(empty($req)) return true;
+    if(is_file($this->d.$req) || is_dir($this->d.$req)) {
+      $pos = strpos(realpath($this->d.$req),$this->d);
+      if($pos!==false) {
+        if($pos==0) {
+          $res = true;
+        }
+      }
+    }
+    return $res;
+  }
+  
+  
+  
   # DEBUG MODE #
   private function debug() {
     set_time_limit(30);
@@ -1033,10 +1153,6 @@ class AUDIO {
     return $res;
   }
 } #/AUDIO 
-class EDIT {
-} #/EDIT
-class SSH {
-} #/SSH
 class VIDEO {
 } #/VIDEO
 ?>
