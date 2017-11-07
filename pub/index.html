@@ -1,45 +1,45 @@
 <!DOCTYPE html>
 <html>
   <head>
-		<title>OS</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/style.css" rel="stylesheet">
-  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <title>OS</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
   </head>
   <body>
-		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="slide-nav">
-			<div class="container-fluid">
-				<div id="slidemenu">
-					<ul class="nav navbar-nav">
-						<li class="home"><a href="#home"><span class="glyphicon glyphicon-home"></span> <span class="hidden-sm hidden-md">HOME</span></a></li>
-						<li class="automagic"><a href="#automagic"><span class="glyphicon glyphicon-list"></span> <span class="hidden-sm">MAGIC</span></a></li>
-						<li class="audio"><a href="#audio"><span class="glyphicon glyphicon-music"></span> <span class="hidden-sm">AUDIO</span></a></li>
-						<li class="video"><a target="_blank" href="video.php"><span class="glyphicon glyphicon-film"></span> <span class="hidden-sm">VIDEO</span></a></li>
-						<li class="db"><a target="_blank" href="db.php"><span class="glyphicon glyphicon-hdd"></span> <span class="hidden-sm">DB</span></a></li>
-						<li class="edit"><a target="_blank" href="editor.php"><span class="glyphicon glyphicon-pencil"></span> <span class="hidden-sm">EDIT</span></a></li>
-						<li class="git"><a href="#git"><span class="glyphicon glyphicon-cloud"></span> <span class="hidden-sm">GIT</span></a></li>
-						<li class="chess"><a target="_blank" href="chess.html"><span class="glyphicon glyphicon-queen"></span> <span class="hidden-sm">CHESS</span></a></li>
-					</ul>
-				</div>
-				<div class="navbar-header">
-					<a class="navbar-toggle"> 
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar forward"></span>
-						<span class="icon-bar backward"></span>
-						<span class="icon-bar none"></span>
-					</a>
-					<form class="col-xs-10 col-sm-12 navbar-right" role="form" id="search" method="POST" >
-						<input type="hidden" name="req" value="search" />
-						<div class="form-group has-feedback">
-							<input type="text" id="q" name="q" class="form-control" placeholder="Search" />
-							<span class="glyphicon glyphicon-search form-control-feedback"></span>
-						</div>
-					</form>
-				</div>
-			</div>
- 		</div>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="slide-nav">
+      <div class="container-fluid">
+        <div id="slidemenu">
+          <ul class="nav navbar-nav">
+            <li class="home"><a href="#home"><span class="glyphicon glyphicon-home"></span> <span class="hidden-sm hidden-md">HOME</span></a></li>
+            <li class="automagic"><a href="#automagic"><span class="glyphicon glyphicon-list"></span> <span class="hidden-sm">MAGIC</span></a></li>
+            <li class="audio"><a href="#audio"><span class="glyphicon glyphicon-music"></span> <span class="hidden-sm">AUDIO</span></a></li>
+            <li class="video"><a href="#video"><span class="glyphicon glyphicon-film"></span> <span class="hidden-sm">VIDEO</span></a></li>
+            <li class="db"><a target="_blank" href="db.php"><span class="glyphicon glyphicon-hdd"></span> <span class="hidden-sm">DB</span></a></li>
+            <li class="edit"><a href="#edit"><span class="glyphicon glyphicon-pencil"></span> <span class="hidden-sm">EDIT</span></a></li>
+            <li class="git"><a href="#git"><span class="glyphicon glyphicon-cloud"></span> <span class="hidden-sm">GIT</span></a></li>
+            <li class="chess"><a target="_blank" href="chess.html"><span class="glyphicon glyphicon-queen"></span> <span class="hidden-sm">CHESS</span></a></li>
+          </ul>
+        </div>
+        <div class="navbar-header">
+          <a class="navbar-toggle"> 
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar forward"></span>
+            <span class="icon-bar backward"></span>
+            <span class="icon-bar none"></span>
+          </a>
+          <form class="col-xs-10 col-sm-12 navbar-right" role="form" id="search" method="POST" >
+            <input type="hidden" name="req" value="search" />
+            <div class="form-group has-feedback">
+              <input type="text" id="q" name="q" class="form-control" placeholder="Search" />
+              <span class="glyphicon glyphicon-search form-control-feedback"></span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
     <div id="page-content">
       <div id="e" class="hidden alert" role="alert"> </div>
       <div id="app"></div>
@@ -103,11 +103,6 @@
 </script>
 <script id="tpl-home" type="text/html">
 <div class="home jumbotron"></div>
-<div class="container">
-  <a href="#video" class="btn btn-default">VIDEO</a>
-  <a href="#edit" class="btn btn-default">EDIT</a>
-</div>
-<br />
 <div class="login page hidden container">
 	<form id="userpass">
     <label for="u" class="sr-only">Email address</label>
