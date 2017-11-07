@@ -871,6 +871,7 @@ function videoready() {
             search(true);
             $.ajax({
               type: "POST",
+              url: "api.php?app=edit",
               data: $(this).serialize()
             }).done(function(res) {
               search(false);
@@ -893,6 +894,7 @@ function videoready() {
         /*
         $.ajax({
           type: "POST",
+              url: "api.php?app=edit",
           data: $(this).serialize()
         }).fail(function() {
           msg(false,"Unable to Update");
@@ -962,6 +964,7 @@ function videoready() {
         var f = $("#f").val();
         $.ajax({
           type: "POST",
+              url: "api.php?app=edit",
           data: "req=delete&f="+f
         }).done(function(res) {
           $(".list-group").find("[data-f='"+f+"']").remove();
@@ -1068,6 +1071,7 @@ function videoready() {
             edit.d = d;
             $.ajax({
               type: "POST",
+              url: "api.php?app=edit",
               data: "req=update&f="+edit.f+"&d="+encodeURIComponent($("#d").val())
             }).done(function(res) {
               $("#b .active .glyphicon-floppy-disk").show().removeClass("hidden").delay(500).fadeOut(500);
