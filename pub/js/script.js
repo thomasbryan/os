@@ -895,29 +895,30 @@ function videoready() {
           type: "POST",
           data: $(this).serialize()
         }).fail(function() {
-          err("Unable to Update");
+          msg(false,"Unable to Update");
         });
         */
         $(".edit").addClass("hidden");
         $("body").removeClass("body-edit");
       });
-      $(document).on("submit","form#create",function(e) {
+      $(document).on("submit","form#new",function(e) {
         e.preventDefault();
-        var n = $("#create .form-control").val();
-        if(n.length > 0) {
-          $.ajax({
-            type: "POST",
-            data: "req=create&f="+edit.f+"&n="+n
-          }).done(function(res) {
-            $("#create .form-control").val("");
-            edit.f = edit.f+(edit.f.length>0?"/":"")+n;
-            editstate();
-          }).fail(function() {
-            $("#create .form-control").val("");
-            err("Failed to Create File");
-          });
+        edit.n = $("#new .form-control").val();
+        if(edit.n.length > 0) {
+          ajax({"req":"create","f":edit.f,"n":edit.n},"createdone","createfail");
         }
       });
+      function createdone(res) {
+        $("#new .form-control").val("");
+        edit.f = edit.f+(edit.f.length>0?"/":"")+edit.n;
+        delete edit.n;
+        editstate();
+      }
+      function createfail() {
+        $("#new .form-control").val("");
+        msg(false,"Failed to Create File");
+        delete edit.n;
+      }
       function search(req) {
         ( req ? $(".form-control-feedback").removeClass("glyphicon-search").addClass("glyphicon-hourglass") : $(".form-control-feedback").removeClass("glyphicon-hourglass").addClass("glyphicon-search") );
       }
@@ -965,12 +966,9 @@ function videoready() {
         }).done(function(res) {
           $(".list-group").find("[data-f='"+f+"']").remove();
         }).fail(function() {
-          err("Failed to Delete '"+f+"'");
+          msg(false,"Failed to Delete '"+f+"'");
         });
         close();
-      }
-      function err(req) {
-        $("#e").html("<strong>Error:</strong> "+req+"!").show().removeClass("hidden").delay(5000).fadeOut(500);
       }
       function reset() {
         $("#q").val("");
@@ -998,7 +996,7 @@ function videoready() {
           var html = ""
             , val = ""
             , lines = ""
-            , form = "<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>"
+            , form = "<div class='list-group-item list-group-item-success'><form id='new'><div class='input-group'><input class='form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>"
             ;
           $(window).scrollTop(0);
           if($.isArray(res)) {
@@ -1008,7 +1006,7 @@ function videoready() {
               lines+="<a href='javascript:void(0);' class='list-group-item'>"+v.replace(/</g,"&lt;").replace(/>/g,"&gt;")+"<span class='badge'>"+(k+1)+"</span></a>";
               val=val+v+"\n";
             });
-            $("#d").val($.trim(val)).height(($(window).height()-$("nav").height()-$("#b").height()-100));
+            $("#d").val($.trim(val)).height(($(window).height()-$("nav").height()-$("#b").height()-150));
             $("#l").html(lines);
             if(edit.m) {
               $("#d").removeClass("hidden").focus();
