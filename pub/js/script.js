@@ -380,7 +380,7 @@ function audioready() {
       localStorage.audio = JSON.stringify(audio);
       fo();
     }else{
-      audio = JSON.parse(audio);
+      if(typeof audio === 'string') audio = JSON.parse(audio);
       playlist();
       playaudio();
       ui();
@@ -545,9 +545,9 @@ function gitready() {
   if(git == null) {
     git = {"name":"","email":"","repo":"","grep":""};
   }else{
-    git = JSON.parse(git);
+    if(typeof git === 'string') git = JSON.parse(git);
   }
-	gitinit();
+  gitinit();
 }
 function gitinit() {
 	ajax({"req":"status"},"gitdone","gitfail");
@@ -1082,7 +1082,7 @@ function videoready() {
         if(edit == null) {
           edit = {"f":"","d":0,"m":1};
         }else{
-          edit = JSON.parse(edit);
+          if(typeof edit === 'string') edit = JSON.parse(edit);
         }
         tpl("#app","#tpl-edit",{});
         editstate();
