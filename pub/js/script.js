@@ -537,9 +537,6 @@ function view(req) {
 function chessready() {
   $("#app").html("chess");
 }
-function editready() {
-  $("#app").html("edit");
-}
 function videoready() {
   $("#app").html("video");
 }
@@ -857,9 +854,240 @@ function update() {
     msg(false,"Software Not Updated");
   });
 }
-function videoredy() {
+function videoready() {
   $("#app").html("video");
 }
+      $("form#search").on("submit",function(e) {
+        e.preventDefault();
+        if($("#q").val().length > 0) {
+          $("#d").addClass("hidden");
+          if($("#q").val() != $("#q").data("q")) {
+            $("#q").data("q",$("#q").val());
+            $("#r").html("");
+            $("#b").html("<li><a href='javascript:void(0);' data-f=''><span class='glyphicon glyphicon-home'></span></a></li>");
+          }
+          if($("#r .g").length == 0 ) {
+            $("#q").blur();
+            search(true);
+            $.ajax({
+              type: "POST",
+              data: $(this).serialize()
+            }).done(function(res) {
+              search(false);
+              var html = "";
+              html += list(res,true);
+              $("#r").html(html);
+            }).fail(function() {
+              search(false);
+              $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
+            });
+          }
+        }else{
+          reset();
+        }
+      });
+      $("form#edit").on("submit",function(e) {
+        e.preventDefault();
+        console.log("update this information");
+        console.log($(this).serialize());
+        /*
+        $.ajax({
+          type: "POST",
+          data: $(this).serialize()
+        }).fail(function() {
+          err("Unable to Update");
+        });
+        */
+        $(".edit").addClass("hidden");
+        $("body").removeClass("body-edit");
+      });
+      $(document).on("submit","form#create",function(e) {
+        e.preventDefault();
+        var n = $("#create .form-control").val();
+        if(n.length > 0) {
+          $.ajax({
+            type: "POST",
+            data: "req=create&f="+edit.f+"&n="+n
+          }).done(function(res) {
+            $("#create .form-control").val("");
+            edit.f = edit.f+(edit.f.length>0?"/":"")+n;
+            editstate();
+          }).fail(function() {
+            $("#create .form-control").val("");
+            err("Failed to Create File");
+          });
+        }
+      });
+      function search(req) {
+        ( req ? $(".form-control-feedback").removeClass("glyphicon-search").addClass("glyphicon-hourglass") : $(".form-control-feedback").removeClass("glyphicon-hourglass").addClass("glyphicon-search") );
+      }
+      $(document).on("click","#r a:not(.disabled),#b a",function(e) {
+        edit.f = $(this).data("f");
+        editstate();
+      });
+      $(document).on("click",".navbar-brand",function(e) {
+        switch ($(this).data("req")) {
+          case "ce":close();break;
+          case "tn":trash();break;
+        }
+      });
+      $(document).on("click","#p a,#r a:not(.disabled) button:not(.update)",function(e) {
+        $(".edit").removeClass("hidden");
+        $("body").addClass("body-edit");
+        $("#f").val(($(this).data("f")===undefined?$(this).parent().data("f"):$(this).data("f")));
+        $("#n").html("Delete '"+($(this).data("n")===undefined?$(this).parent().data("n"):$(this).data("n"))+"'?");
+        e.stopPropagation();
+      });
+      $(document).on("click","#m button",function(e) {
+        $("#m button").removeClass("active");
+        $("#d,#l").addClass("hidden");
+        $(this).addClass("active");
+        if($(this).hasClass("l")) {
+          edit.m = 0;
+          $("#l").removeClass("hidden");
+          //scroll to active
+        }else{
+          edit.m = 1;
+          $("#d").removeClass("hidden").focus();
+          //scroll to top
+        }
+        //localStorage.editor = JSON.stringify(edit);
+      });
+      function close() {
+        $(".edit").addClass("hidden");
+        $("body").removeClass("body-edit");
+      }
+      function trash() {
+        var f = $("#f").val();
+        $.ajax({
+          type: "POST",
+          data: "req=delete&f="+f
+        }).done(function(res) {
+          $(".list-group").find("[data-f='"+f+"']").remove();
+        }).fail(function() {
+          err("Failed to Delete '"+f+"'");
+        });
+        close();
+      }
+      function err(req) {
+        $("#e").html("<strong>Error:</strong> "+req+"!").show().removeClass("hidden").delay(5000).fadeOut(500);
+      }
+      function reset() {
+        $("#q").val("");
+        editstate();
+      }
+      function editstate() {
+        $("#q").val("");
+        $("#b").html("<li><a href='javascript:void(0);' data-f=''><span class='glyphicon glyphicon-home'></span></a></li>");
+        $("#m").addClass("hidden");
+        if(edit.f.length > 0) {
+          var b = edit.f.split("/")
+            , f = ""
+            ;
+          $.each(b,function(k,v) {
+            f=f+v;
+            $("#b").append("<li><a href='javascript:void(0);' data-f='"+f+"'>"+v+"</a></li>");
+            f=f+"/";
+          });
+        }
+        $("#b li").last().html($("#b li:last a").html()).addClass("active").append(" <span class='hidden glyphicon glyphicon-floppy-disk'>");
+        document.title = $("#b .active").text()+($("#b .active").text().trim().length>0?"- ":"")+"Editor"
+        ajax({"req":"read","f":edit.f},"readdone");
+      }
+      function readdone(res) {
+          var html = ""
+            , val = ""
+            , lines = ""
+            , form = "<div class='list-group-item list-group-item-success'><form id='create'><div class='input-group'><input class='form-control' name='n' type='text' placeholder='Create'><div class='input-group-btn'><button class='btn btn-default'><span class='glyphicon glyphicon-plus-sign'></span> New</button></div></div></form></div>"
+            ;
+          $(window).scrollTop(0);
+          if($.isArray(res)) {
+            $("#m").removeClass("hidden");
+            $("#m > button").removeClass("active");
+            $.each(res,function(k,v) {
+              lines+="<a href='javascript:void(0);' class='list-group-item'>"+v.replace(/</g,"&lt;").replace(/>/g,"&gt;")+"<span class='badge'>"+(k+1)+"</span></a>";
+              val=val+v+"\n";
+            });
+            $("#d").val($.trim(val)).height(($(window).height()-$("nav").height()-$("#b").height()-100));
+            $("#l").html(lines);
+            if(edit.m) {
+              $("#d").removeClass("hidden").focus();
+              $("#m .d").addClass("active");
+            }else{
+              $("#l").removeClass("hidden");
+              $("#m .l").addClass("active");
+              $("#l a").first().addClass("active");
+            }
+            edit.d = $("#d").val().length;
+          }else{
+            $("#d,#l").addClass("hidden");
+            if($.isPlainObject(res)) {
+              html += form;
+              html += list(res,false);
+            }else{
+              if(res.length === undefined) {
+                html += form;
+              }else{
+                html += "<img class='img-responsive' src='"+res+"' />";
+              }
+              console.log(res.length);
+            }
+          }
+          $("#r").html(html);
+      }
+      function list(req,t) {
+        var res = ""
+          , type = ""
+          , keys = []
+          , k
+          , i
+          , len
+        ;
+        for (k in req) {
+          if (req.hasOwnProperty(k)) {
+            keys.push(k);
+          }
+        }
+        keys.sort();
+        len = keys.length;
+        for(i = 0; i < len; i++) {
+          k = keys[i];
+          switch(req[k].t) {
+            default:type="file";break;
+            case "d":type = "folder-open";break;
+            case "i":type = "picture";break;
+          }
+          res += "<a class='list-group-item' data-n='"+req[k].n+"' data-f='"+k+"' title='"+k+"'><span class='glyphicon glyphicon-"+type+"'></span> "+(t ? k : req[k].n);
+          res += "<button class='btn btn-danger'><span class='glyphicon glyphicon-trash'></span> Delete</button>";
+          res += "</a>";
+        }
+        return res;
+      }
+      setInterval(function() { 
+        if($("#d").is(":visible")) {
+          var d = $("#d").val().length;
+          if(edit.d != d) {
+            edit.d = d;
+            $.ajax({
+              type: "POST",
+              data: "req=update&f="+edit.f+"&d="+encodeURIComponent($("#d").val())
+            }).done(function(res) {
+              $("#b .active .glyphicon-floppy-disk").show().removeClass("hidden").delay(500).fadeOut(500);
+            });
+          }
+        }
+      }, 5000);
+	var edit = localStorage.editor;
+      function editready() {
+        if(edit == null) {
+          edit = {"f":"","d":0,"m":1};
+        }else{
+          edit = JSON.parse(edit);
+        }
+        tpl("#app","#tpl-edit",{});
+        editstate();
+      }
+      
 var app = {};
 $(window).on("hashchange", function (e) {
     state(location.hash);
