@@ -30,7 +30,7 @@ class API {
                 case 'audio': $res = $this->audio($req); break;
                 case 'auth': $res = $this->auth($req); break;
                 case 'automagic': $res = $this->automagic($req); break;
-                case 'edit': $res = $this->edit($req); break;
+                case 'editor': $res = $this->edit($req); break;
                 case 'home': $res = $this->auth($req); break;
                 case 'git': $res = $this->git($req); break;
                 case 'video': $res = new VIDEO($req); break;

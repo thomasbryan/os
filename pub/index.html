@@ -18,7 +18,7 @@
             <li class="audio"><a href="#audio"><span class="glyphicon glyphicon-music"></span> <span class="hidden-sm">AUDIO</span></a></li>
             <li class="video"><a href="#video"><span class="glyphicon glyphicon-film"></span> <span class="hidden-sm">VIDEO</span></a></li>
             <li class="db"><a target="_blank" href="db.php"><span class="glyphicon glyphicon-hdd"></span> <span class="hidden-sm">DB</span></a></li>
-            <li class="edit"><a href="#edit"><span class="glyphicon glyphicon-pencil"></span> <span class="hidden-sm">EDIT</span></a></li>
+            <li class="editor"><a href="#editor"><span class="glyphicon glyphicon-pencil"></span> <span class="hidden-sm">EDIT</span></a></li>
             <li class="git"><a href="#git"><span class="glyphicon glyphicon-cloud"></span> <span class="hidden-sm">GIT</span></a></li>
             <li class="chess"><a target="_blank" href="chess.html"><span class="glyphicon glyphicon-queen"></span> <span class="hidden-sm">CHESS</span></a></li>
           </ul>
@@ -494,9 +494,22 @@
   </nav>
 </script>
 <script id="tpl-edit" type="text/html">
-    <div class="edit" class="container-fluid">
+    <div class="editor" class="container-fluid">
       <div class="row-fluid">
+        <div class="edit hidden navbar navbar-inverse navbar-fixed-bottom">
+        <div class="edit hidden navbar-header">
+          <form id="edit" method="POST" >
+            <div class="form-group">
+              <input type="hidden" id="f" name="f" />
+            </div>
+          </form>
+        </div>
+        <a id="n" class="edit hidden navbar-brand"></a>
+        <a data-req="ce" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-remove-sign"></span> No</a>
+        <a data-req="etn" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-ok-sign text-danger"></span> <span class="text-danger">Yes</span></a>
+        </div>
         <div class="col-xs-12">
+
           <div id="m" class="btn-group btn-group-xs hidden">
             <button type="button" class="l btn btn-default"><span class="glyphicon glyphicon-tasks"></span></button>
             <button type="button" class="d btn btn-default"><span class="glyphicon glyphicon-file"></span></button>

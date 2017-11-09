@@ -1,8 +1,27 @@
 $("form#edit").on("submit",function(e) {
   e.preventDefault();
+  switch(app.app) {
+  case "audio":
   ajax($(this).serialize());
   $(".edit").addClass("hidden");
   $("body").removeClass("body-edit");
+  break;
+  case "edit":
+        console.log("update this information");
+        console.log($(this).serialize());
+        /*
+        $.ajax({
+          type: "POST",
+              url: "api.php?app=editor",
+          data: $(this).serialize()
+        }).fail(function() {
+          msg(false,"Unable to Update");
+        });
+        */
+        $(".edit").addClass("hidden");
+        $("body").removeClass("body-edit");
+  break;
+  }
 });
 $(document).on("submit","form#create",function(e) {
   e.preventDefault();
@@ -115,6 +134,7 @@ $(document).on("click",".navbar-brand",function(e) {
     case "li":list();break;
     case "ce":close();break;
     case "tn":trash();break;
+    case "etn":edittrash();break;
   }
 });
 $(document).on("click","#p a,#r .g:not(.disabled) button:not(.update)",function(e) {
@@ -811,22 +831,6 @@ function update() {
 function videoready() {
   $("#app").html("video");
 }
-      $("form#edit").on("submit",function(e) {
-        e.preventDefault();
-        console.log("update this information");
-        console.log($(this).serialize());
-        /*
-        $.ajax({
-          type: "POST",
-              url: "api.php?app=edit",
-          data: $(this).serialize()
-        }).fail(function() {
-          msg(false,"Unable to Update");
-        });
-        */
-        $(".edit").addClass("hidden");
-        $("body").removeClass("body-edit");
-      });
       $(document).on("submit","form#new",function(e) {
         e.preventDefault();
         edit.n = $("#new .form-control").val();
@@ -854,8 +858,6 @@ function videoready() {
       });
       $(document).on("click",".navbar-brand",function(e) {
         switch ($(this).data("req")) {
-          case "ce":close();break;
-          case "tn":trash();break;
         }
       });
       $(document).on("click","#p a,#r a:not(.disabled) button:not(.update)",function(e) {
@@ -880,15 +882,11 @@ function videoready() {
         }
         //localStorage.editor = JSON.stringify(edit);
       });
-      function close() {
-        $(".edit").addClass("hidden");
-        $("body").removeClass("body-edit");
-      }
-      function trash() {
+      function edittrash() {
         var f = $("#f").val();
         $.ajax({
           type: "POST",
-              url: "api.php?app=edit",
+          url: "api.php?app=editor",
           data: "req=delete&f="+f
         }).done(function(res) {
           $(".list-group").find("[data-f='"+f+"']").remove();
@@ -995,7 +993,7 @@ function videoready() {
             edit.d = d;
             $.ajax({
               type: "POST",
-              url: "api.php?app=edit",
+              url: "api.php?app=editor",
               data: "req=update&f="+edit.f+"&d="+encodeURIComponent($("#d").val())
             }).done(function(res) {
               $("#b .active .glyphicon-floppy-disk").show().removeClass("hidden").delay(500).fadeOut(500);
@@ -1004,7 +1002,7 @@ function videoready() {
         }
       }, 5000);
 	var edit = localStorage.editor;
-      function editready() {
+      function editorready() {
         if(edit == null) {
           edit = {"f":"","d":0,"m":1};
         }else{
@@ -1023,7 +1021,7 @@ function state(req) {
     case "#audio":
     case "#automagic":
     case "#chess":
-    case "#edit":
+    case "#editor":
     case "#git":
     case "#video":
     case "#home":break;
@@ -1091,7 +1089,7 @@ $(document).on("submit","form#search",function(e) {
             search(true);
             $.ajax({
               type: "POST",
-              url: "api.php?app=edit",
+              url: "api.php?app=editor",
               data: $(this).serialize()
             }).done(function(res) {
               search(false);
