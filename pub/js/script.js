@@ -67,7 +67,7 @@ function googlefail() {
   search(false);
   $("#r").append("<a class='y list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
 }
-$(document).on("click","#r .g:not(.disabled) button.update",function(e) {
+$(document).on("click",".audio #r .g:not(.disabled) button.update",function(e) {
   var div = $(this)
     , data = div.parent().data()
     ;
@@ -82,11 +82,11 @@ $(document).on("click","#r .g:not(.disabled) button.update",function(e) {
   });
   e.stopPropagation();
 });
-$(document).on("click","#r .g:not(.disabled)",function(e) {
+$(document).on("click",".audio #r .g:not(.disabled)",function(e) {
   play($(this).data());
   reset();
 });
-$(document).on("click","#r .y:not(.disabled)",function(e) {
+$(document).on("click",".audio #r .y:not(.disabled)",function(e) {
   $(this).addClass("disabled").removeClass("active");
   $.ajax({
     type: "POST",
@@ -100,7 +100,7 @@ $(document).on("click","#r .y:not(.disabled)",function(e) {
     reset();
   });
 });
-$(document).on("click","#r .l button",function(e) {
+$(document).on("click",".audio #r .l button",function(e) {
   var div = $(this).parent()
     , data = div.data()
     ;
@@ -116,7 +116,7 @@ $(document).on("click","#r .l button",function(e) {
   });
   e.stopPropagation();
 });
-$(document).on("click","#r .l",function(e) {
+$(document).on("click",".audio #r .l",function(e) {
   if($(this).data("l")) {
     audio.l = $(this).data("l");
     localStorage.audio = JSON.stringify(audio);
@@ -137,7 +137,7 @@ $(document).on("click",".navbar-brand",function(e) {
     case "etn":edittrash();break;
   }
 });
-$(document).on("click","#p a,#r .g:not(.disabled) button:not(.update)",function(e) {
+$(document).on("click","#p a,.audio #r .g:not(.disabled) button:not(.update)",function(e) {
   $(".edit").removeClass("hidden");
   $("body").addClass("body-edit");
   $("#f").val(($(this).data("f")===undefined?$(this).parent().data("f"):$(this).data("f")));
@@ -852,7 +852,7 @@ function videoready() {
       function search(req) {
         ( req ? $(".form-control-feedback").removeClass("glyphicon-search").addClass("glyphicon-hourglass") : $(".form-control-feedback").removeClass("glyphicon-hourglass").addClass("glyphicon-search") );
       }
-      $(document).on("click","#r a:not(.disabled),#b a",function(e) {
+      $(document).on("click",".editor #r a:not(.disabled),#b a",function(e) {
         edit.f = $(this).data("f");
         editstate();
       });
@@ -860,14 +860,14 @@ function videoready() {
         switch ($(this).data("req")) {
         }
       });
-      $(document).on("click","#p a,#r a:not(.disabled) button:not(.update)",function(e) {
+      $(document).on("click","#p a,.editor #r a:not(.disabled) button:not(.update)",function(e) {
         $(".edit").removeClass("hidden");
         $("body").addClass("body-edit");
         $("#f").val(($(this).data("f")===undefined?$(this).parent().data("f"):$(this).data("f")));
         $("#n").html("Delete '"+($(this).data("n")===undefined?$(this).parent().data("n"):$(this).data("n"))+"'?");
         e.stopPropagation();
       });
-      $(document).on("click","#m button",function(e) {
+      $(document).on("click",".editor #m button",function(e) {
         $("#m button").removeClass("active");
         $("#d,#l").addClass("hidden");
         $(this).addClass("active");
