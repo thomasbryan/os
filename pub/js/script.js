@@ -1,40 +1,3 @@
-$("form#search").on("submit",function(e) {
-  e.preventDefault();
-  if($("#q").val().length > 0) {
-    if($("#q").val() != $("#q").data("q")) {
-      $("#q").data("q",$("#q").val());
-      $("#r").html("");
-    }
-    if($("#r .g").length == 0 ) {
-      $("#q").blur();
-      search(true);
-      $.ajax({
-        type: "POST",
-      url: "api.php?app=audio",
-        data: $(this).serialize()
-      }).done(function(res) {
-        search(false);
-        $(".col-sm-8 h5").html("<span class='glyphicon glyphicon-search'></span> Results");
-        var html = "";
-        $.each(res,function(k,v){
-          html += "<a class='g list-group-item' data-f='"+v.f+"' data-n='"+v.n+"' data-t='0'>"+v.n;
-          html += "<button class='update btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-plus-sign'></span> Playlist</button>";
-          html += "<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-pencil'></span> Edit</button>";
-          html += "</a>";
-        });
-        $("#r").html(html);
-        if($("#r .active").length==0) {$("#r a:first").addClass("active");}
-      }).fail(function() {
-        $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
-        google();
-      });
-    }else{
-      if($("#r .y").length == 0) google();
-    }
-  }else{
-    reset();
-  }
-});
 $("form#edit").on("submit",function(e) {
   e.preventDefault();
   ajax($(this).serialize());
@@ -578,15 +541,6 @@ function gitdone(req) {
 function gitfail() {
 	ajax({"req":"cache"});
 }
-$("form#search").on("submit",function(e) {
-  e.preventDefault();
-	git.grep = $("#q").val();
-	localStorage.git = JSON.stringify(git);
-  if($("#q").val().length > 0) {
-		var repo = $("#project .repo:not(.hidden)").data("repo");
-		ajax({"req":"grep","grep":git.grep,"project":repo},"gitgrep");
-  }
-});
 function gitgrep(req) {
   $("#q").blur();
   var html = "<div id='overlay'><div class='panel panel-info'><div class='panel-heading'><a>&nbsp;</a>Grep '"+git.grep+"' '"+req.repo+"'</div><div class='panel-body'>";
@@ -857,36 +811,6 @@ function update() {
 function videoready() {
   $("#app").html("video");
 }
-      $("form#search").on("submit",function(e) {
-        e.preventDefault();
-        if($("#q").val().length > 0) {
-          $("#d").addClass("hidden");
-          if($("#q").val() != $("#q").data("q")) {
-            $("#q").data("q",$("#q").val());
-            $("#r").html("");
-            $("#b").html("<li><a href='javascript:void(0);' data-f=''><span class='glyphicon glyphicon-home'></span></a></li>");
-          }
-          if($("#r .g").length == 0 ) {
-            $("#q").blur();
-            search(true);
-            $.ajax({
-              type: "POST",
-              url: "api.php?app=edit",
-              data: $(this).serialize()
-            }).done(function(res) {
-              search(false);
-              var html = "";
-              html += list(res,true);
-              $("#r").html(html);
-            }).fail(function() {
-              search(false);
-              $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
-            });
-          }
-        }else{
-          reset();
-        }
-      });
       $("form#edit").on("submit",function(e) {
         e.preventDefault();
         console.log("update this information");
@@ -1117,6 +1041,81 @@ function state(req) {
 }
 $(document).on("submit","form#search",function(e) {
   e.preventDefault();
+  switch(app.app) {
+    case "audio":
+  if($("#q").val().length > 0) {
+    if($("#q").val() != $("#q").data("q")) {
+      $("#q").data("q",$("#q").val());
+      $("#r").html("");
+    }
+    if($("#r .g").length == 0 ) {
+      $("#q").blur();
+      search(true);
+      $.ajax({
+        type: "POST",
+      url: "api.php?app=audio",
+        data: $(this).serialize()
+      }).done(function(res) {
+        search(false);
+        $(".col-sm-8 h5").html("<span class='glyphicon glyphicon-search'></span> Results");
+        var html = "";
+        $.each(res,function(k,v){
+          html += "<a class='g list-group-item' data-f='"+v.f+"' data-n='"+v.n+"' data-t='0'>"+v.n;
+          html += "<button class='update btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-plus-sign'></span> Playlist</button>";
+          html += "<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-pencil'></span> Edit</button>";
+          html += "</a>";
+        });
+        $("#r").html(html);
+        if($("#r .active").length==0) {$("#r a:first").addClass("active");}
+      }).fail(function() {
+        $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
+        google();
+      });
+    }else{
+      if($("#r .y").length == 0) google();
+    }
+  }else{
+    reset();
+  }
+    break;
+    case "edit":
+        if($("#q").val().length > 0) {
+          $("#d").addClass("hidden");
+          if($("#q").val() != $("#q").data("q")) {
+            $("#q").data("q",$("#q").val());
+            $("#r").html("");
+            $("#b").html("<li><a href='javascript:void(0);' data-f=''><span class='glyphicon glyphicon-home'></span></a></li>");
+          }
+          if($("#r .g").length == 0 ) {
+            $("#q").blur();
+            search(true);
+            $.ajax({
+              type: "POST",
+              url: "api.php?app=edit",
+              data: $(this).serialize()
+            }).done(function(res) {
+              search(false);
+              var html = "";
+              html += list(res,true);
+              $("#r").html(html);
+            }).fail(function() {
+              search(false);
+              $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
+            });
+          }
+        }else{
+          reset();
+        }
+    break;
+    case "git":
+	git.grep = $("#q").val();
+	localStorage.git = JSON.stringify(git);
+  if($("#q").val().length > 0) {
+		var repo = $("#project .repo:not(.hidden)").data("repo");
+		ajax({"req":"grep","grep":git.grep,"project":repo},"gitgrep");
+  }
+    break;
+  }
   console.log(app.app);
 });
 
