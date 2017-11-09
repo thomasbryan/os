@@ -895,7 +895,7 @@ function videoready() {
         });
         close();
       }
-      function reset() {
+      function editreset() {
         $("#q").val("");
         editstate();
       }
@@ -1102,7 +1102,7 @@ $(document).on("submit","form#search",function(e) {
             });
           }
         }else{
-          reset();
+          editreset();
         }
     break;
     case "git":
