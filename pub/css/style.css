@@ -173,6 +173,7 @@ body.slide-active { overflow-x: hidden}
 #app > .audio #lists .list-group { margin-bottom: 70px; }
 #app > .audio #t { color: #9d9d9d; height: 100%; line-height: 50px; overflow: hidden; position: absolute; width: 0%; white-space: nowrap; }
 #app > .audio #tl { bottom:0; height: 50px; left:0; position: absolute; right:0; width: 100%; }
+#app > .audio .list-group-item img { position:absolute; top:0; right:0; height: 100%; }
 #app > .git #projects, #app > .git #project { margin-bottom: 50px; }
 #app > .git #project > div { position: fixed; width: inherit; padding-right: 3em; }
 #app > .git .status .btn { margin-bottom: 0.5em; }
