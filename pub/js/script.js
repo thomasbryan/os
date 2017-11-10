@@ -126,12 +126,6 @@ $(document).on("click",".audio #r .l",function(e) {
 });
 $(document).on("click",".navbar-brand",function(e) {
   switch ($(this).data("req")) {
-    case "pp":pp();break;
-    case "fo":fo();break;
-    case "ra":ra();break;
-    case "dn":dn();break;
-    case "up":up();break;
-    case "li":list();break;
     case "ce":close();break;
     case "tn":trash();break;
     case "etn":edittrash();break;
@@ -189,7 +183,7 @@ function play(req) {
   playaudio();
   ui();
 }
-function list() {
+function audiolist() {
   reset();
   if($("#create").length == 0) {
     $.ajax({
@@ -946,7 +940,7 @@ function videoready() {
             $("#d,#l").addClass("hidden");
             if($.isPlainObject(res)) {
               html += form;
-              html += list(res,false);
+              html += editlist(res,false);
             }else{
               if(res.length === undefined) {
                 html += form;
@@ -958,7 +952,7 @@ function videoready() {
           }
           $("#r").html(html);
       }
-      function list(req,t) {
+      function editlist(req,t) {
         var res = ""
           , type = ""
           , keys = []
@@ -1094,7 +1088,7 @@ $(document).on("submit","form#search",function(e) {
             }).done(function(res) {
               search(false);
               var html = "";
-              html += list(res,true);
+              html += editlist(res,true);
               $("#r").html(html);
             }).fail(function() {
               search(false);
