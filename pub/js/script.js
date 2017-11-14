@@ -1160,7 +1160,15 @@ function ajax(data,done,fail) {
     if(done===undefined) {
       msg(true,res);
     }else{
-      window[done](res);
+      if($.isPlainObject(done)) {
+        //$.each(done.req,function(k,v) {
+        //}
+        //switch(done.req) {
+        //tpl(src,dst,res);
+        //}
+      }else{
+        window[done](res);
+      }
     }
   }).fail(function(res) {
     if(fail===undefined) {
