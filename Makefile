@@ -12,7 +12,7 @@ INSTANCE = default
 
 DIR := ${CURDIR}
 
-.PHONY: build push shell run reinstall restart start stop rm release
+.PHONY: build push nginx shell run reinstall restart start stop rm release
 
 build:
 	docker build -t $(NS)/$(REPO):$(VERSION) .
@@ -22,6 +22,9 @@ push:
 
 bash:
 	docker exec -i -t $(shell docker ps | grep $(NS)/$(REPO):$(VERSION)|awk '{print $$1}') /bin/bash
+
+nginx:
+	docker exec -i -t $(shell docker ps | grep $(NS)/$(REPO):$(VERSION)|awk '{print $$1}') /bin/sh /root/nginx.sh
 
 shell:
 	docker run --rm --name $(NAME)-$(INSTANCE) -i -t $(PORTS) $(VOLUMES) $(ENV) $(NS)/$(REPO):$(VERSION) /bin/bash
