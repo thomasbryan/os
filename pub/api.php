@@ -6,7 +6,7 @@ class API {
   private $quota = array(
     'audio' => 102400,
     'magic' => 10240,
-    'users' => 51200,
+    'home' => 51200,
     'video' => 512000,
   );
   private $d = '';
