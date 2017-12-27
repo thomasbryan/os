@@ -573,7 +573,7 @@ class API {
   private function gitGitstatus($req,$len,$path,$user) {
     chdir($path);
     chdir(dirname($req.'/'));
-    $r = substr(getcwd(),($len+12+strlen($user)));
+    $r = substr(getcwd(),($len+11+strlen($user)));
     exec('git status -sb',$e);
     $b = '';
     $c = array();
