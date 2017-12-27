@@ -12,10 +12,13 @@ INSTANCE = default
 
 DIR := ${CURDIR}
 
-.PHONY: build push nginx shell run reinstall restart start stop rm release
+.PHONY: build cron push nginx shell run reinstall restart start stop rm release
 
 build:
 	docker build -t $(NS)/$(REPO):$(VERSION) .
+
+cron:
+	crontab -l | grep -q '* * * * * /usr/bin/php $(DIR)/cron.sh' && echo '' || (crontab -l 2>/dev/null; echo "* * * * * /usr/bin/php $(DIR)/cron.sh") |crontab -
 
 push:
 	docker push $(NS)/$(REPO):$(VERSION)
