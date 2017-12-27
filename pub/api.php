@@ -10,7 +10,7 @@ class API {
     'video' => 512000,
   );
   private $d = '';
-  private $p = '../src/users/';
+  private $p = '../src/home/';
   function __construct() {
 		#$this->debug();
     date_default_timezone_set('America/Chicago');
@@ -138,7 +138,7 @@ class API {
             if(file_put_contents('../src/roles.ini',$ini)) {
               mkdir('../src/audio/'.$user,0777);
               mkdir('../src/magic/'.$user);
-              mkdir('../src/users/'.$user.'/public_html/',0755,true);
+              mkdir('../src/home/'.$user.'/public_html/',0755,true);
               mkdir('../src/video/'.$user);
               exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$user.' -q -N "" -C "'.$user.'"',$res);
               $res = $this->profile($user);
@@ -203,7 +203,7 @@ class API {
   private function authQuotas() {
     $res = array(
       array('n'=>'Audio','d'=>'audio','i'=>'music'),
-      array('n'=>'Documents','d'=>'users','i'=>'file'),
+      array('n'=>'Documents','d'=>'home','i'=>'file'),
       array('n'=>'Scripts','d'=>'magic','i'=>'list'),
       array('n'=>'Videos','d'=>'video','i'=>'film'),
     );
@@ -458,7 +458,7 @@ class API {
       if(!filter_var($url, FILTER_VALIDATE_URL) === false) {
         $path = dirname(__FILE__);
         chdir($path);
-        chdir('../src/users/'.$user.'/');
+        chdir('../src/home/'.$user.'/');
         exec('git clone '.$url.' 2>&1',$out,$ret);
         if($ret == 0) {
           chdir($path);
@@ -484,7 +484,7 @@ class API {
     foreach($status as $k => $v) {
       if($v['r'] == $_POST['project']) {
         chdir(dirname(__FILE__));
-        chdir('../src/users/'.$user.'/'.$_POST['project']);
+        chdir('../src/home/'.$user.'/'.$_POST['project']);
         if(isset($_POST['email'])) {
           $email = str_replace('"','',$_POST['email']);
           exec('git config --local --replace-all user.email "'.$email.'"',$res);
@@ -505,7 +505,7 @@ class API {
       if($v['r'] == $_POST['project']) {
         $path = dirname(__FILE__);
         chdir($path);
-        chdir('../src/users/'.$user.'/'.$_POST['project']);
+        chdir('../src/home/'.$user.'/'.$_POST['project']);
         $exec = 'git diff';
         exec($exec,$ret);
         if($ret) {
@@ -527,7 +527,7 @@ class API {
 			if($v['r'] == $_POST['project']) {
 				$path = dirname(__FILE__);
 				chdir($path);
-				chdir('../src/users/'.$user.'/'.$_POST['project']);
+				chdir('../src/home/'.$user.'/'.$_POST['project']);
 				//todo properly escape '
 				$exec = 'git grep -n \''.str_replace('\'','',$_POST['grep']).'\'';
 				exec($exec,$ret);
@@ -545,7 +545,7 @@ class API {
     $res = false;
     $cache = '../src/repos/'.$user;
     if(!file_exists($cache)) {
-      exec('find ../src/users/'.$user.' -type d -name ".git"',$dir);
+      exec('find ../src/home/'.$user.' -type d -name ".git"',$dir);
       $path = dirname(__FILE__);
       $len = strlen(dirname(getcwd()));
       $res = array();
@@ -608,7 +608,7 @@ class API {
     $status = $this->gitStatus($user);
     foreach($status as $k => $v) {
       if($v['r'] == $_POST['project']) {
-				$prefix = '../src/users/'.$user.'/';
+				$prefix = '../src/home/'.$user.'/';
 				$this->gitCache($user);
 				$path = dirname(__FILE__);
 				$len = strlen(dirname(getcwd()));
@@ -668,7 +668,7 @@ class API {
     $repo = $req['repo'];
     $user = $req['user'];
     $file = $req['file'];
-    $prefix = '../src/users/'.$user.'/';
+    $prefix = '../src/home/'.$user.'/';
     $this->gitCache($user);
     $path = dirname(__FILE__);
     $len = strlen(dirname(getcwd()));
@@ -693,7 +693,7 @@ class API {
       }
     }
     if($valid) {
-      $prefix = '../src/users/'.$user.'/';
+      $prefix = '../src/home/'.$user.'/';
       $this->gitCache($user);
       $path = dirname(__FILE__);
       $len = strlen(dirname(getcwd()));
@@ -709,7 +709,7 @@ class API {
     $status = $this->gitStatus($user);
     foreach($status as $k => $v) {
       if($v['r'] == $_POST['project']) {
-        $prefix = '../src/users/'.$user.'/';
+        $prefix = '../src/home/'.$user.'/';
         $this->gitCache($user);
         $path = dirname(__FILE__);
         $len = strlen(dirname(getcwd()));
@@ -729,7 +729,7 @@ class API {
       if($v['r'] == $_POST['project']) {
         $count = count($v['s']);
         if($count) {
-          $prefix = '../src/users/'.$user.'/';
+          $prefix = '../src/home/'.$user.'/';
           $this->gitCache($user);
           $path = dirname(__FILE__);
           $len = strlen(dirname(getcwd()));
