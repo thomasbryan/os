@@ -25,7 +25,7 @@ if [ ! -d $cache ];then
   chown -R www-data:www-data $cache
 fi
 src=$www"src/"
-for d in "audio" "magic" "users" "repos" "video"; do
+for d in "audio" "magic" "home" "repos" "video"; do
   if [ ! -d $src$d"/" ];then mkdir $src$d"/"; fi
 done
 touch $src"auth.log" $src"users.ini" $src"roles.ini"
