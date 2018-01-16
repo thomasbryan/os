@@ -554,6 +554,7 @@ function gitdone(req) {
 }
 function gitfail() {
 	ajax({"req":"cache"});
+  tpl("#app","#tpl-git",{});
 }
 function gitgrep(req) {
   $("#q").blur();
