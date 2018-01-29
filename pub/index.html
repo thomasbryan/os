@@ -81,6 +81,7 @@
     </div>
   </div>
   <div id="lists" class="row-fluid">
+    <div id="audio-edit" class="col-xs-12"></div>
     <div class="col-sm-8">
       <h5></h5>
       <div id="r" class="list-group"></div>
@@ -95,6 +96,36 @@
   <div id="tl"><div id="t" class="navbar-inverse"></div><span id="l"></span></div>
 </nav>
 </script>
+<script id="tpl-audio-edit" type="text/html">
+  <br />
+  <div class="row">
+	  <div class="col-sm-9">
+      <div class="col-sm-2">
+        <a class="btn btn-default btn-block mustache" data-d="#audio-edit" data-t="#tpl-empty"><span class="glyphicon glyphicon-remove-sign"></span></a>
+      </div>
+      <div class="col-sm-6">
+      <form id="audio-save" method="POST">
+        <input type="hidden" name="req" value="edit" />
+        <input type="hidden" name="f" value="{{f}}" />
+
+        <input type="text" class="form-control" name="n" value="{{n}}" placeholder="Name" />
+      </form>
+      </div>
+      <div class="col-sm-4">
+        <button class="ajax btn btn-primary btn-block" data-af="#audio-save" data-au="api.php?app=audio"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+      </div>
+       
+    </div>
+	  <div class="col-sm-3">
+      <form id="audio-trash" method="POST" data-af="#audio-trash" data-au="api.php?app=audio">
+        <input type="hidden" name="req" value="trash" />
+        <input type="hidden" name="f" value="{{f}}" />
+        <button class="btn btn-danger btn-block"><span class="glyphicon glyphicon-trash"></span> Trash</button>
+      </form>
+    </div>
+  </div>
+</script>
+<script id="tpl-empty" type="text/html"></script>
 <script id="tpl-audio-results" type="text/html">
   <a class="g list-group-item" data-f="{{f}}" data-n="{{n}}" data-t="0">{{n}}
   <button class="update btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Playlist</button>
@@ -524,6 +555,14 @@
       </div>
     </div>
 </script>
+    <script type="text/javascript">
+      var app = {
+        "at":"POST",
+        "au":"api.php",
+        "dd":"#app",
+        "fd":"#app",
+      };
+    </script>
     <script src="js/script.js"></script>
   </body>
 </html>

@@ -1,26 +1,26 @@
 $("form#edit").on("submit",function(e) {
   e.preventDefault();
   switch(app.app) {
-  case "audio":
-  ajax($(this).serialize());
-  $(".edit").addClass("hidden");
-  $("body").removeClass("body-edit");
-  break;
-  case "edit":
-        console.log("update this information");
-        console.log($(this).serialize());
-        /*
-        $.ajax({
-          type: "POST",
-              url: "api.php?app=editor",
-          data: $(this).serialize()
-        }).fail(function() {
-          msg(false,"Unable to Update");
-        });
-        */
-        $(".edit").addClass("hidden");
-        $("body").removeClass("body-edit");
-  break;
+    case "audio":
+      ajx($(this).serialize());
+      $(".edit").addClass("hidden");
+      $("body").removeClass("body-edit");
+    break;
+    case "edit":
+      console.log("update this information");
+      console.log($(this).serialize());
+          /*
+          $.ajax({
+            type: "POST",
+                url: "api.php?app=editor",
+            data: $(this).serialize()
+          }).fail(function() {
+            mesg(false,"Unable to Update");
+          });
+          */
+      $(".edit").addClass("hidden");
+      $("body").removeClass("body-edit");
+    break;
   }
 });
 $(document).on("submit","form#create",function(e) {
@@ -48,7 +48,7 @@ function google() {
   $("#q").blur();
   $("#r .g.disabled").remove();
   search(true);
-  ajax("req=google&y="+$("#q").val(),"googledone","googlefail");
+  ajx("req=google&y="+$("#q").val(),"googledone","googlefail");
 }
 function googledone(res) {
   search(false);
@@ -96,7 +96,7 @@ $(document).on("click",".audio #r .y:not(.disabled)",function(e) {
     reset();
   }).fail(function() {
     //TODO check not returning something??
-    msg(false,"Failed to Download");
+    mesg(false,"Failed to Download");
     reset();
   });
 });
@@ -112,7 +112,7 @@ $(document).on("click",".audio #r .l button",function(e) {
   }).done(function(res) {
     div.remove();
   }).fail(function() {
-    msg(false,"Unable to Delete '"+data.l+"' Playlist");
+    mesg(false,"Unable to Delete '"+data.l+"' Playlist");
   });
   e.stopPropagation();
 });
@@ -132,6 +132,13 @@ $(document).on("click",".navbar-brand",function(e) {
   }
 });
 $(document).on("click","#p a,.audio #r .g:not(.disabled) button:not(.update)",function(e) {
+  //tmpl("#app","#tpl-audio",{});
+  tmpl("#audio-edit","#tpl-audio-edit",$(this).parent().data());
+  console.log("lets edit something");
+  console.log($(this).data());
+  console.log($(this).parent().data());
+  //f
+  //n
   $(".edit").removeClass("hidden");
   $("body").addClass("body-edit");
   $("#f").val(($(this).data("f")===undefined?$(this).parent().data("f"):$(this).data("f")));
@@ -153,7 +160,7 @@ function pp() {
   ui();
 }
 function fo() {
-  ajax(audio,"fodone","fofail");
+  ajx(audio,"fodone","fofail");
 }
 function fodone(res) {
   audio.c = res.c;
@@ -170,7 +177,7 @@ function fodone(res) {
   }
 }
 function fofail() {
-  msg(false,"Failed to Initialize");
+  mesg(false,"Failed to Initialize");
   audio.p = false;
   ui();
 }
@@ -201,7 +208,7 @@ function audiolist() {
         $("#list-"+k).data("l",v);
       });
     }).fail(function() {
-      msg(false,"Failed Playlist Retreival");
+      mesg(false,"Failed Playlist Retreival");
     });
   }
 }
@@ -218,7 +225,7 @@ function trash() {
     $(".list-group").find("[data-f='"+$("#f").val()+"']").remove();
     close();
   }).fail(function() {
-    msg(false,"Failed to Delete File");
+    mesg(false,"Failed to Delete File");
   });
 }
 function playlist() {
@@ -244,7 +251,7 @@ function up() {
   }
 }
 function vol(req) {
-    msg(true,"Volume "+($("#a").get(0).volume * 100)+"%");
+    mesg(true,"Volume "+($("#a").get(0).volume * 100)+"%");
 }
 function prev() {
   var that=$("#r .active");
@@ -351,7 +358,7 @@ $(document).keyup(function(e) {
 });
 var audio = localStorage.audio;
 function audioready() {
-  tpl("#app","#tpl-audio",{});
+  tmpl("#app","#tpl-audio",{});
     if(audio == null) {
       audio = {"c":20,"f":"","l":"Library","n":"","p":false,"s":false,"t":0,"v":0.5};
       localStorage.audio = JSON.stringify(audio);
@@ -364,7 +371,7 @@ function audioready() {
     }
 }
 function automagicready() {
-  ajax({"req":"listWorkflows"},"listWorkflows");
+  ajx({"req":"listWorkflows"},"listWorkflows");
 }
 $(document).on("click","#method a",function() {
   $("#method a").removeClass("active");
@@ -377,12 +384,12 @@ $(document).on("click",".workflows td a:not(.hidden)",function() {
   var workflow = $(this).closest("tr").data("workflow");
   switch($(this).closest("td").data("action")) {
     case "read":
-      ajax({"req":"readWorkflows","n":workflow},"readWorkflows");
+      ajx({"req":"readWorkflows","n":workflow},"readWorkflows");
     break;
     case "remove":
     break;
     case "run":
-      ajax({"req":"runWorkflows","n":workflow});
+      ajx({"req":"runWorkflows","n":workflow});
     break;
   }
 });
@@ -397,16 +404,16 @@ $(document).on("click",".actions .list td a:not(.hidden)",function() {
       }
     break;
     case "remove":
-      ajax({"req":"deleteActions","f":actions},"deleteActions");
+      ajx({"req":"deleteActions","f":actions},"deleteActions");
     break;
     case "read": readActions(actions); break;
   }
 });
 function listWorkflows(req) {
-  tpl("#app","#tpl-automagic",req);
+  tmpl("#app","#tpl-automagic",req);
 }
 function createWorkflows() {
-  ajax({"req":"listActions"},"listActions");
+  ajx({"req":"listActions"},"listActions");
   view("actions");
   $(".automagic > .actions input").val("").focus();
   $(".automagic > .actions > .action.list-group").html("");
@@ -422,13 +429,13 @@ function createWorkflow() {
     err += "Action Required,";
   }
   if(err.length > 0) {
-    msg(false,err.replace(/,\s*$/,""));
+    mesg(false,err.replace(/,\s*$/,""));
   }else{
     var data = [];
     $.each($(".actions .action tr"),function(k,v) {
       data.push($(this).data("action"));
     });
-    ajax({"req":"createWorkflows","n":name,"d":data},"view");
+    ajx({"req":"createWorkflows","n":name,"d":data},"view");
   }
 }
 function readWorkflows(req) {
@@ -442,17 +449,17 @@ function readWorkflows(req) {
   view("workflow");
 }
 function deleteWorkflows() {
-  ajax({"req":"deleteWorkflows","n":$("#workflow-run").data("n")},"view");
+  ajx({"req":"deleteWorkflows","n":$("#workflow-run").data("n")},"view");
 }
 function runWorkflows() {
-  ajax({"req":"runWorkflows","n":$("#workflow-run").data("n")});
+  ajx({"req":"runWorkflows","n":$("#workflow-run").data("n")});
 }
 function listActions(req) {
-  tpl("#app .automagic > .actions .list","#tpl-automagic-actions",req);
+  tmpl("#app .automagic > .actions .list","#tpl-automagic-actions",req);
 }
 function createActions() {
   if($("#app .automagic > .methods .list").html().length == 0) {
-    ajax({"req":"listMethods"},"listMethods");
+    ajx({"req":"listMethods"},"listMethods");
   }
   view("methods");
   $(".automagic > .methods input").val("").focus();
@@ -471,16 +478,16 @@ function createAction() {
     err += "Method Required,";
   }
   if(err.length > 0) {
-    msg(false,err.replace(/,\s*$/,""));
+    mesg(false,err.replace(/,\s*$/,""));
   }else{
     data = $("#method-"+method+" textarea").val();
     if(data === undefined) {
-      msg(false,"Method Not Allowed");
+      mesg(false,"Method Not Allowed");
     }else{
       if(data.length == 0) {
-        msg(false,"Data Required");
+        mesg(false,"Data Required");
       }else{
-        ajax({"req":"createActions","n":name,"m":method,"d":data},"view");
+        ajx({"req":"createActions","n":name,"m":method,"d":data},"view");
       }
     }
   }
@@ -493,10 +500,10 @@ function deleteActions(req) {
   $(".actions .list tr[data-action='"+req+"']").remove();
 }
 function listMethods(req) {
-  tpl("#app .automagic > .methods .list","#tpl-automagic-methods",req);
+  tmpl("#app .automagic > .methods .list","#tpl-automagic-methods",req);
 }
 function readActions(req) {
-  ajax({"req":"readActions","f":req},"readAction");
+  ajx({"req":"readActions","f":req},"readAction");
 }
 function readAction(req) {
   try {
@@ -527,7 +534,7 @@ function gitready() {
   gitinit();
 }
 function gitinit() {
-	ajax({"req":"status"},"gitdone","gitfail");
+	ajx({"req":"status"},"gitdone","gitfail");
 }
 function gitdone(req) {
 	/* Order repos by max items */
@@ -544,7 +551,7 @@ function gitdone(req) {
 			projects.unshift(vv);
 		});
 	});
-  tpl("#app","#tpl-git",{"projects":projects});
+  tmpl("#app","#tpl-git",{"projects":projects});
   if(git.repo.length > 0) {
     $("#projects li:not(.action)[data-repo='"+git.repo+"']").click();
   }
@@ -553,8 +560,8 @@ function gitdone(req) {
   }
 }
 function gitfail() {
-	ajax({"req":"cache"});
-  tpl("#app","#tpl-git",{});
+	ajx({"req":"cache"});
+  tmpl("#app","#tpl-git",{});
 }
 function gitgrep(req) {
   $("#q").blur();
@@ -568,15 +575,15 @@ function gitgrep(req) {
   $("#overlay .panel-body").css({"height":Math.ceil($(window).height() * 0.85)+"px"});
 }
 $(document).on("click","#cache",function(e) {
-	ajax({"req":"cache"},"gitinit");
+	ajx({"req":"cache"},"gitinit");
 });
 $(document).on("submit","form#clone",function(e) {
   e.preventDefault();
-  ajax({"req":"clone","url":$("#url").val()},"gitinit");
+  ajx({"req":"clone","url":$("#url").val()},"gitinit");
 });
 $(document).on("submit","form.config",function(e) {
   e.preventDefault();
-  ajax($(this).serialize());
+  ajx($(this).serialize());
 });
 $(document).on("click","#projects li:not(.action)",function(e) {
   e.stopPropagation();
@@ -592,17 +599,17 @@ $(document).on("click",".action",function(e) {
   e.stopPropagation();
   var repo = $(this).closest(".repo").data("repo");
   switch($(this).data("action")) {
-    case "all": ajax({"req":"all","project":repo},"gitpush"); break;
-    case "add": ajax({"req":"add","project":repo,"file":$(this).data("file")},"gitinit"); break;
-    case "rem": ajax({"req":"rem","project":repo,"file":$(this).data("file")},"gitinit"); break;
+    case "all":ajx({"req":"all","project":repo},"gitpush"); break;
+    case "add":ajx({"req":"add","project":repo,"file":$(this).data("file")},"gitinit"); break;
+    case "rem":ajx({"req":"rem","project":repo,"file":$(this).data("file")},"gitinit"); break;
     case "push": gitpush(repo); break;
-    case "pull": ajax({"req":"pull","project":repo},"gitinit"); break;
-    case "diff": ajax({"req":"diff","project":repo},"gitdiff"); break;
-    case "log": ajax({"req":"log","project":repo},"gitlog"); break;
+    case "pull":ajx({"req":"pull","project":repo},"gitinit"); break;
+    case "diff":ajx({"req":"diff","project":repo},"gitdiff"); break;
+    case "log":ajx({"req":"log","project":repo},"gitlog"); break;
   }
 });
 function gitpush(req) {
-	ajax({"req":"push","project":req},"gitinit");
+	ajx({"req":"push","project":req},"gitinit");
 }
 function gitdiff(req) {
   //TODO template?
@@ -731,16 +738,16 @@ function homeready() {
   }else{
     if(typeof home === 'string') home = JSON.parse(home);
   }
-  tpl("#app","#tpl-home",{});
+  tmpl("#app","#tpl-home",{});
   render();
-  ajax({},"profile","homefail");
+  ajx({},"profile","homefail");
 }
 function homefail() {
   page("login");
   $("#u").focus();
 }
 function render() {
-  tpl("#app .home.jumbotron","#tpl-calendar",monthly());
+  tmpl("#app .home.jumbotron","#tpl-calendar",monthly());
   clearTimeout(clock);
   startTime();
 }
@@ -768,7 +775,7 @@ $(document).on("submit","form#userpass",function(e) {
     e = true;
   }
   if(e) {
-    msg(false,"Required Fields");
+    mesg(false,"Required Fields");
   }else{
     $.ajax({
       type: "POST",
@@ -777,24 +784,24 @@ $(document).on("submit","form#userpass",function(e) {
     }).done(function(res) {
       profile(res);
     }).fail(function() {
-      msg(false,"Invalid Login");
+      mesg(false,"Invalid Login");
     });
   }
 });
 function quotas() {
-  ajax({"req":"quotas"},"quotasdone");
+  ajx({"req":"quotas"},"quotasdone");
 }
 function quotasdone(req) {
-  tpl("#app .quota","#tpl-quotas",{"quotas":req});
+  tmpl("#app .quota","#tpl-quotas",{"quotas":req});
 }
 function ssh() {
-  ajax({"req":"ssh"},"sshdone");
+  ajx({"req":"ssh"},"sshdone");
 }
 function sshdone(req) {
   $("#app .ssh").html(req);
 }
 function logs() {
-  ajax({"req":"logs"},"logsdone");
+  ajx({"req":"logs"},"logsdone");
 }
 function logsdone(req) {
   $("#app .log").html("");
@@ -818,9 +825,9 @@ function update() {
     url: "api.php?app=auth",
     data: "req=softwareupdate"
   }).done(function(res) {
-    msg(true,"Software Will Update");
+    mesg(true,"Software Will Update");
   }).fail(function() {
-    msg(false,"Software Not Updated");
+    mesg(false,"Software Not Updated");
   });
 }
 function videoready() {
@@ -830,7 +837,7 @@ function videoready() {
         e.preventDefault();
         edit.n = $("#new .form-control").val();
         if(edit.n.length > 0) {
-          ajax({"req":"create","f":edit.f,"n":edit.n},"createdone","createfail");
+          ajx({"req":"create","f":edit.f,"n":edit.n},"createdone","createfail");
         }
       });
       function createdone(res) {
@@ -841,7 +848,7 @@ function videoready() {
       }
       function createfail() {
         $("#new .form-control").val("");
-        msg(false,"Failed to Create File");
+        mesg(false,"Failed to Create File");
         delete edit.n;
       }
       function search(req) {
@@ -886,7 +893,7 @@ function videoready() {
         }).done(function(res) {
           $(".list-group").find("[data-f='"+f+"']").remove();
         }).fail(function() {
-          msg(false,"Failed to Delete '"+f+"'");
+          mesg(false,"Failed to Delete '"+f+"'");
         });
         close();
       }
@@ -910,7 +917,7 @@ function videoready() {
         }
         $("#b li").last().html($("#b li:last a").html()).addClass("active").append(" <span class='hidden glyphicon glyphicon-floppy-disk'>");
         document.title = $("#b .active").text()+($("#b .active").text().trim().length>0?"- ":"")+"Editor"
-        ajax({"req":"read","f":edit.f},"readdone");
+        ajx({"req":"read","f":edit.f},"readdone");
       }
       function readdone(res) {
           var html = ""
@@ -1003,11 +1010,10 @@ function videoready() {
         }else{
           if(typeof edit === 'string') edit = JSON.parse(edit);
         }
-        tpl("#app","#tpl-edit",{});
+        tmpl("#app","#tpl-edit",{});
         editstate();
       }
       
-var app = {};
 $(window).on("hashchange", function (e) {
     state(location.hash);
 }).trigger("hashchange");
@@ -1036,77 +1042,77 @@ $(document).on("submit","form#search",function(e) {
   e.preventDefault();
   switch(app.app) {
     case "audio":
-  if($("#q").val().length > 0) {
-    if($("#q").val() != $("#q").data("q")) {
-      $("#q").data("q",$("#q").val());
-      $("#r").html("");
-    }
-    if($("#r .g").length == 0 ) {
-      $("#q").blur();
-      search(true);
-      $.ajax({
-        type: "POST",
-      url: "api.php?app=audio",
-        data: $(this).serialize()
-      }).done(function(res) {
-        search(false);
-        $(".col-sm-8 h5").html("<span class='glyphicon glyphicon-search'></span> Results");
-        var html = "";
-        $.each(res,function(k,v){
-          html += "<a class='g list-group-item' data-f='"+v.f+"' data-n='"+v.n+"' data-t='0'>"+v.n;
-          html += "<button class='update btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-plus-sign'></span> Playlist</button>";
-          html += "<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-pencil'></span> Edit</button>";
-          html += "</a>";
-        });
-        $("#r").html(html);
-        if($("#r .active").length==0) {$("#r a:first").addClass("active");}
-      }).fail(function() {
-        $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
-        google();
-      });
-    }else{
-      if($("#r .y").length == 0) google();
-    }
-  }else{
-    reset();
-  }
+      if($("#q").val().length > 0) {
+        if($("#q").val() != $("#q").data("q")) {
+          $("#q").data("q",$("#q").val());
+          $("#r").html("");
+        }
+        if($("#r .g").length == 0 ) {
+          $("#q").blur();
+          search(true);
+          $.ajax({
+            type: "POST",
+          url: "api.php?app=audio",
+            data: $(this).serialize()
+          }).done(function(res) {
+            search(false);
+            $(".col-sm-8 h5").html("<span class='glyphicon glyphicon-search'></span> Results");
+            var html = "";
+            $.each(res,function(k,v){
+              html += "<a class='g list-group-item' data-f='"+v.f+"' data-n='"+v.n+"' data-t='0'>"+v.n;
+              html += "<button class='update btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-plus-sign'></span> Playlist</button>";
+              html += "<button class='btn btn-default btn-xs pull-right'><span class='glyphicon glyphicon-pencil'></span> Edit</button>";
+              html += "</a>";
+            });
+            $("#r").html(html);
+            if($("#r .active").length==0) {$("#r a:first").addClass("active");}
+          }).fail(function() {
+            $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
+            google();
+          });
+        }else{
+          if($("#r .y").length == 0) google();
+        }
+      }else{
+        reset();
+      }
     break;
     case "edit":
-        if($("#q").val().length > 0) {
-          $("#d").addClass("hidden");
-          if($("#q").val() != $("#q").data("q")) {
-            $("#q").data("q",$("#q").val());
-            $("#r").html("");
-            $("#b").html("<li><a href='javascript:void(0);' data-f=''><span class='glyphicon glyphicon-home'></span></a></li>");
-          }
-          if($("#r .g").length == 0 ) {
-            $("#q").blur();
-            search(true);
-            $.ajax({
-              type: "POST",
-              url: "api.php?app=editor",
-              data: $(this).serialize()
-            }).done(function(res) {
-              search(false);
-              var html = "";
-              html += editlist(res,true);
-              $("#r").html(html);
-            }).fail(function() {
-              search(false);
-              $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
-            });
-          }
-        }else{
-          editreset();
+      if($("#q").val().length > 0) {
+        $("#d").addClass("hidden");
+        if($("#q").val() != $("#q").data("q")) {
+          $("#q").data("q",$("#q").val());
+          $("#r").html("");
+          $("#b").html("<li><a href='javascript:void(0);' data-f=''><span class='glyphicon glyphicon-home'></span></a></li>");
         }
+        if($("#r .g").length == 0 ) {
+          $("#q").blur();
+          search(true);
+          $.ajax({
+            type: "POST",
+            url: "api.php?app=editor",
+            data: $(this).serialize()
+          }).done(function(res) {
+            search(false);
+            var html = "";
+            html += editlist(res,true);
+            $("#r").html(html);
+          }).fail(function() {
+            search(false);
+            $("#r").html("<a class='g list-group-item disabled'>Your search - <b>"+$("#q").val()+"</b> - did not match any documents.</a>");
+          });
+        }
+      }else{
+        editreset();
+      }
     break;
     case "git":
-	git.grep = $("#q").val();
-	localStorage.git = JSON.stringify(git);
-  if($("#q").val().length > 0) {
-		var repo = $("#project .repo:not(.hidden)").data("repo");
-		ajax({"req":"grep","grep":git.grep,"project":repo},"gitgrep");
-  }
+	    git.grep = $("#q").val();
+	    localStorage.git = JSON.stringify(git);
+      if($("#q").val().length > 0) {
+		    var repo = $("#project .repo:not(.hidden)").data("repo");
+		    ajx({"req":"grep","grep":git.grep,"project":repo},"gitgrep");
+      }
     break;
   }
   console.log(app.app);
@@ -1151,7 +1157,7 @@ $(document).ready(function () {
     }
   });
 });
-function ajax(data,done,fail) {
+function ajx(data,done,fail) {
   if(data===undefined) data = "";
   $.ajax({
     type: "POST",
@@ -1159,13 +1165,13 @@ function ajax(data,done,fail) {
     data: data
   }).done(function(res) {
     if(done===undefined) {
-      msg(true,res);
+      mesg(true,res);
     }else{
       if($.isPlainObject(done)) {
         //$.each(done.req,function(k,v) {
         //}
         //switch(done.req) {
-        //tpl(src,dst,res);
+        //tmpl(src,dst,res);
         //}
       }else{
         window[done](res);
@@ -1173,13 +1179,13 @@ function ajax(data,done,fail) {
     }
   }).fail(function(res) {
     if(fail===undefined) {
-      msg(false,res.responseText);
+      mesg(false,res.responseText);
     }else{
       window[fail]();
     }
   });
 }
-function tpl(src,dst,req) {
+function tmpl(src,dst,req) {
   $(src).html(Mustache.render($(dst).html(),req));
 }
 function user() {
@@ -1198,8 +1204,99 @@ function user() {
   }
   return null;
 }
-function msg(req,res) {
+function mesg(req,res) {
   $("#e").removeClass("alert-success").addClass("alert-danger");
   if(req) $("#e").removeClass("alert-danger").addClass("alert-success");
   $("#e").html("<strong></strong> "+res+"!").show().removeClass("hidden").delay(5000).fadeOut(500);
+}
+/* New Framework */
+//$(document).ready(function() { ready(); });
+$(document).on("click",".select",function() {
+  var c = $(this).data("c");
+  $(this).parent().children().removeClass(c);
+  $(this).addClass(c);
+});
+$(document).on("click",".mustache",function() { tpl($(this).data()); });
+$(document).on("submit","form",function(e) { 
+  //TODO tpl() option
+  if(! $.isEmptyObject($(this).data())) {
+    ajax($(this).data()); 
+  }
+  e.preventDefault();
+  e.stopPropagation(); 
+});
+$(document).on("click",".ajax",function() { ajax($(this).data()); });
+$(document).on("click",".remove",function() { $(this).parent().remove(); });
+$(document).on("click",".toggle",function() {
+  var c = $(this).data("c");
+  if($(this).hasClass(c)) {
+    $(this).removeClass(c);
+  }else{
+    $(this).addClass(c);
+  }
+});
+function ready() {
+  //TODO check that jquery is loaded
+  //TODO check that mustache is loaded
+  if(!$("#msg").length) $("body").append("<div id='msg'></div>");
+  //TODO validate app
+  ajax(app); 
+}
+function ajax(r) {
+  if(r.at===undefined) r.at = app.at;
+  if(r.au===undefined) r.au = app.au;
+  if($(r.af).length) r.ad = $(r.af).serialize();
+  if(r.dd===undefined) r.dd = app.dd;
+  if(r.fd===undefined) r.fd = app.fd;
+  $.ajax({
+    type: r.at,
+    url: r.au,
+    data: r.ad,
+  }).done(function(res) {
+    if($(r.dd).length && $(r.dt).length) {
+      tpl({"a":r.da,"d":r.dd,"t":r.dt,"r":res});
+    }else{
+      msg(true,res);
+    }
+  }).fail(function(res) {
+    if($(r.fd).length && $(r.ft).length) {
+      tpl({"a":r.fa,"d":r.fd,"t":r.ft,"r":res});
+    }else{
+      msg(false,res.statusText);
+    }
+  });
+}
+function tpl(r) { 
+  //TODO revise logic
+  if($(r.d).length && $(r.t).length) {
+    if(r.a===undefined) {
+      if(r.g===undefined) {
+        $(r.d).html(Mustache.render($(r.t).html(),r.r)); 
+      }else{
+        $.get(r.g,function(t) {
+          $(r.d).html(Mustache.render( $(t).filter(r.t).html(),r.r));
+        });
+      }
+    }else{
+      if(r.g===undefined) {
+        $(r.d).append(Mustache.render($(r.t).html(),r.r)); 
+      }else{
+        $.get(r.g,function(t) {
+          $(r.d).append(Mustache.render( $(t).filter(r.t).html(),r.r));
+        });
+      }
+    }
+  }
+}
+function msg(t,r) {
+	var s = "Error"
+    , c = {"position":"fixed","top":"1em","right":"1em","z-index":"2147483647","max-width":"97%","padding": "15px","margin-bottom": "20px","border": "1px solid transparent","border-radius": "4px","color":"#a94442","background-color": "#f2dede","border-color": "#ebccd1"}
+    ;
+	if(t) {
+		s = "Success";
+		c["color"] = "#3c763d";
+		c["background-color"] = "#dff0d8";
+		c["border-color"] = "#d6e9c6";
+	}
+	$("#msg").html("<strong>"+s+":</strong> "+r+"!").css(c).show().delay(5000).fadeOut(500);
 }

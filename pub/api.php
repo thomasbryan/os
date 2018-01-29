@@ -939,6 +939,19 @@ class AUDIO {
     }
     return $res;
   }
+  public function export($l='') {
+    $res = false;
+    /*
+    foreach($lib as $k => $v) {
+      $name = $v;
+      if(isset($meta->$v)) $name = $meta->$v;
+      $new = 'public_html/$l'.str_replace('_-_','-',str_replace(' ','_',$name)).'.mp3';
+      if(!file_exists($new)) copy($k,$new);
+    }
+    */
+    
+    return $res;
+  }
   public function delete($req='') {
     $res = false;
     if(isset($this->user->User)) {
@@ -1080,15 +1093,16 @@ class AUDIO {
     $res = false;
     if(isset($this->user->User)) {
       $u = $this->user->User.'/';
+      chdir($this->p.$u);
       if(file_exists($req)) {
-        if(file_exists($this->p.$u.$this->l.'.json')) {
-          $mp3=json_decode(file_get_contents($this->p.$u.$this->l.'.json'),true);
-          if(file_exists($this->p.$u.$this->m)) $meta = json_decode(file_get_contents($this->p.$u.$this->m),true);
+        if(file_exists($this->l.'.json')) {
+          $mp3=json_decode(file_get_contents($this->l.'.json'),true);
+          if(file_exists($this->m)) $meta = json_decode(file_get_contents($this->m),true);
           if(isset($meta)) unset($meta[$mp3[$req]]);
           unlink($req);
           if(!file_exists($req)) {
-            file_put_contents($this->p.$u.$this->m,json_encode($meta));
-            $res = $this->refresh();
+            file_put_contents($this->m,json_encode($meta));
+            $res = true;
           }
         }
       }
