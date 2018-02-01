@@ -112,12 +112,12 @@
       </form>
       </div>
       <div class="col-sm-4">
-        <button class="ajax btn btn-primary btn-block" data-af="#audio-save" data-au="api.php?app=audio"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+        <button class="ajax btn btn-primary btn-block" data-af="#audio-save" data-au="api.php?app=audio" data-dd="#audio-edit" data-dt="#tpl-empty"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
       </div>
        
     </div>
 	  <div class="col-sm-3">
-      <form id="audio-trash" method="POST" data-af="#audio-trash" data-au="api.php?app=audio">
+      <form id="audio-trash" method="POST" data-af="#audio-trash" data-au="api.php?app=audio" data-dd="#audio-edit" data-dt="#tpl-empty">
         <input type="hidden" name="req" value="trash" />
         <input type="hidden" name="f" value="{{f}}" />
         <button class="btn btn-danger btn-block"><span class="glyphicon glyphicon-trash"></span> Trash</button>
