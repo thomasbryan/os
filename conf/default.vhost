@@ -12,7 +12,7 @@ server {
     fastcgi_pass  unix:/run/php/php7.0-fpm.sock;
   }
   location ~ ^/~(.+?)(/.*)?$ {
-    alias /var/www/src/users/$1/public_html$2;
+    alias /var/www/src/home/$1/public_html$2;
     index  index.html index.htm;
     autoindex on;
   }
