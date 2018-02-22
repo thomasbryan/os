@@ -607,6 +607,7 @@ $(document).on("click",".action",function(e) {
     case "diff":ajx({"req":"diff","project":repo},"gitdiff"); break;
     case "log":ajx({"req":"log","project":repo},"gitlog"); break;
     case "branch":ajx({"req":"branch","project":repo},"gitbranch"); break;
+    case "fetch":ajx({"req":"fetch","project":repo},"gitinit"); break;
   }
 });
 function gitpush(req) {
@@ -640,7 +641,7 @@ function gitlog(req) {
 }
 function gitbranch(req) {
   var html = "<div id='overlay'><div class='panel panel-info'><div class='panel-heading'><a>&nbsp;</a>Branches '"+req.repo+"'</div><div class='panel-body'>";
-  $.each(req.log,function(k,v) {
+  $.each(req.branch,function(k,v) {
     html += "<div class='line'>"+v.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\ /g,"&nbsp;")+"</div>";
   }); 
   html+= "</div></div></div>";
