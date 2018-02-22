@@ -461,7 +461,7 @@ class API {
         $path = dirname(__FILE__);
         chdir($path);
         chdir('../src/home/'.$user.'/');
-        exec('git clone '.$url.' 2>&1',$out,$ret);
+        exec('git clone --config core.fileMode=false '.$url.' 2>&1',$out,$ret);
         if($ret == 0) {
           chdir($path);
           $this->gitCache($user);
