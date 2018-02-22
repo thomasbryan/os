@@ -448,6 +448,7 @@ class API {
       case 'rem': $res = $this->gitRem($req->User);break;
       case 'pull': $res = $this->gitPull($req->User);break;
 			case 'push': $res = $this->gitPush($req->User);break;
+      case 'branch': $res = $this->gitBranch($req->User);break;
     }
     return $res;
   }
@@ -615,6 +616,24 @@ class API {
 				chdir($path);
 				chdir($prefix.$_POST['project']);
 				exec('git log',$log);
+				$res = array('repo'=>$_POST['project'],'log'=>$log);
+				continue;
+      }
+    }
+    return $res;
+  }
+  private function gitBranch($user) {
+    $res = false;
+    $status = $this->gitStatus($user);
+    foreach($status as $k => $v) {
+      if($v['r'] == $_POST['project']) {
+				$prefix = '../src/home/'.$user.'/';
+				$this->gitCache($user);
+				$path = dirname(__FILE__);
+				$len = strlen(dirname(getcwd()));
+				chdir($path);
+				chdir($prefix.$_POST['project']);
+				exec('git branch -r',$log);
 				$res = array('repo'=>$_POST['project'],'log'=>$log);
 				continue;
       }

@@ -606,6 +606,7 @@ $(document).on("click",".action",function(e) {
     case "pull":ajx({"req":"pull","project":repo},"gitinit"); break;
     case "diff":ajx({"req":"diff","project":repo},"gitdiff"); break;
     case "log":ajx({"req":"log","project":repo},"gitlog"); break;
+    case "branch":ajx({"req":"branch","project":repo},"gitbranch"); break;
   }
 });
 function gitpush(req) {
@@ -629,6 +630,16 @@ function gitdiff(req) {
 }
 function gitlog(req) {
   var html = "<div id='overlay'><div class='panel panel-info'><div class='panel-heading'><a>&nbsp;</a>Log '"+req.repo+"'</div><div class='panel-body'>";
+  $.each(req.log,function(k,v) {
+    html += "<div class='line'>"+v.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\ /g,"&nbsp;")+"</div>";
+  }); 
+  html+= "</div></div></div>";
+  $("body").append(html);
+  $(".navbar, #app").addClass("hidden");
+  $("#overlay .panel-body").css({"height":Math.ceil($(window).height() * 0.85)+"px"});
+}
+function gitbranch(req) {
+  var html = "<div id='overlay'><div class='panel panel-info'><div class='panel-heading'><a>&nbsp;</a>Branches '"+req.repo+"'</div><div class='panel-body'>";
   $.each(req.log,function(k,v) {
     html += "<div class='line'>"+v.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\ /g,"&nbsp;")+"</div>";
   }); 
