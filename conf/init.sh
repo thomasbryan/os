@@ -1,4 +1,5 @@
 #!/bin/sh
+echo "alias web='su www-data -s /bin/bash'" > ~/.bash_aliases
 cron="/etc/cron.d/nginx-cron"
 if [ ! -f $cron ];then
   echo "* * * * * root sh /root/nginx.sh >> /var/log/cron.log 2>&1" >> $cron
