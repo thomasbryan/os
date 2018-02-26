@@ -190,6 +190,7 @@ class API {
     switch($_POST['req']) {
       case 'quotas': $res = $this->authQuotas();break;
       case 'ssh': $res = $this->authSSH();break;
+      case 'import': $res = $this->authImport();break;
       case 'logs': $res = $this->authLogs();break;
       case 'softwareupdate': $res = $this->authSoftwareUpdate();break;
       case 'logout': $res = $this->authLogout();break;
@@ -232,6 +233,32 @@ class API {
     }
     if(file_exists($ssh)) {
       $res = file_get_contents($ssh);
+    }
+    return $res;
+  }
+  private function authImport() {
+    $res = false;
+    if(isset($_POST['import'])) {
+      $path = dirname(dirname(__FILE__)).'/phpseclib/phpseclib';
+      $rsa = $path.'/Crypt/RSA.php';
+      if(file_exists($rsa)) {
+        set_include_path(get_include_path().PATH_SEPARATOR.$path);
+        include_once($rsa);
+        $rsa = new Crypt_RSA();
+        $rsa->loadKey($_POST['import']);
+        $rsa->setPublicKey();
+        $rsa->setComment($this->req->User);
+        $public = $rsa->getPublicKey(CRYPT_RSA_PUBLIC_FORMAT_OPENSSH);
+        if($public) {
+          $ssh = '/var/www/.ssh/'.$this->req->User;
+          $pub = $ssh.'.pub';
+          if(file_put_contents($ssh,$_POST['import'])) {
+            if(file_put_contents($pub,$public)) {
+              $res = $public;
+            }
+          }
+        }
+      }
     }
     return $res;
   }

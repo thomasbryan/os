@@ -812,6 +812,19 @@ function ssh() {
 function sshdone(req) {
   $("#app .ssh").html(req);
 }
+function add() {
+  $("#app .import").removeClass("hidden");
+}
+function save() {
+  var data = $(".import textarea").val();
+  if(data.length > 0) {
+    ajx({"req":"import","import":data},"savedone");
+  }
+}
+function savedone() {
+  $("#app .import").addClass("hidden");
+  $("#app .import textarea").val("");
+}
 function logs() {
   ajx({"req":"logs"},"logsdone");
 }
