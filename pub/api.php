@@ -195,7 +195,7 @@ class API {
       case 'softwareupdate': $res = $this->authSoftwareUpdate();break;
       case 'logout': $res = $this->authLogout();break;
       default: 
-      case 'read': $res = $this->profile($req->User);break;
+      case 'read': $this->authLogout(); $res = $this->profile($req->User);break;
       case 'update': $res = $this->authUpdate();break;
       case 'delete': $res = $this->authDelete();break;
     }
