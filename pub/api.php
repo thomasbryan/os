@@ -149,8 +149,8 @@ class API {
     }
     return $res;
   }
-  private function profile($req) {
-    if(!isset($_COOKIE['t'])) {
+  private function profile($req,$fresh = false) {
+    if(!isset($_COOKIE['t'])||$fresh) {
       $json = array('User' => $req,'Expr' => date('U',strtotime('+1 day')));
       $claim = base64_encode(json_encode($json));
       file_put_contents('../src/auth.log','['.date('Y-m-d H:i:s').'] '.$req.':'.$_SERVER['REMOTE_ADDR'].':'.str_replace(':','=',$_SERVER['HTTP_USER_AGENT'])."\n",FILE_APPEND);
@@ -195,7 +195,7 @@ class API {
       case 'softwareupdate': $res = $this->authSoftwareUpdate();break;
       case 'logout': $res = $this->authLogout();break;
       default: 
-      case 'read': $this->authLogout(); $res = $this->profile($req->User);break;
+      case 'read': $res = $this->profile($req->User,true);break;
       case 'update': $res = $this->authUpdate();break;
       case 'delete': $res = $this->authDelete();break;
     }
