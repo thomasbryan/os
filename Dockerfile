@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -qqmy \
     libav-tools \
     git
 
-COPY conf/supervisord.conf /etc/supervisor/supervisord.conf
+COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY conf/nginx.conf /etc/nginx/
 COPY conf/default.vhost /etc/nginx/conf.d/
@@ -24,6 +24,8 @@ COPY conf/nginx.sh /root/
 
 RUN mkdir -p /run/php
 
+RUN sed -i 's/user = www-data/user = root/g' /etc/php/7.0/fpm/pool.d/www.conf
+
 COPY adminer /var/www/adminer
 RUN chmod 0777 /var/www/adminer/
 
@@ -31,7 +33,9 @@ COPY phpseclib /var/www/phpseclib
 
 COPY conf/php.ini /etc/php/7.0/fpm/conf.d/40-custom.ini
 
-VOLUME ["/var/www/pub", "/var/www/src"]
+COPY pub /var/www/pub
+
+VOLUME ["/nfs", "/var/www/pub", "/var/www/src"]
 
 CMD ["/usr/bin/supervisord"]
 
