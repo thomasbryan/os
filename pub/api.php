@@ -175,6 +175,8 @@ class API {
       case 'google': $res = $audio->google($_POST['y']);break;
       case 'trash': $res = $audio->trash($_POST['f']);break;
       case 'refresh': $res = $audio->refresh();break;
+      case 'getid3': $res = $audio->getid3(); break;
+      case 'setid3': $res = $audio->setid3(); break;
     }
     return $res;
   }
@@ -1231,6 +1233,26 @@ class AUDIO {
         $res = $req;
       }
     }
+    return $res;
+  }
+  public function getid3() {
+    $res = array('f'=>$_POST['f']);
+    exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.trim($_POST['f'],'.'))).' 2>&1',$out,$ret);
+    foreach($out as $k) {
+      $shrapnel = explode('=',$k);
+      if(count($shrapnel)>1) {
+        $key = $shrapnel[0];
+        array_shift($shrapnel);
+        $res[$key] = implode('=',$shrapnel);
+      }
+    }
+    return $res;
+  }
+  public function setid3() {
+    $res = array('f'=>$_POST['f']);
+    /*
+    loop through artist, title, album and execute easyid3.py script
+    */
     return $res;
   }
 } #/AUDIO 

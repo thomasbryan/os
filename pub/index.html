@@ -124,6 +124,26 @@
       </form>
     </div>
   </div>
+  <div id="audio-id3" class="row"></div>
+</script>
+<script id="tpl-audio-id3" type="text/html">
+  <br />
+  <form id="id3" >
+    <div class="col-sm-3">
+      <input type="text" name="artist" class="form-control" value="{{artist}}" placeholder="Artist" />
+    </div>
+    <div class="col-sm-3">
+      <input type="text" name="title" class="form-control" value="{{title}}" placeholder="Title" />
+    </div>
+    <div class="col-sm-3">
+      <input type="text" name="album" class="form-control" value="{{album}}" placeholder="Album" />
+    </div>
+    <div class="col-sm-3">
+      <input type="hidden" name="req" value="setid3" />
+      <input type="hidden" name="f" value="{{f}}" />
+      <button class="ajax btn btn-primary btn-block" data-af="#id3" data-au="api.php?app=audio"><span class="glyphicon glyphicon-floppy-disk"></span> Update</button>
+    </div>
+  </form>
 </script>
 <script id="tpl-empty" type="text/html"></script>
 <script id="tpl-audio-results" type="text/html">
