@@ -1238,6 +1238,7 @@ class AUDIO {
   public function getid3() {
     $res = array('f'=>$_POST['f']);
     exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.trim($_POST['f'],'.'))).' 2>&1',$out,$ret);
+    #file_put_contents('../src/auth.log','['.date('Y-m-d H:i:s').'] '.'python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.trim($_POST['f'],'.'))).' 2>&1'."\n",FILE_APPEND);
     foreach($out as $k) {
       $shrapnel = explode('=',$k);
       if(count($shrapnel)>1) {
@@ -1250,9 +1251,21 @@ class AUDIO {
   }
   public function setid3() {
     $res = array('f'=>$_POST['f']);
-    /*
-    loop through artist, title, album and execute easyid3.py script
-    */
+    if(isset($_POST['artist'])) {
+      $key = base64_encode('artist');
+      $val = base64_encode($_POST['artist']);
+      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.trim($_POST['f'],'.'))).' '.$key.' '.$val.' 2>&1',$out,$ret);
+    }
+    if(isset($_POST['title'])) {
+      $key = base64_encode('title');
+      $val = base64_encode($_POST['title']);
+      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.trim($_POST['f'],'.'))).' '.$key.' '.$val.' 2>&1',$out,$ret);
+    }
+    if(isset($_POST['album'])) {
+      $key = base64_encode('album');
+      $val = base64_encode($_POST['album']);
+      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.trim($_POST['f'],'.'))).' '.$key.' '.$val.' 2>&1',$out,$ret);
+    }
     return $res;
   }
 } #/AUDIO 

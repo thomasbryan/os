@@ -15,4 +15,5 @@ if(len(sys.argv)>1):
           val = base64.b64decode(sys.argv[3])
           meta[key] = val
           meta.save(v2_version=3)
-    print meta.pprint()
+    else:
+      print meta.pprint()

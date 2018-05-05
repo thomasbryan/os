@@ -33,6 +33,10 @@ COPY phpseclib /var/www/phpseclib
 
 COPY conf/php.ini /etc/php/7.0/fpm/conf.d/40-custom.ini
 
+COPY conf/get-pip.py /root/
+RUN python /root/get-pip.py
+RUN pip install mutagen
+
 COPY pub /var/www/pub
 
 VOLUME ["/nfs", "/var/www/pub", "/var/www/src"]
