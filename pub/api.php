@@ -1040,13 +1040,11 @@ class AUDIO {
         exec($p.'youtube-dl --get-id '.$url,$id,$ret);
         if(!$ret) {
           if(count($id) == 1) {
-            if(file_exists($this->p.$u.$this->m)) $meta = json_decode(file_get_contents($this->p.$u.$this->m),true);
-            $meta[$id[0]] = $n;
-            file_put_contents($this->p.$u.$this->m,json_encode($meta));
             chdir($this->p.$u);
             exec($p.'youtube-dl -w -x --id --audio-format mp3 '.$url,$dl,$err);
             if(!$err) {
               chmod($id[0].'.mp3',0666);
+              $this->meta($id[0],$n);
               chdir($this->d);
               $res = $this->refresh();
             }
@@ -1088,12 +1086,25 @@ class AUDIO {
       if(file_exists($this->p.$u.$this->l.'.json')) {
         $mp3=json_decode(file_get_contents($this->p.$u.$this->l.'.json'),true);
         if(isset($mp3[$f])) {
-          if(file_exists($this->p.$u.$this->m)) $meta = json_decode(file_get_contents($this->p.$u.$this->m),true);
-          $meta[$mp3[$f]] = $n;
-          file_put_contents($this->p.$u.$this->m,json_encode($meta));
+          $this->meta($mp3[$f],$n);
           $res = true;
         }
       }
+    }
+    return $res;
+  }
+  public function meta($file=false,$name=false) {
+    $res = false;
+    if($file) {
+      $key = base64_encode('artist');
+      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/'.$file.'.mp3')).' '.$key.' '.$key.' 2>&1',$out,$ret);
+      $key = base64_encode('album');
+      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/'.$file.'.mp3')).' '.$key.' '.$key.' 2>&1',$out,$ret);
+
+      $key = base64_encode('title');
+      $val = base64_encode($name);
+      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/'.$file.'.mp3')).' '.$key.' '.$val.' 2>&1',$out,$ret);
+      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/')).' > /dev/null &',$out,$ret);
     }
     return $res;
   }
@@ -1238,7 +1249,6 @@ class AUDIO {
   public function getid3() {
     $res = array('f'=>$_POST['f']);
     exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.trim($_POST['f'],'.'))).' 2>&1',$out,$ret);
-    #file_put_contents('../src/auth.log','['.date('Y-m-d H:i:s').'] '.'python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.trim($_POST['f'],'.'))).' 2>&1'."\n",FILE_APPEND);
     foreach($out as $k) {
       $shrapnel = explode('=',$k);
       if(count($shrapnel)>1) {

@@ -1,6 +1,9 @@
 #! /usr/bin/python
+import io
 import os
+import re
 import sys 
+import glob 
 import json 
 import base64
 from mutagen.easyid3 import EasyID3
@@ -17,3 +20,14 @@ if(len(sys.argv)>1):
           meta.save(v2_version=3)
     else:
       print meta.pprint()
+  elif(os.path.isdir(mp3)):
+    path = u"%s/*.mp3"%mp3
+    files = glob.glob(path)
+    metas = {}
+    for f in files:
+      meta = EasyID3(f)
+      title = meta.get('title')
+      if(title is not None):
+        metas[os.path.splitext(os.path.basename(f))[0]] = title[0]
+    with io.open(mp3+"/meta","w", encoding="utf-8") as f:
+      f.write(json.dumps(metas,ensure_ascii=False))

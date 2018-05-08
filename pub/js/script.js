@@ -133,7 +133,6 @@ $(document).on("click",".navbar-brand",function(e) {
 });
 $(document).on("click","#p a,.audio #r .g:not(.disabled) button:not(.update)",function(e) {
   tmpl("#audio-edit","#tpl-audio-edit",$(this).parent().data());
-  ajax({"au":"api.php?app=audio","ad":{"req":"getid3","f":$(this).parent().data("f")},"dd":"#audio-id3","dt":"#tpl-audio-id3"});
   $(".edit").removeClass("hidden");
   $("body").addClass("body-edit");
   $("#f").val(($(this).data("f")===undefined?$(this).parent().data("f"):$(this).data("f")));
