@@ -1120,7 +1120,7 @@ class AUDIO {
         foreach($mp3 as $k => $v) {
           $n = (isset($meta[$v]) ? $meta[$v] : $v);
           if(preg_match('/'.$req.'/i',$n)) {
-            $res[] = array( 'f' => $k, 'n' => $n);
+            $res[] = array( 'f' => htmlspecialchars($k,ENT_QUOTES), 'n' => htmlspecialchars($n,ENT_QUOTES));
           }
         }
       }
