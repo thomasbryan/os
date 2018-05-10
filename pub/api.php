@@ -229,7 +229,7 @@ class API {
   }
   private function authSSH() {
     $res = false;
-    $ssh = '/var/www/.ssh/'.$this->req->User.'.pub';
+    $ssh = '~/.ssh/'.$this->req->User.'.pub';
     if(!file_exists($ssh)) {
       exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$this->req->User.' -q -N "" -C "'.$this->req->User.'"',$exec);
     }
@@ -252,7 +252,7 @@ class API {
         $rsa->setComment($this->req->User);
         $public = $rsa->getPublicKey(CRYPT_RSA_PUBLIC_FORMAT_OPENSSH);
         if($public) {
-          $ssh = '/var/www/.ssh/'.$this->req->User;
+          $ssh = '~/.ssh/'.$this->req->User;
           $pub = $ssh.'.pub';
           if(file_put_contents($ssh,$_POST['import'])) {
 	    chmod($ssh,0600);

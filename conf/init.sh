@@ -20,6 +20,17 @@ if [ ! -f $conf ];then
   chmod 0600 $conf
 fi
 chown -R www-data:www-data $ssh
+ssh="/root/.ssh"
+if [ ! -d $ssh ];then
+  mkdir $ssh
+fi
+chmod 0700 $ssh
+conf=$ssh"config"
+if [ ! -f $conf ];then
+  echo "StrictHostKeyChecking no" >> $conf
+  echo "UserKnownHostsFile /dev/null" >> $conf
+  chmod 0600 $conf
+fi
 cache=$www".cache/"
 if [ ! -d $cache ];then
   mkdir $cache
