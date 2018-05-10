@@ -6,11 +6,16 @@ import sys
 import glob 
 import json 
 import base64
+import mutagen.id3
 from mutagen.easyid3 import EasyID3
 if(len(sys.argv)>1):
   mp3 = base64.b64decode(sys.argv[1])
   if(os.path.isfile(mp3)):
-    meta = EasyID3(mp3)
+    try:
+      meta = EasyID3(mp3)
+    except mutagen.id3.ID3NoHeaderError:
+      meta = mutagen.File(mp3, easy=True)
+      meta.add_tags()
     if(len(sys.argv)>2):
       key = base64.b64decode(sys.argv[2])
       if key in EasyID3.valid_keys.keys():
