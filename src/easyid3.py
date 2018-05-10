@@ -25,9 +25,12 @@ if(len(sys.argv)>1):
     files = glob.glob(path)
     metas = {}
     for f in files:
-      meta = EasyID3(f)
-      title = meta.get('title')
-      if(title is not None):
-        metas[os.path.splitext(os.path.basename(f))[0]] = title[0]
+      try:
+        meta = EasyID3(f)
+        title = meta.get('title')
+        if(title is not None):
+          metas[os.path.splitext(os.path.basename(f))[0]] = title[0]
+      except:
+        print "Missing ID3 '"+os.path.basename(f)+"'"
     with io.open(mp3+"/meta","w", encoding="utf-8") as f:
       f.write(json.dumps(metas,ensure_ascii=False))

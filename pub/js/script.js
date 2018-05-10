@@ -1138,6 +1138,7 @@ $(document).on("submit","form#search",function(e) {
 });
 
 $(document).ready(function () {
+  if(!$("#msg").length) $("body").append("<div id='msg'></div>");
   $("#slide-nav.navbar-inverse").after($('<div class="inverse" id="navbar-height-col"></div>'));
   $("#slide-nav.navbar-default").after($('<div id="navbar-height-col"></div>'));  
   var toggler = ".navbar-toggle"

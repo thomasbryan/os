@@ -1044,7 +1044,7 @@ class AUDIO {
             exec($p.'youtube-dl -w -x --id --audio-format mp3 '.$url,$dl,$err);
             if(!$err) {
               chmod($id[0].'.mp3',0666);
-              $this->meta($id[0],$n);
+              $meta = $this->meta($id[0],$n);
               chdir($this->d);
               $res = $this->refresh();
             }
@@ -1086,8 +1086,10 @@ class AUDIO {
       if(file_exists($this->p.$u.$this->l.'.json')) {
         $mp3=json_decode(file_get_contents($this->p.$u.$this->l.'.json'),true);
         if(isset($mp3[$f])) {
-          $this->meta($mp3[$f],$n);
-          $res = true;
+          $meta = $this->meta($mp3[$f],$n);
+          if($meta) {
+            $res = true;
+          }
         }
       }
     }
@@ -1104,7 +1106,12 @@ class AUDIO {
       $key = base64_encode('title');
       $val = base64_encode($name);
       exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/'.$file.'.mp3')).' '.$key.' '.$val.' 2>&1',$out,$ret);
-      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/')).' > /dev/null &',$out,$ret);
+      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/')).' 2>&1',$out,$ret);
+      if($ret == 0) {
+        $res = true;
+      }else{
+        echo implode('<br />',$out);
+      }
     }
     return $res;
   }
