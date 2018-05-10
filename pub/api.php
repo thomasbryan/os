@@ -495,6 +495,7 @@ class API {
         exec('git clone --config core.fileMode=false '.$url.' 2>&1',$out,$ret);
         if($ret == 0) {
           chdir($path);
+          # just add this project to cache instead of deleting
           $this->gitCache($user);
           $res = $out;
         }else{
@@ -642,7 +643,6 @@ class API {
     foreach($status as $k => $v) {
       if($v['r'] == $_POST['project']) {
 				$prefix = '../src/home/'.$user.'/';
-				$this->gitCache($user);
 				$path = dirname(__FILE__);
 				$len = strlen(dirname(getcwd()));
 				chdir($path);
@@ -660,7 +660,7 @@ class API {
     foreach($status as $k => $v) {
       if($v['r'] == $_POST['project']) {
 				$prefix = '../src/home/'.$user.'/';
-				$this->gitCache($user);
+				#$this->gitCache($user);
 				$path = dirname(__FILE__);
 				$len = strlen(dirname(getcwd()));
 				chdir($path);
@@ -678,7 +678,7 @@ class API {
     foreach($status as $k => $v) {
       if($v['r'] == $_POST['project']) {
 				$prefix = '../src/home/'.$user.'/';
-				$this->gitCache($user);
+				#$this->gitCache($user);
 				$path = dirname(__FILE__);
 				$len = strlen(dirname(getcwd()));
 				chdir($path);
@@ -744,6 +744,7 @@ class API {
     chdir($path);
     chdir($prefix.$repo);
     exec('git add '.$file);
+    //todo update project status only.
     //todo return exit status
     return true;
   }
@@ -769,6 +770,7 @@ class API {
       chdir($path);
       chdir($prefix.$_POST['project']);
       exec('git reset HEAD "'.$_POST['file'].'"');
+      //todo update project status only.
       $res = true;
     }
     return $res;
@@ -779,7 +781,7 @@ class API {
     foreach($status as $k => $v) {
       if($v['r'] == $_POST['project']) {
         $prefix = '../src/home/'.$user.'/';
-        $this->gitCache($user);
+        #$this->gitCache($user);
         $path = dirname(__FILE__);
         $len = strlen(dirname(getcwd()));
         chdir($path);
@@ -799,7 +801,7 @@ class API {
         $count = count($v['s']);
         if($count) {
           $prefix = '../src/home/'.$user.'/';
-          $this->gitCache($user);
+          #$this->gitCache($user);
           $path = dirname(__FILE__);
           $len = strlen(dirname(getcwd()));
           chdir($path);
