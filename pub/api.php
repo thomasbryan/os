@@ -1046,8 +1046,8 @@ class AUDIO {
             exec($p.'youtube-dl -w -x --id --audio-format mp3 '.$url,$dl,$err);
             if(!$err) {
               chmod($id[0].'.mp3',0666);
-              $meta = $this->meta($id[0],$n);
               chdir($this->d);
+              $meta = $this->meta($id[0],$n);
               $res = $this->refresh();
             }
           }else{
