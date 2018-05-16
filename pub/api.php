@@ -1047,7 +1047,8 @@ class AUDIO {
             if(!$err) {
               chmod($id[0].'.mp3',0666);
               chdir($this->d);
-              $meta = $this->meta($id[0],$n);
+              $req = array('artist'=>'artist','album'=>'album','title'=>$n);
+              $meta = $this->meta($id[0],$req);
               $res = $this->refresh();
             }
           }else{
@@ -1088,7 +1089,10 @@ class AUDIO {
       if(file_exists($this->p.$u.$this->l.'.json')) {
         $mp3=json_decode(file_get_contents($this->p.$u.$this->l.'.json'),true);
         if(isset($mp3[$f])) {
-          $meta = $this->meta($mp3[$f],$n);
+          $req = array('artist'=>'artist','album'=>'album','title'=>$n);
+          if(isset($_POST['album'])) $req['album'] = $_POST['album'];
+          if(isset($_POST['artist'])) $req['artist'] = $_POST['artist'];
+          $meta = $this->meta($mp3[$f],$req);
           if($meta) {
             $res = true;
           }
@@ -1100,14 +1104,12 @@ class AUDIO {
   public function meta($file=false,$name=false) {
     $res = false;
     if($file) {
-      $key = base64_encode('artist');
-      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/'.$file.'.mp3')).' '.$key.' '.$key.' 2>&1',$out,$ret);
-      $key = base64_encode('album');
-      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/'.$file.'.mp3')).' '.$key.' '.$key.' 2>&1',$out,$ret);
+      foreach($name as $k => $v) {
+        $key = base64_encode($k);
+        $val = base64_encode($v);
+        exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/'.$file.'.mp3')).' '.$key.' '.$val.' 2>&1',$out,$ret);
+      }
 
-      $key = base64_encode('title');
-      $val = base64_encode($name);
-      exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/'.$file.'.mp3')).' '.$key.' '.$val.' 2>&1',$out,$ret);
       exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/')).' 2>&1',$out,$ret);
       if($ret == 0) {
         $res = true;
@@ -1266,6 +1268,8 @@ class AUDIO {
         $res[$key] = implode('=',$shrapnel);
       }
     }
+    
+    file_put_contents('data','python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.trim($_POST['f'],'.'))));
     return $res;
   }
   public function setid3() {

@@ -98,19 +98,30 @@
 </script>
 <script id="tpl-audio-edit" type="text/html">
   <br />
+  <form id="form-album-artist">
+    <input type="hidden" name="req" value="getid3" />
+    <input type="hidden" name="f" value="{{f}}" />
+  </form>
   <div class="row">
 	  <div class="col-sm-9">
-      <div class="col-xs-4 col-sm-2 pbo">
-        <a class="btn btn-default btn-block mustache" data-d="#audio-edit" data-t="#tpl-empty"><span class="glyphicon glyphicon-remove-sign"></span></a>
+      <div class="col-xs-12 col-sm-8 pbo">
+        <div class="col-xs-3 pbo">
+          <a class="btn btn-default btn-block mustache" data-d="#audio-edit" data-t="#tpl-empty"><span class="glyphicon glyphicon-remove-sign"></span></a>
+        </div>
+        <form id="audio-save" method="POST">
+          <div class="col-xs-6">
+            <input type="hidden" name="req" value="edit" />
+            <input type="hidden" name="f" value="{{f}}" />
+            <input type="text" class="form-control" name="n" value="{{n}}" placeholder="Name" />
+          </div>
+          <div id="audio-album-artist">
+            <div class="col-xs-3">
+              <a class="btn btn-default btn-block ajax" data-au="api.php?app=audio" data-af="#form-album-artist" data-dd="#audio-album-artist" data-dt="#tpl-album-artist"><span class="glyphicon glyphicon-user"></span></a>
+            </div>
+          </div>
+        </form>
       </div>
-      <div class="col-xs-8 col-sm-6 pbo">
-      <form id="audio-save" method="POST">
-        <input type="hidden" name="req" value="edit" />
-        <input type="hidden" name="f" value="{{f}}" />
 
-        <input type="text" class="form-control" name="n" value="{{n}}" placeholder="Name" />
-      </form>
-      </div>
       <div class="col-xs-6 col-sm-4">
         <button class="ajax btn btn-primary btn-block" data-af="#audio-save" data-au="api.php?app=audio" data-dd="#audio-edit" data-dt="#tpl-empty"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
       </div>
@@ -126,6 +137,15 @@
   </div>
 </script>
 <script id="tpl-empty" type="text/html"></script>
+<script id="tpl-album-artist" type="text/html">
+  <div class="col-xs-12"></div>
+  <div class="col-xs-6 pbo">
+    <input name="album" placeholder="album" value="{{album}}" class="form-control" />
+  </div>
+  <div class="col-xs-6 pbo">
+    <input name="artist" placeholder="artist" value="{{artist}}" class="form-control" />
+  </div>
+</script>
 <script id="tpl-audio-results" type="text/html">
   <a class="g list-group-item" data-f="{{f}}" data-n="{{n}}" data-t="0">{{n}}
   <button class="update btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Playlist</button>
