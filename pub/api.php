@@ -140,7 +140,7 @@ class API {
               mkdir('../src/magic/'.$user);
               mkdir('../src/home/'.$user.'/public_html/',0755,true);
               mkdir('../src/video/'.$user);
-              exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$user.' -q -N "" -C "'.$user.'"',$res);
+              exec('ssh-keygen -b 2048 -t rsa -f '.$_SERVER['HOME'].'/.ssh/'.$user.' -q -N "" -C "'.$user.'"',$res);
               $res = $this->profile($user);
             }
           }
@@ -229,9 +229,9 @@ class API {
   }
   private function authSSH() {
     $res = false;
-    $ssh = '~/.ssh/'.$this->req->User.'.pub';
+    $ssh = $_SERVER['HOME'].'/.ssh/'.$this->req->User.'.pub';
     if(!file_exists($ssh)) {
-      exec('ssh-keygen -b 2048 -t rsa -f ~/.ssh/'.$this->req->User.' -q -N "" -C "'.$this->req->User.'"',$exec);
+      exec('ssh-keygen -b 2048 -t rsa -f '.$_SERVER['HOME'].'/.ssh/'.$this->req->User.' -q -N "" -C "'.$this->req->User.'"',$exec);
     }
     if(file_exists($ssh)) {
       $res = file_get_contents($ssh);
@@ -252,7 +252,7 @@ class API {
         $rsa->setComment($this->req->User);
         $public = $rsa->getPublicKey(CRYPT_RSA_PUBLIC_FORMAT_OPENSSH);
         if($public) {
-          $ssh = '~/.ssh/'.$this->req->User;
+          $ssh = $_SERVER['HOME'].'/.ssh/'.$this->req->User;
           $pub = $ssh.'.pub';
           if(file_put_contents($ssh,$_POST['import'])) {
 	    chmod($ssh,0600);
