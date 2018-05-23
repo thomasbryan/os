@@ -21,6 +21,7 @@
             <li class="editor"><a href="#editor"><span class="glyphicon glyphicon-pencil"></span> <span class="hidden-sm">EDIT</span></a></li>
             <li class="git"><a href="#git"><span class="glyphicon glyphicon-cloud"></span> <span class="hidden-sm">GIT</span></a></li>
             <li class="chess"><a target="_blank" href="chess.html"><span class="glyphicon glyphicon-queen"></span> <span class="hidden-sm">CHESS</span></a></li>
+            <li class="chess"><a href="#curl"><span class="glyphicon glyphicon-globe"></span> <span class="hidden-sm">CURL</span></a></li>
           </ul>
         </div>
         <div class="navbar-header">
@@ -47,6 +48,35 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/mustache.min.js"></script>
+<script id="tpl-curl" type="text/html">
+<div class="container">
+  <h3> CURL </h3>
+  <div class="row-fluid">
+    <input class="form-control pbo" name="url" placeholder="URL" type="text"/>
+  </div>
+  <div class="row">
+    <div class="col-xs-6">
+      <input class="form-control pbo" name="user" placeholder="User" type="text"/>
+    </div>
+    <div class="col-xs-6">
+      <input class="form-control pbo" name="pass" placeholder="Pass" type="password"/>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <textarea class="form-control pbo" placeholder="Body"></textarea>
+  </div>
+  <div class="row-fluid">
+    <div class="btn btn-block btn-large btn-primary">Send</div>
+  </div>
+  <hr />
+  <h3> LOOP </h3>
+  <div class="row-fluid">
+    <input class="form-control pbo" name="url" placeholder="URL" type="text"/>
+  </div>
+  <div class="row">
+</div>
+{{existing}}
+</script>
 <script id="tpl-audio" type="text/html">
 <div class="container-fluid audio">
   <div id="body"></div>

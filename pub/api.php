@@ -30,6 +30,7 @@ class API {
                 case 'audio': $res = $this->audio($req); break;
                 case 'auth': $res = $this->auth($req); break;
                 case 'automagic': $res = $this->automagic($req); break;
+                case 'curl': $res = $this->curl($req); break;
                 case 'editor': $res = $this->edit($req); break;
                 case 'home': $res = $this->auth($req); break;
                 case 'git': $res = $this->git($req); break;
@@ -462,6 +463,70 @@ class API {
       break;
     }
     return $res;
+  }
+  private function curl($req) {
+    $res = false;
+		if(!isset($_POST['req'])) $_POST['req'] = ''; 
+    switch($_POST['req']) {
+      default: $res = $this->curlList($req->User);break;
+      case 'create':$res = $this->curlCreate($req->User);break;
+      case 'delete':$res = $this->curlDelete($req->User);break;
+      case 'loop':$res = $this->curlLoop($req->User);break;
+    }
+    return $res;
+  }
+  private function curlList($req) {
+    $res = array('list' => array());
+    $cache = '../src/magic/'.$req.'/index.sqlite3';
+    $sqlite = new PDO('sqlite:'.$cache);
+    if(file_exists($cache)) {
+      $sql = 'select * from tasks';
+      $res['list'] = $sqlite->exec($sql);
+    }else{
+      $sql = 'create table if not exists tasks (task INTEGER PRIMARY KEY, url TEXT NOT NULL, user TEXT NOT NULL, pass TEXT NOT NULL, body TEXT NOT NULL, name TEXT NOT NULL)';
+      $sqlite->exec($sql);
+    }
+    return $res;
+  }
+  private function curlCreate($req) {
+    /*
+    check freshness
+
+    select from tasks where url and user and body ...
+
+    take timestamp
+    select from tasks where timestamp not = timestamp
+
+    which will run the task and return results
+    save response: timestamp.exec, timestamp.info, timestamp.error
+    */
+  }
+  private function curlDelete($req) {
+    //delete data
+  }
+  private function curlLoop($req) {
+    /*
+    loop request
+
+    req) is input data
+    opt) is array or json
+    
+    conditional
+      value) to be a valid variable of the loop. or not existent.
+
+      operator) > < >= <= == != === !===
+
+      operand) example opt[v->name]
+
+    res)
+
+    $data = array(); or pulled from someplace
+    $res = array();
+    foreach($req as $k => $v) {
+      if($v->$x == $y) { $res[] = $z }
+    }
+    save $res
+    */
   }
   private function git($req) {
 		$res = false;

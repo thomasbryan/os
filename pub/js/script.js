@@ -518,6 +518,9 @@ function chessready() {
 function videoready() {
   $("#app").html("video");
 }
+function curlready() {
+  ajax({"au":"api.php?app=curl","dt":"#tpl-curl"});
+}
 var git = localStorage.git;
 function gitready() {
   if(git == null) {
@@ -1038,6 +1041,7 @@ $(window).on("hashchange", function (e) {
 }).trigger("hashchange");
 function state(req) {
   switch(req) {
+    case "#curl":
     case "#audio":
     case "#automagic":
     case "#chess":
