@@ -531,7 +531,9 @@ function gitready() {
   gitinit();
 }
 function gitinit() {
-	ajx({"req":"status"},"gitdone","gitfail");
+  var req = {"req":"status"};
+  if(git.repo !== undefined) req.project = git.repo;
+	ajx(req,"gitdone","gitfail");
 }
 function gitdone(req) {
 	/* Order repos by max items */

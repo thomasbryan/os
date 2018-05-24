@@ -560,7 +560,7 @@ class API {
         exec('git clone --config core.fileMode=false '.$url.' 2>&1',$out,$ret);
         if($ret == 0) {
           chdir($path);
-          # just add this project to cache instead of deleting
+          # TODO just add this project to cache instead of deleting
           $this->gitCache($user);
           $res = $out;
         }else{
@@ -726,7 +726,6 @@ class API {
     foreach($status as $k => $v) {
       if($v['r'] == $_POST['project']) {
 				$prefix = '../src/home/'.$user.'/';
-				#$this->gitCache($user);
 				$path = dirname(__FILE__);
 				$len = strlen(dirname(getcwd()));
 				chdir($path);
@@ -744,7 +743,6 @@ class API {
     foreach($status as $k => $v) {
       if($v['r'] == $_POST['project']) {
 				$prefix = '../src/home/'.$user.'/';
-				#$this->gitCache($user);
 				$path = dirname(__FILE__);
 				$len = strlen(dirname(getcwd()));
 				chdir($path);
@@ -804,13 +802,11 @@ class API {
     $user = $req['user'];
     $file = $req['file'];
     $prefix = '../src/home/'.$user.'/';
-    #$this->gitCache($user);
     $path = dirname(__FILE__);
     $len = strlen(dirname(getcwd()));
     chdir($path);
     chdir($prefix.$repo);
     exec('git add '.$file);
-    //todo update project status only.
     //todo return exit status
     return true;
   }
@@ -830,7 +826,6 @@ class API {
     }
     if($valid) {
       $prefix = '../src/home/'.$user.'/';
-      #$this->gitCache($user);
       $path = dirname(__FILE__);
       $len = strlen(dirname(getcwd()));
       chdir($path);
@@ -847,7 +842,6 @@ class API {
     foreach($status as $k => $v) {
       if($v['r'] == $_POST['project']) {
         $prefix = '../src/home/'.$user.'/';
-        #$this->gitCache($user);
         $path = dirname(__FILE__);
         $len = strlen(dirname(getcwd()));
         chdir($path);
@@ -867,7 +861,6 @@ class API {
         $count = count($v['s']);
         if($count) {
           $prefix = '../src/home/'.$user.'/';
-          #$this->gitCache($user);
           $path = dirname(__FILE__);
           $len = strlen(dirname(getcwd()));
           chdir($path);
