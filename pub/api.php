@@ -804,7 +804,7 @@ class API {
     $user = $req['user'];
     $file = $req['file'];
     $prefix = '../src/home/'.$user.'/';
-    $this->gitCache($user);
+    #$this->gitCache($user);
     $path = dirname(__FILE__);
     $len = strlen(dirname(getcwd()));
     chdir($path);
@@ -830,7 +830,7 @@ class API {
     }
     if($valid) {
       $prefix = '../src/home/'.$user.'/';
-      $this->gitCache($user);
+      #$this->gitCache($user);
       $path = dirname(__FILE__);
       $len = strlen(dirname(getcwd()));
       chdir($path);
