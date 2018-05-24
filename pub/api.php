@@ -643,10 +643,10 @@ class API {
   private function gitStatus($user) {
     $res = false;
     $cache = '../src/repos/'.$user;
+    $path = dirname(__FILE__);
+    $len = strlen(dirname(getcwd()));
     if(!file_exists($cache)) {
       exec('find ../src/home/'.$user.' -type d -name ".git"',$dir);
-      $path = dirname(__FILE__);
-      $len = strlen(dirname(getcwd()));
       $res = array();
       foreach($dir as $k => $v) {
         $res[] = $this->gitGitstatus($v,$len,$path,$user);
@@ -657,16 +657,17 @@ class API {
     }else{
       $git = unserialize(file_get_contents($cache));
     }
-    if(isset($_POST['git'])) {
-      if(isset($git[$_POST['git']])) {
-        #todo 
-        #$git[$_POST['git']] = $this->gitstatus();
-        #file_put_contents($file,serialize($git));
-        #$res = $git[$_POST['git']];
+    if(isset($_POST['project'])) {
+      foreach($git as $k => $v) {
+        if($v['r'] == $_POST['project']) {
+          $status = $this->gitGitstatus('../src/home/'.$user.'/'.$_POST['project'].'/.git',$len,$path,$user);
+          $git[$k] = $status;
+        }
       }
-    }else{
-      $res = $git;
+      chdir($path);
+      file_put_contents($cache,serialize($git));
     }
+    $res = $git;
     return $res;
   }
   private function gitGitstatus($req,$len,$path,$user) {

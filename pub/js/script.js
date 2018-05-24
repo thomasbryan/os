@@ -605,6 +605,7 @@ $(document).on("click",".action",function(e) {
     case "log":ajx({"req":"log","project":repo},"gitlog"); break;
     case "branch":ajx({"req":"branch","project":repo},"gitbranch"); break;
     case "fetch":ajx({"req":"fetch","project":repo},"gitinit"); break;
+    case "status":ajx({"req":"status","project":repo},"gitinit"); break;
   }
 });
 function gitpush(req) {
