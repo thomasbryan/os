@@ -481,9 +481,9 @@ class API {
     try{
       $sqlite = new PDO('sqlite:'.$cache);
       $sqlite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      $sql = 'CREATE TABLE IF NOT EXISTS "tasks" ( "task"  INTEGER NOT NULL, "url"  TEXT NOT NULL, "user"  TEXT NOT NULL, "pass"  TEXT NOT NULL, "body"  TEXT NOT NULL, "name" TEXT NOT NULL, PRIMARY KEY ("task"))';
+      $sql = 'CREATE TABLE IF NOT EXISTS "tasks" ( "task"  INTEGER NOT NULL, "url"  TEXT NOT NULL, "head" TEXT NOT NULL, "body"  TEXT NOT NULL, "name" TEXT NOT NULL, PRIMARY KEY ("task"))';
       $sqlite->query($sql);
-      $sql = 'select task,url,user,body from "tasks"';
+      $sql = 'select task,url,body from "tasks"';
       $list = $sqlite->prepare($sql);
       $list->execute();
       $res['list'] = $list->fetchAll(PDO::FETCH_ASSOC);
@@ -496,8 +496,7 @@ class API {
   private function curlCreate($req) {
     $res = false;
     $url = $_POST['url'];
-    $user = $_POST['user'];
-    $pass = $_POST['pass'];
+    $head = $_POST['head'];
     $body = $_POST['body'];
     //validate $_POST;
     $path = '../src/magic/'.$req.'/';
@@ -521,16 +520,20 @@ class API {
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_USERAGENT => 'curl',
       );
+      if(!empty($head)) {
+        $opt[CURLOPT_HTTPHEADER]=explode("\n",$head);
+      }
       if(!empty($body)) {
         $opt[CURLOPT_POST]=1;
         $opt[CURLOPT_POSTFIELDS]=$body;
+        $opt[CURLOPT_HTTPHEADER][]='Content-Length: '.strlen($body);
       }
       curl_setopt_array($ch, $opt);
       $exec = curl_exec($ch);
       $info = curl_getinfo($ch);
       $err = curl_error($ch);
       curl_close($ch);
-      $sql = 'insert into "tasks" ("task","url","user","pass","body","name") values (NULL,"'.$url.'","'.$user.'","'.$pass.'","'.$body.'","'.$name.'")';
+      $sql = 'insert into "tasks" ("task","url","head","body","name") values (NULL,"'.$url.'","'.$head.'","'.$body.'","'.$name.'")';
       $sqlite->query($sql);
       $task = $sqlite->lastInsertId();
       if($task) {

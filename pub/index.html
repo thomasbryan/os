@@ -56,13 +56,8 @@
   <div class="row-fluid">
     <input class="form-control pbo" name="url" placeholder="URL" type="text"/>
   </div>
-  <div class="row">
-    <div class="col-xs-6">
-      <input class="form-control pbo" name="user" placeholder="User" type="text"/>
-    </div>
-    <div class="col-xs-6">
-      <input class="form-control pbo" name="pass" placeholder="Pass" type="password"/>
-    </div>
+  <div class="row-fluid">
+    <textarea class="form-control pbo" name="head" placeholder="Head"></textarea>
   </div>
   <div class="row-fluid">
     <textarea class="form-control pbo" name="body" placeholder="Body"></textarea>
@@ -73,11 +68,10 @@
   </div>
   <hr />
   <h3> LOOP </h3>
-  <div class="row-fluid">
-    <input class="form-control pbo" name="url" placeholder="URL" type="text"/>
-  </div>
-  <div class="row">
-</div>
+  <div class="row-fluid">REQ</div>
+  <div class="row-fluid">OPT</div>
+  <div class="row-fluid">CONDITIONAL: OPERAND1 OPERATOR OPERAND2</div>
+  <hr>
 {{#list}}
   {{task}}
   {{url}}
