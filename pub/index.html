@@ -51,6 +51,8 @@
 <script id="tpl-curl" type="text/html">
 <div class="container">
   <h3> CURL </h3>
+  <form id="new-curl">
+    <input type="hidden" name="req" value="create" />
   <div class="row-fluid">
     <input class="form-control pbo" name="url" placeholder="URL" type="text"/>
   </div>
@@ -63,10 +65,11 @@
     </div>
   </div>
   <div class="row-fluid">
-    <textarea class="form-control pbo" placeholder="Body"></textarea>
+    <textarea class="form-control pbo" name="body" placeholder="Body"></textarea>
   </div>
+  </form>
   <div class="row-fluid">
-    <div class="btn btn-block btn-large btn-primary">Send</div>
+    <div data-au="api.php?app=curl" data-af="#new-curl" class="ajax btn btn-block btn-large btn-primary">Send</div>
   </div>
   <hr />
   <h3> LOOP </h3>
@@ -75,7 +78,13 @@
   </div>
   <div class="row">
 </div>
-{{existing}}
+{{#list}}
+  {{task}}
+  {{url}}
+  {{user}}
+  {{body}}
+  <hr>
+{{/list}}
 </script>
 <script id="tpl-audio" type="text/html">
 <div class="container-fluid audio">

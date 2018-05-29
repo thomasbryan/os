@@ -478,28 +478,69 @@ class API {
   private function curlList($req) {
     $res = array('list' => array());
     $cache = '../src/magic/'.$req.'/index.sqlite3';
-    $sqlite = new PDO('sqlite:'.$cache);
-    if(file_exists($cache)) {
-      $sql = 'select * from tasks';
-      $res['list'] = $sqlite->exec($sql);
-    }else{
-      $sql = 'create table if not exists tasks (task INTEGER PRIMARY KEY, url TEXT NOT NULL, user TEXT NOT NULL, pass TEXT NOT NULL, body TEXT NOT NULL, name TEXT NOT NULL)';
-      $sqlite->exec($sql);
+    try{
+      $sqlite = new PDO('sqlite:'.$cache);
+      $sqlite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $sql = 'CREATE TABLE IF NOT EXISTS "tasks" ( "task"  INTEGER NOT NULL, "url"  TEXT NOT NULL, "user"  TEXT NOT NULL, "pass"  TEXT NOT NULL, "body"  TEXT NOT NULL, "name" TEXT NOT NULL, PRIMARY KEY ("task"))';
+      $sqlite->query($sql);
+      $sql = 'select task,url,user,body from "tasks"';
+      $list = $sqlite->prepare($sql);
+      $list->execute();
+      $res['list'] = $list->fetchAll(PDO::FETCH_ASSOC);
+    }catch(Exception $e) {
+      var_dump($e);
+      return false;
     }
     return $res;
   }
   private function curlCreate($req) {
-    /*
-    check freshness
-
-    select from tasks where url and user and body ...
-
-    take timestamp
-    select from tasks where timestamp not = timestamp
-
-    which will run the task and return results
-    save response: timestamp.exec, timestamp.info, timestamp.error
-    */
+    $res = false;
+    $url = $_POST['url'];
+    $user = $_POST['user'];
+    $pass = $_POST['pass'];
+    $body = $_POST['body'];
+    //validate $_POST;
+    $path = '../src/magic/'.$req.'/';
+    $cache = $path.'index.sqlite3';
+    $sqlite = new PDO('sqlite:'.$cache);
+    //todo secure pass!
+    $sql = 'select task from "tasks" where url = "'.$url.'" and user = "'.$user.'" and body = "'.$body.'"';
+    $exist = $sqlite->prepare($sql);
+    $exist->execute();
+    $row = $exist->fetchAll(PDO::FETCH_ASSOC);
+    if(count($row)==1) {
+      $exec = file_get_contents($path.$row[0]['task'].'.exec');
+      $info = unserialize(file_get_contents($path.$row[0]['task'].'.info'));
+      $err = file_get_contents($path.$row[0]['task'].'.err');
+      $res = array('exec'=>$exec,'info'=>$info,'err'=>$err);
+    }else{
+      $name = time();
+      $ch = curl_init();
+      $opt = array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_USERAGENT => 'curl',
+      );
+      if(!empty($body)) {
+        $opt[CURLOPT_POST]=1;
+        $opt[CURLOPT_POSTFIELDS]=$body;
+      }
+      curl_setopt_array($ch, $opt);
+      $exec = curl_exec($ch);
+      $info = curl_getinfo($ch);
+      $err = curl_error($ch);
+      curl_close($ch);
+      $sql = 'insert into "tasks" ("task","url","user","pass","body","name") values (NULL,"'.$url.'","'.$user.'","'.$pass.'","'.$body.'","'.$name.'")';
+      $sqlite->query($sql);
+      $task = $sqlite->lastInsertId();
+      if($task) {
+        file_put_contents($path.$task.'.exec',$exec);
+        file_put_contents($path.$task.'.info',serialize($info));
+        file_put_contents($path.$task.'.err',$err);
+        $res = array('exec'=>$exec,'info'=>$info,'err'=>$err);
+      }
+    }
+    return $res;
   }
   private function curlDelete($req) {
     //delete data
