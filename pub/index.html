@@ -57,10 +57,10 @@
     <input class="form-control pbo" name="url" placeholder="URL" type="text"/>
   </div>
   <div class="row-fluid">
-    <textarea class="form-control pbo" name="head" placeholder="Head"></textarea>
+    <textarea class="form-control pbo" name="head" placeholder="Head" rows="5" style="resize:none;"></textarea>
   </div>
   <div class="row-fluid">
-    <textarea class="form-control pbo" name="body" placeholder="Body"></textarea>
+    <textarea class="form-control pbo" name="body" placeholder="Body" rows="5" style="resize:none;"></textarea>
   </div>
   </form>
   <div class="row-fluid">
@@ -598,6 +598,22 @@
       </form>
     </div>
   </nav>
+</script>
+<script id="tpl-gitbranches" type="text/html">
+<div >
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <a>&nbsp;</a>Branches '{{repo}}'
+    </div>
+    <div class="panel-body">
+      {{#branch}}
+      <div class="line">
+        {{.}}
+      </div>
+      {{/branch}}
+    </div>
+  </div>
+</div>
 </script>
 <script id="tpl-edit" type="text/html">
     <div class="editor" class="container-fluid">

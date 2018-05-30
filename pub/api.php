@@ -511,7 +511,7 @@ class API {
     $cache = $path.'index.sqlite3';
     $sqlite = new PDO('sqlite:'.$cache);
     //todo secure pass!
-    $sql = 'select task from "tasks" where url = "'.$url.'" and user = "'.$user.'" and body = "'.$body.'"';
+    $sql = 'select task from "tasks" where url = "'.$url.'" and body = "'.$body.'"';
     $exist = $sqlite->prepare($sql);
     $exist->execute();
     $row = $exist->fetchAll(PDO::FETCH_ASSOC);
@@ -597,6 +597,7 @@ class API {
       case 'pull': $res = $this->gitPull($req->User);break;
 			case 'push': $res = $this->gitPush($req->User);break;
       case 'branch': $res = $this->gitBranch($req->User);break;
+      case 'checkout': $res = $this->gitCheckout($req->User);break;
       case 'fetch': $res = $this->gitFetch($req->User);break;
     }
     return $res;
@@ -772,6 +773,11 @@ class API {
     }
     return $res;
   }
+  private function getCheckout($user) {
+    $res = false;
+
+    return $res;
+  }
   private function gitBranch($user) {
     $res = false;
     $status = $this->gitStatus($user);
@@ -783,6 +789,8 @@ class API {
 				chdir($path);
 				chdir($prefix.$_POST['project']);
 				exec('git branch -r',$branch);
+        /*
+        */
 				$res = array('repo'=>$_POST['project'],'branch'=>$branch);
 				continue;
       }
