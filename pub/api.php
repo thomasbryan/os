@@ -191,6 +191,7 @@ class API {
     $res = false;
     if(!isset($_POST['req'])) $_POST['req'] = '';
     switch($_POST['req']) {
+      case 'base64': $res = $this->base64();break;
       case 'quotas': $res = $this->authQuotas();break;
       case 'ssh': $res = $this->authSSH();break;
       case 'import': $res = $this->authImport();break;
@@ -201,6 +202,13 @@ class API {
       case 'read': $res = $this->profile($req->User,true);break;
       case 'update': $res = $this->authUpdate();break;
       case 'delete': $res = $this->authDelete();break;
+    }
+    return $res;
+  }
+  private function base64() {
+    $res = false;
+    if(isset($_POST['p'])) {
+      $res = array('base64'=>base64_encode($_POST['p']));
     }
     return $res;
   }

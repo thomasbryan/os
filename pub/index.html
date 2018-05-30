@@ -170,6 +170,7 @@
   </div>
 </script>
 <script id="tpl-empty" type="text/html"></script>
+<script id="tpl-base64" type="text/html">{{base64}}</script>
 <script id="tpl-album-artist" type="text/html">
   <div class="col-xs-12"></div>
   <div class="col-xs-6 pbo">
@@ -251,6 +252,18 @@
       <div class="col-sm-6">
         <h2 id="date" class="text-center"></h2>
         <h1 id="clock" class="text-center"></h1>
+        <div class="row">
+          <div class="input-group">
+            <form id="base64encode">
+            <input name="req" value="base64" type="hidden" />
+            <input name="p" type="password" class="form-control" placeholder="Base64">
+            </form>
+            <span class="input-group-btn">
+              <button data-af="#base64encode" data-dt="#tpl-base64" data-dd="#base64encoded" class="ajax btn btn-info" type="button">Encode!</button>
+            </span>
+          </div>
+          <p class="text-center" id="base64encoded"></p>
+        </div>
       </div>
       <div class="col-sm-6">
         <table id="calendar" class="table table-bordered">
