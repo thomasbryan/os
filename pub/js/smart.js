@@ -44,14 +44,14 @@ function ajax(r) {
     url: r.au,
     data: r.ad,
   }).done(function(d) {
-    if($(r.dd).length && $(r.dt).length) {
-      tpl({"a":r.da,"d":r.dd,"t":r.dt,"r":d});
+    if($(r.dd).length) {
+      tpl({"a":r.da,"d":r.dd,"g":r.dg,"t":r.dt,"r":d});
     }else{
       msg(true,d);
     }
   }).fail(function(f) {
-    if($(r.fd).length && $(r.ft).length) {
-      tpl({"a":r.fa,"d":r.fd,"t":r.ft,"r":f});
+    if($(r.fd).length) {
+      tpl({"a":r.fa,"d":r.fd,"g":r.fg,"t":r.ft,"r":f});
     }else{
       msg(false,f.statusText);
     }
@@ -59,24 +59,36 @@ function ajax(r) {
 }
 function tpl(r) { 
   //TODO revise logic
-  if($(r.d).length && $(r.t).length) {
+  if($(r.d).length) {
     if(r.a===undefined) {
       if(r.g===undefined) {
-        $(r.d).html(Mustache.render($(r.t).html(),r.r)); 
+        if($(r.t).length) {
+          $(r.d).html(Mustache.render($(r.t).html(),r.r)); 
+        }else{
+          msg(false,"Template does not exist");
+        }
       }else{
+        //TODO additional warning messages
         $.get(r.g,function(t) {
-          $(r.d).html(Mustache.render( $(t).filter(r.t).html(),r.r));
+          $(r.d).html(Mustache.render($(t).filter(r.t).html(),r.r));
         });
       }
     }else{
       if(r.g===undefined) {
-        $(r.d).append(Mustache.render($(r.t).html(),r.r)); 
+        if($(r.t).length) {
+          $(r.d).append(Mustache.render($(r.t).html(),r.r)); 
+        }else{
+          msg(false,"Template does not exist");
+        }
       }else{
+        //TODO additional warning messages
         $.get(r.g,function(t) {
-          $(r.d).append(Mustache.render( $(t).filter(r.t).html(),r.r));
+          $(r.d).append(Mustache.render($(t).filter(r.t).html(),r.r));
         });
       }
     }
+  }else{
+    msg(false,"DOM element does not exist");
   }
 }
 function msg(t,r) {
