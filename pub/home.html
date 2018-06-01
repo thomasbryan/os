@@ -157,6 +157,17 @@ if(typeof object !== "function") {
   <button class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
   </a>
 </script>
+<script id="tpl-login" type="text/html">
+<div class="login page container">
+	<form id="userpass">
+    <label for="u" class="sr-only">Email address</label>
+    <input type="text" id="u" name="u" class="form-control" placeholder="Username" required="" />
+    <label for="p" class="sr-only">Password</label>
+    <input type="password" id="p" name="p" class="form-control" placeholder="Password" required="" />
+    <input data-au="api.php?app=auth" data-af="#userpass" data-dg="home.html" data-dt="#tpl-home" type="submit" class="ajax btn btn-lg btn-primary btn-block" id="l" value="Login" />
+  </form>
+</div>
+</script>
 <script id="tpl-home" type="text/html">
 <div class="home jumbotron">
   <div class="container">
@@ -206,15 +217,6 @@ if(typeof object !== "function") {
       </div>
     </div>
   </div>
-</div>
-<div class="login page hidden container">
-	<form id="userpass">
-    <label for="u" class="sr-only">Email address</label>
-    <input type="text" id="u" class="form-control" placeholder="Username" required="" />
-    <label for="p" class="sr-only">Password</label>
-    <input type="password" id="p" class="form-control" placeholder="Password" required="" />
-    <input type="submit" class="btn btn-lg btn-primary btn-block" id="l" value="Login" />
-  </form>
 </div>
 <div id="profile" class="profile page hidden container">
   <div class="row-fluid">
