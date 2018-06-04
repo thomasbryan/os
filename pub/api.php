@@ -192,6 +192,7 @@ class API {
     if(!isset($_POST['req'])) $_POST['req'] = '';
     switch($_POST['req']) {
       case 'base64': $res = $this->base64();break;
+      case '46esab': $res = $this->base64(false);break;
       case 'quotas': $res = $this->authQuotas();break;
       case 'ssh': $res = $this->authSSH();break;
       case 'import': $res = $this->authImport();break;
@@ -205,10 +206,14 @@ class API {
     }
     return $res;
   }
-  private function base64() {
+  private function base64($e=true) {
     $res = false;
     if(isset($_POST['p'])) {
-      $res = array('base64'=>base64_encode($_POST['p']));
+      if($e) {
+        $res = array('base64'=>base64_encode($_POST['p']));
+      }else{
+        $res = array('base64'=>base64_decode($_POST['p']));
+      }
     }
     return $res;
   }
@@ -234,7 +239,7 @@ class API {
         unset($res[$k]);
       }
     }
-    return $res;
+    return array('quotas'=>$res);
   }
   private function authSSH() {
     $res = false;

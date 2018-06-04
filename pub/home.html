@@ -2,12 +2,12 @@
 <script id="tpl-base64" type="text/html">{{base64}}</script>
 <script id="tpl-login" type="text/html">
 <div class="login page container">
-	<form id="userpass">
+	<form id="userpass" data-au="api.php?app=auth" data-af="#userpass" data-dg="home.html" data-dt="#tpl-home">
     <label for="u" class="sr-only">Email address</label>
-    <input type="text" id="u" name="u" class="form-control" placeholder="Username" required="" />
+    <input type="text" name="u" class="form-control" placeholder="Username" required="" />
     <label for="p" class="sr-only">Password</label>
-    <input type="password" id="p" name="p" class="form-control" placeholder="Password" required="" />
-    <input data-au="api.php?app=auth" data-af="#userpass" data-dg="home.html" data-dt="#tpl-home" type="submit" class="ajax btn btn-lg btn-primary btn-block" id="l" value="Login" />
+    <input type="password" name="p" class="form-control" placeholder="Password" required="" />
+    <input type="submit" class="btn btn-lg btn-primary btn-block" value="Login" />
   </form>
 </div>
 </script>
@@ -18,7 +18,7 @@
       <div class="col-sm-6">
         <h2 id="date" class="text-center"></h2>
         <h1 id="clock" class="text-center"></h1>
-        <div class="row">
+        <div class="row-fluid pbo">
           <div class="input-group">
             <form id="base64encode">
             <input name="req" value="base64" type="hidden" />
@@ -28,7 +28,14 @@
               <button data-af="#base64encode" data-dg="home.html" data-dt="#tpl-base64" data-dd="#base64encoded" class="ajax btn btn-info" type="button">Encode!</button>
             </span>
           </div>
-          <p class="text-center" id="base64encoded">&nbsp;</p>
+        </div>
+        <div class="row-fluid">
+          <form id="base64decode">
+            <input name="req" value="46esab" type="hidden" />
+            <textarea class="form-control pbo" id="base64encoded" name="p" style="resize:none;" rows="4" placeholder="Base64"></textarea>
+            <button data-af="#base64decode" data-dg="home.html" data-dt="#tpl-base64" data-dd="#base64decoded" class="ajax btn btn-warning btn-block" type="button">Decode!</button>
+          </form>
+          <p class="text-center" id="base64decoded">&nbsp;</p>
         </div>
       </div>
       <div class="col-sm-6">
@@ -61,7 +68,7 @@
     </div>
   </div>
 </div>
-<div id="profile" class="profile page container">
+<div id="profile" class="page container">
   <div class="row-fluid">
     <div class="col-sm-12">
       <div class="panel panel-info">
@@ -100,13 +107,13 @@
   </div>
 </div>
 <nav class="navbar navbar-inverse navbar-fixed-bottom">
-  <a id="user" class="profile page navbar-brand" href="javascript:void(0);">
+  <a id="user" class="page navbar-brand" href="javascript:void(0);">
     <span class="glyphicon glyphicon-user"></span> <span class="user">User</span>
   </a>
-  <a class="profile page navbar-brand" href="javascript:update();">
+  <a data-au="api.php?app=auth" data-ad="req=softwareupdate" class="ajax page navbar-brand" href="javascript:void(0);">
     <span class="glyphicon glyphicon-download"></span> Update
   </a>
-  <a class="profile page navbar-brand pull-right" href="javascript:logout();">
+  <a data-au="api.php?app=auth" data-ad="req=logout" data-dg="home.html" data-dt="#tpl-login" class="ajax page navbar-brand pull-right" href="javascript:void(0);">
     <span class="glyphicon glyphicon-log-out"></span> <span class="hidden-xs">Logout</span>
   </a>
 </nav>
@@ -121,7 +128,9 @@ if(typeof checkTime !== "function") {
 if(typeof object !== "function") {
   function object() {
     if($("#special-app-id").length) {
-      var d = new Date()
+      var day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+        , mon = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+        , d = new Date()
         , h = (( d.getHours() + 11) % 12 + 1)
 		    , m = d.getMinutes()
 		    , o = (60 - d.getSeconds())*1000
@@ -130,7 +139,7 @@ if(typeof object !== "function") {
         , c = h+":"+m+" "+a 
         ;
       variable = setTimeout(object,o);
-      //$("#date").html(day[d.getDay()]+", "+mon[d.getMonth()]+" "+d.getDate()+" "+d.getFullYear());
+      $("#date").html(day[d.getDay()]+", "+mon[d.getMonth()]+" "+d.getDate()+" "+d.getFullYear());
       //today(d) ??
       $("#clock").html(c);
       document.title=c;
@@ -146,7 +155,7 @@ if(typeof object !== "function") {
     <input type="hidden" name="req" value="import" />
     <textarea name="import" style="resize:none;margin:1em 0;" placeholder="Private Key" rows="10" class="form-control"></textarea>
   </form>
-  <a data-af="#form-import" data-au="api.php?app=home" data-dg="home.html" data-dt="#tpl-empty" data-dd="#app .import" class="ajax btn btn-primary btn-block" href="javascript:save();">Save</a>
+  <a data-af="#form-import" data-au="api.php?app=home" data-dg="home.html" data-dt="#tpl-empty" data-dd="#app .import" class="ajax btn btn-primary btn-block" href="javascript:void(0);">Save</a>
 </script>
 <script id="tpl-ssh" type="text/html">
 {{.}}

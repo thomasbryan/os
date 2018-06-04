@@ -804,7 +804,7 @@ function quotas() {
   ajx({"req":"quotas"},"quotasdone");
 }
 function quotasdone(req) {
-  tmpl("#app .quota","#tpl-quotas",{"quotas":req});
+  tmpl("#app .quota","#tpl-quotas",req);
 }
 function ssh() {
   ajx({"req":"ssh"},"sshdone");

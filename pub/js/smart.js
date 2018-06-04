@@ -19,6 +19,7 @@ $(document).on("click",".toggle",function() {
     $(this).addClass(c);
   }
 });
+/***/
 $(document).on("submit","form",function(e) { 
   //TODO tpl() option
   ajax($(this).data()); 
@@ -44,13 +45,13 @@ function ajax(r) {
     url: r.au,
     data: r.ad,
   }).done(function(d) {
-    if($(r.dd).length) {
+    if($(r.dd).length && (r.dg!==undefined && r.dt!==undefined)) {
       tpl({"a":r.da,"d":r.dd,"g":r.dg,"t":r.dt,"r":d});
     }else{
       msg(true,d);
     }
   }).fail(function(f) {
-    if($(r.fd).length) {
+    if($(r.fd).length && (r.fg!==undefined && r.ft!==undefined)) {
       tpl({"a":r.fa,"d":r.fd,"g":r.fg,"t":r.ft,"r":f});
     }else{
       msg(false,f.statusText);
