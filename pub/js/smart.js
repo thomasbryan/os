@@ -65,12 +65,16 @@ function tpl(r) {
         if($(r.t).length) {
           $(r.d).html(Mustache.render($(r.t).html(),r.r)); 
         }else{
-          msg(false,"Template does not exist");
+          msg(false,"Template '"+r.t+"' does not exist");
         }
       }else{
-        //TODO additional warning messages
-        $.get(r.g,function(t) {
+        $.ajax({
+          type: "GET",
+          url: r.g,
+        }).done(function(t) {
           $(r.d).html(Mustache.render($(t).filter(r.t).html(),r.r));
+        }).fail(function(f) {
+          msg(false,"Template '"+r.g+"' does not exist");
         });
       }
     }else{
@@ -78,12 +82,16 @@ function tpl(r) {
         if($(r.t).length) {
           $(r.d).append(Mustache.render($(r.t).html(),r.r)); 
         }else{
-          msg(false,"Template does not exist");
+          msg(false,"Template '"+r.t+"' does not exist");
         }
       }else{
-        //TODO additional warning messages
-        $.get(r.g,function(t) {
+        $.ajax({
+          type: "GET",
+          url: r.g,
+        }).done(function(t) {
           $(r.d).append(Mustache.render($(t).filter(r.t).html(),r.r));
+        }).fail(function(f) {
+          msg(false,"Template '"+r.g+"' does not exist");
         });
       }
     }
