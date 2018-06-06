@@ -271,9 +271,9 @@ class API {
           $ssh = $_SERVER['HOME'].'/.ssh/'.$this->req->User;
           $pub = $ssh.'.pub';
           if(file_put_contents($ssh,$_POST['import'])) {
-	    chmod($ssh,0600);
+            chmod($ssh,0600);
             if(file_put_contents($pub,$public)) {
-	      chmod($pub,0600);
+              chmod($pub,0600);
               $res = $public;
             }
           }
