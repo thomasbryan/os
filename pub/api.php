@@ -63,9 +63,11 @@ class API {
                     //todo better file validation
                     $f = '../src/audio/'.$this->req->User.'/'.$_GET['f'];
                     if(file_exists($f)) {
-                      header('Content-type: audio/mpeg');
-                      header('Content-length: ' . filesize($f));
-                      header('Content-Disposition: filename="' . $_GET['f']);
+                      header('Content-Transfer-Encoding: binary'); 
+                      header('Content-Type: audio/mpeg, audio/x-mpeg, audio/x-mpeg-3, audio/mpeg3');
+                      header('Content-length: '.filesize($f));
+                      header('Content-Disposition: inline; filename="'.$_GET['f'].'"');
+                      header('Accept-Ranges: bytes');
                       header('X-Pad: avoid browser bug');
                       header('Cache-Control: no-cache');
                       readfile($f);
@@ -1377,6 +1379,8 @@ class AUDIO {
       if($req) {
         file_put_contents($this->p.$u.$this->l.'.json',json_encode($req));
         $res = $req;
+      }else{
+        $res = array();
       }
     }
     return $res;
