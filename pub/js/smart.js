@@ -1,11 +1,11 @@
 /*S*/
 $(document).on("click",".select",function() {
-  var c = $(this).data("c");
+  var c = $(this).attr("c");
   $(this).parent().children().removeClass(c);
   $(this).addClass(c);
 });
 /*M*/
-$(document).on("click",".mustache",function() { tpl($(this).data()); });
+$(document).on("click",".mustache",function() { tpl($(this).attr()); });
 /*A*/
 $(document).on("click",".ajax",function() { ajax($(this).attr()); });
 /*R*/
@@ -22,7 +22,7 @@ $(document).on("click",".toggle",function() {
 /***/
 $(document).on("submit","form",function(e) { 
   //TODO tpl() option
-  ajax($(this).data()); 
+  ajax($(this).attr()); 
   e.preventDefault();
   e.stopPropagation(); 
 });
