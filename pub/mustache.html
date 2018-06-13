@@ -35,7 +35,7 @@ if(typeof object !== "function") {
   </div>
   </form>
   <div class="row-fluid">
-    <div data-au="api.php?app=curl" data-af="#new-curl" class="ajax btn btn-block btn-large btn-primary">Send</div>
+    <div au="api.php?app=curl" af="#new-curl" class="ajax btn btn-block btn-large btn-primary">Send</div>
   </div>
   <hr />
   <h3> LOOP </h3>
@@ -110,7 +110,7 @@ if(typeof object !== "function") {
 	  <div class="col-sm-9">
       <div class="col-xs-12 col-sm-8 pbo">
         <div class="col-xs-3 pbo">
-          <a class="btn btn-default btn-block mustache" data-d="#audio-edit" data-t="#tpl-empty"><span class="glyphicon glyphicon-remove-sign"></span></a>
+          <a class="btn btn-default btn-block mustache" d="#audio-edit" t="#tpl-empty"><span class="glyphicon glyphicon-remove-sign"></span></a>
         </div>
         <form id="audio-save" method="POST">
           <div class="col-xs-6">
@@ -120,19 +120,19 @@ if(typeof object !== "function") {
           </div>
           <div id="audio-album-artist">
             <div class="col-xs-3">
-              <a class="btn btn-default btn-block ajax" data-au="api.php?app=audio" data-af="#form-album-artist" data-dd="#audio-album-artist" data-dt="#tpl-album-artist"><span class="glyphicon glyphicon-user"></span></a>
+              <a class="btn btn-default btn-block ajax" au="api.php?app=audio" af="#form-album-artist" dd="#audio-album-artist" dt="#tpl-album-artist"><span class="glyphicon glyphicon-user"></span></a>
             </div>
           </div>
         </form>
       </div>
 
       <div class="col-xs-6 col-sm-4">
-        <button class="ajax btn btn-primary btn-block" data-af="#audio-save" data-au="api.php?app=audio" data-dd="#audio-edit" data-dt="#tpl-empty"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
+        <button class="ajax btn btn-primary btn-block" af="#audio-save" au="api.php?app=audio" dd="#audio-edit" dt="#tpl-empty"><span class="glyphicon glyphicon-floppy-disk"></span> Save</button>
       </div>
        
     </div>
 	  <div class="col-xs-6 col-sm-3">
-      <form id="audio-trash" method="POST" data-af="#audio-trash" data-au="api.php?app=audio" data-dd="#audio-edit" data-dt="#tpl-empty">
+      <form id="audio-trash" method="POST" af="#audio-trash" au="api.php?app=audio" dd="#audio-edit" dt="#tpl-empty">
         <input type="hidden" name="req" value="trash" />
         <input type="hidden" name="f" value="{{f}}" />
         <button class="btn btn-danger btn-block"><span class="glyphicon glyphicon-trash"></span> Trash</button>
@@ -151,7 +151,7 @@ if(typeof object !== "function") {
   </div>
 </script>
 <script id="tpl-audio-results" type="text/html">
-  <a class="g list-group-item" data-f="{{f}}" data-n="{{n}}" data-t="0">{{n}}
+  <a class="g list-group-item" f="{{f}}" n="{{n}}" t="0">{{n}}
   <button class="update btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-plus-sign"></span> Playlist</button>
   <button class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
   </a>
@@ -165,17 +165,17 @@ if(typeof object !== "function") {
         </thead>
         <tbody>
         {{#workflows}}
-          <tr data-workflow="{{.}}">
-            <td data-action="remove">
+          <tr workflow="{{.}}">
+            <td action="remove">
               <a class="btn btn-danger "><span class="glyphicon glyphicon-trash"></span> Remove</a>
             </td>
-            <td data-action="read">
+            <td action="read">
               <a class="btn btn-primary btn-block">{{.}}</a>
             </td>
-            <td data-action="schedule">
+            <td action="schedule">
               <a class="btn btn-default btn-block hidden"><span class="glyphicon glyphicon-calendar"></span> Schedule</a>
             </td>
-            <td data-action="run">
+            <td action="run">
               <a class="btn btn-default btn-block"><span class="glyphicon glyphicon-play"></span> Run</button></a>
             </td>
           </tr>
@@ -267,14 +267,14 @@ if(typeof object !== "function") {
     </thead>
     <tbody>
     {{#actions}}
-      <tr data-action="{{.}}">
-        <td data-action="add">
+      <tr action="{{.}}">
+        <td action="add">
           <a class="btn btn-primary btn-block">{{.}}</a>
         </td>
-        <td data-action="remove">
+        <td action="remove">
           <a class="btn btn-danger btn-block"><span class="glyphicon glyphicon-trash"></span> <span class="hidden-xs">Remove</span></a>
         </td>
-        <td data-action="read">
+        <td action="read">
           <a class="btn btn-default btn-block"><span class="glyphicon glyphicon-eye-open"></span> <span class="hidden-xs">View</span></button></a>
         </td>
       </tr>
@@ -285,7 +285,7 @@ if(typeof object !== "function") {
 <script id="tpl-automagic-methods" type="text/html">
   <div id="method" class="container-fluid">
   {{#methods}}
-    <a data-method="{{i}}" class="btn btn-default">
+    <a method="{{i}}" class="btn btn-default">
       {{n}}
     </a>
   {{/methods}}
@@ -308,7 +308,7 @@ if(typeof object !== "function") {
 		<div id="projects" class="col-xs-12 col-sm-4">
 			<ul class="list-group">
 			{{#projects}}
-				<li data-repo="{{r}}" class="list-group-item repo">
+				<li repo="{{r}}" class="list-group-item repo">
 					<strong>{{r}}</strong>&nbsp;<br />
 					<a href="javascript:void(0);" class="text-muted">{{b}}</a>
           <div class="pull-right">
@@ -318,19 +318,19 @@ if(typeof object !== "function") {
           </div>
 					<hr />
 					<div class="status">
-						<a data-action="push" href="javascript:void(0);" class="action push-{{s.length}} btn btn-primary">
+						<a action="push" href="javascript:void(0);" class="action push-{{s.length}} btn btn-primary">
 							<span class="glyphicon glyphicon-upload"></span>
 							<span class="hidden-xs hidden-sm">PUSH</span>
 						</a>
-						<a data-action="pull" href="javascript:void(0);" class="action btn btn-info">
+						<a action="pull" href="javascript:void(0);" class="action btn btn-info">
 							<span class="glyphicon glyphicon-download"></span>
 							<span class="hidden-xs hidden-sm">PULL</span>
 						</a>
-						<a data-action="diff" href="javascript:void(0);" class="action diff-{{n.length}}{{u.length}} btn btn-default">
+						<a action="diff" href="javascript:void(0);" class="action diff-{{n.length}}{{u.length}} btn btn-default">
 							<span class="glyphicon glyphicon-duplicate"></span>
 							<span class="hidden-xs hidden-sm">DIFF</span>
 						</a>
-						<a data-action="all" href="javascript:void(0);" class="action all-{{s.length}}{{n.length}}{{u.length}} btn btn-success ">
+						<a action="all" href="javascript:void(0);" class="action all-{{s.length}}{{n.length}}{{u.length}} btn btn-success ">
 							<span class="glyphicon glyphicon-plus"></span>
 							<span class="hidden-xs hidden-sm">PUSH</span>
 						</a>
@@ -341,22 +341,22 @@ if(typeof object !== "function") {
 		</div>
 		<div id="project" class="col-xs-12 col-sm-8">
 		{{#projects}}
-			<div data-repo="{{r}}" class="hidden repo">
+			<div repo="{{r}}" class="hidden repo">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<strong>{{r}}</strong>
-						<a data-action="log" href="javascript:void(0);" class="action btn btn-default btn-xs"><span class="glyphicon glyphicon-list"></span></a>
-            <a data-action="push" href="javascript:void(0);" class="action btn btn-primary btn-xs"><span class="glyphicon glyphicon-upload"></span></a>
-            <a data-action="fetch" href="javascript:void(0);" class="action btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span></a>
-            <a data-action="status" href="javascript:void(0);" class="action btn btn-success btn-xs"><span class="glyphicon glyphicon-refresh"></span></a>
-						<a data-action="branch" href="javascript:void(0);" class="action pull-right">{{b}}</a>
+						<a action="log" href="javascript:void(0);" class="action btn btn-default btn-xs"><span class="glyphicon glyphicon-list"></span></a>
+            <a action="push" href="javascript:void(0);" class="action btn btn-primary btn-xs"><span class="glyphicon glyphicon-upload"></span></a>
+            <a action="fetch" href="javascript:void(0);" class="action btn btn-default btn-xs"><span class="glyphicon glyphicon-download-alt"></span></a>
+            <a action="status" href="javascript:void(0);" class="action btn btn-success btn-xs"><span class="glyphicon glyphicon-refresh"></span></a>
+						<a action="branch" href="javascript:void(0);" class="action pull-right">{{b}}</a>
 					</div>
 					<div class="panel-body">
 						<div class="row">
 							<div class="col-xs-12">
 								<div class="status col-sm-4">
 									{{#s}}
-										<a data-action="rem" href="javascript:void(0);" class="action col-xs-12 btn btn-success btn-xs" data-file="{{.}}" title="{{.}}">
+										<a action="rem" href="javascript:void(0);" class="action col-xs-12 btn btn-success btn-xs" file="{{.}}" title="{{.}}">
 											<span class="pull-left glyphicon glyphicon-minus"></span>
 											<span class="">{{.}}</span>
 										</a><br />
@@ -364,7 +364,7 @@ if(typeof object !== "function") {
 								</div>
 								<div class="status col-sm-4">
 									{{#n}}
-										<a data-action="add" href="javascript:void(0);" class="action col-xs-12 btn btn-warning btn-xs" data-file="{{.}}" title="{{.}}">
+										<a action="add" href="javascript:void(0);" class="action col-xs-12 btn btn-warning btn-xs" file="{{.}}" title="{{.}}">
 											<span class="pull-left glyphicon glyphicon-plus"></span>
 											<span class="">{{.}}</span>
 										</a><br />
@@ -372,7 +372,7 @@ if(typeof object !== "function") {
 								</div>
 								<div class="status col-sm-4">
 									{{#u}}
-										<a data-action="add" href="javascript:void(0);" class="action col-xs-12 btn btn-danger btn-xs" data-file="{{.}}" title="{{.}}">
+										<a action="add" href="javascript:void(0);" class="action col-xs-12 btn btn-danger btn-xs" file="{{.}}" title="{{.}}">
 											<span class="pull-left glyphicon glyphicon-plus"></span>
 											<span class="">{{.}}</span>
 										</a>
@@ -381,19 +381,19 @@ if(typeof object !== "function") {
 							</div>
 						</div>
 						<div class="col-sm-4">
-							<a data-action="push" href="javascript:void(0);" class="action push-{{s.length}} btn btn-primary col-xs-12">
+							<a action="push" href="javascript:void(0);" class="action push-{{s.length}} btn btn-primary col-xs-12">
 								<span class="glyphicon glyphicon-upload"></span>
 								<span class="hidden-xs">Push</span>
 							</a>
 						</div>
 						<div class="col-sm-4">
-							<a data-action="pull" href="javascript:void(0);" class="action btn btn-info col-xs-12">
+							<a action="pull" href="javascript:void(0);" class="action btn btn-info col-xs-12">
 								<span class="glyphicon glyphicon-download"></span>
 								<span class="hidden-xs">Pull</span>
 							</a>
 						</div>
 						<div class="col-sm-4">
-							<a data-action="diff" href="javascript:void(0);" class="action diff-{{n.length}}{{u.length}} btn btn-default col-xs-12">
+							<a action="diff" href="javascript:void(0);" class="action diff-{{n.length}}{{u.length}} btn btn-default col-xs-12">
 								<span class="glyphicon glyphicon-duplicate"></span>
 								<span class="hidden-xs">Diff</span>
 							</a>
@@ -473,8 +473,8 @@ if(typeof object !== "function") {
           </form>
         </div>
         <a id="n" class="edit hidden navbar-brand"></a>
-        <a data-req="ce" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-remove-sign"></span> No</a>
-        <a data-req="etn" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-ok-sign text-danger"></span> <span class="text-danger">Yes</span></a>
+        <a req="ce" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-remove-sign"></span> No</a>
+        <a req="etn" class="edit hidden navbar-brand pull-right"><span class="glyphicon glyphicon-ok-sign text-danger"></span> <span class="text-danger">Yes</span></a>
         </div>
         <div class="col-xs-12">
 

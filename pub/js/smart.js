@@ -7,7 +7,7 @@ $(document).on("click",".select",function() {
 /*M*/
 $(document).on("click",".mustache",function() { tpl($(this).data()); });
 /*A*/
-$(document).on("click",".ajax",function() { ajax($(this).data()); });
+$(document).on("click",".ajax",function() { ajax($(this).attr()); });
 /*R*/
 $(document).on("click",".remove",function() { $(this).parent().remove(); });
 /*T*/
@@ -112,3 +112,20 @@ function msg(t,r) {
   }
   $("#msg").html("<strong>"+s+":</strong> "+r+"!").css(c).show().delay(5000).fadeOut(500);
 }
+(function(old) {
+  $.fn.attr = function() {
+    if(arguments.length === 0) {
+      if(this.length === 0) {
+        return null;
+      }
+      var r = {};
+      $.each(this[0].attributes, function() {
+        if(this.specified) {
+          r[this.name] = this.value;
+        }
+      });
+      return r;
+    }
+    return old.apply(this, arguments);
+  };
+})($.fn.attr);

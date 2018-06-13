@@ -159,7 +159,7 @@ class API {
       file_put_contents('../src/auth.log','['.date('Y-m-d H:i:s').'] '.$req.':'.$_SERVER['REMOTE_ADDR'].':'.str_replace(':','=',$_SERVER['HTTP_USER_AGENT'])."\n",FILE_APPEND);
       setcookie('t',$claim.'.'.base64_encode(hash_hmac('sha256',$claim,$this->sys['key'])), time() + 86400);
     }
-    return true;
+    return $req;
   }
   private function audio($req) {
     $res = false;

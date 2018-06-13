@@ -2,7 +2,7 @@
 <script id="tpl-base64" type="text/html">{{base64}}</script>
 <script id="tpl-login" type="text/html">
 <div class="login page container">
-	<form id="userpass" data-au="api.php?app=auth" data-af="#userpass" data-dg="home.html" data-dt="#tpl-home">
+	<form id="userpass" au="api.php?app=auth" af="#userpass" dg="home.html" dt="#tpl-home">
     <label for="u" class="sr-only">Email address</label>
     <input type="text" name="u" class="form-control" placeholder="Username" required="" />
     <label for="p" class="sr-only">Password</label>
@@ -25,7 +25,7 @@
             <input name="p" type="password" class="form-control" placeholder="Base64">
             </form>
             <span class="input-group-btn">
-              <button data-af="#base64encode" data-dg="home.html" data-dt="#tpl-base64" data-dd="#base64encoded" class="ajax btn btn-info" type="button">Encode!</button>
+              <button af="#base64encode" dg="home.html" dt="#tpl-base64" dd="#base64encoded" class="ajax btn btn-info" type="button">Encode!</button>
             </span>
           </div>
         </div>
@@ -33,7 +33,7 @@
           <form id="base64decode">
             <input name="req" value="46esab" type="hidden" />
             <textarea class="form-control pbo" id="base64encoded" name="p" style="resize:none;" rows="4" placeholder="Base64"></textarea>
-            <button data-af="#base64decode" data-dg="home.html" data-dt="#tpl-base64" data-dd="#base64decoded" class="ajax btn btn-warning btn-block" type="button">Decode!</button>
+            <button af="#base64decode" dg="home.html" dt="#tpl-base64" dd="#base64decoded" class="ajax btn btn-warning btn-block" type="button">Decode!</button>
           </form>
           <p class="text-center" id="base64decoded">&nbsp;</p>
         </div>
@@ -77,19 +77,19 @@
           <div class="">
             <div class="container-fluid">
               <div class="row-fluid">
-                <div class="col-sm-3 col-xs-12"><a data-au="api.php?app=home" data-ad="req=quotas" data-dt="#app .quota" data-dg="home.html" data-dt="#tpl-quotas" class="ajax btn btn-default" href="javascript:void(0);">Quotas <span class="glyphicon glyphicon-hdd"></span></a></div>
+                <div class="col-sm-3 col-xs-12"><a au="api.php?app=home" ad="req=quotas" dt="#app .quota" dg="home.html" dt="#tpl-quotas" class="ajax btn btn-default" href="javascript:void(0);">Quotas <span class="glyphicon glyphicon-hdd"></span></a></div>
                 <div class="col-sm-9 col-xs-12 quota"></div>
               </div>
             </div>
             <div class="container-fluid">
               <div class="row-fluid">
-                <div class="col-sm-3 col-xs-12"><a data-au="api.php?app=home" data-ad="req=ssh" data-dt="#app .ssh" data-dg="home.html" data-dt="#tpl-ssh" class="ajax btn btn-default" href="javascript:void(0);">SSH <span class="glyphicon glyphicon-certificate"></span></a></div>
+                <div class="col-sm-3 col-xs-12"><a au="api.php?app=home" ad="req=ssh" dt="#app .ssh" dg="home.html" dt="#tpl-ssh" class="ajax btn btn-default" href="javascript:void(0);">SSH <span class="glyphicon glyphicon-certificate"></span></a></div>
                 <div class="col-sm-9 col-xs-12 ssh"></div>
               </div>
             </div>
             <div class="container-fluid">
               <div class="row-fluid">
-                <div class="col-sm-3 col-xs-12"><a data-d="#app .import" data-g="home.html" data-t="#tpl-import" class="mustache btn btn-default" href="javascript:void(0);">Import <span class="glyphicon glyphicon-certificate"></span></a></div>
+                <div class="col-sm-3 col-xs-12"><a d="#app .import" g="home.html" t="#tpl-import" class="mustache btn btn-default" href="javascript:void(0);">Import <span class="glyphicon glyphicon-certificate"></span></a></div>
                 <div class="col-sm-9 col-xs-12 import">
                 </div>
               </div>
@@ -107,13 +107,13 @@
   </div>
 </div>
 <nav class="navbar navbar-inverse navbar-fixed-bottom">
-  <a id="user" class="page navbar-brand" href="javascript:void(0);">
-    <span class="glyphicon glyphicon-user"></span> <span class="user">User</span>
+  <a id="user" class="page navbar-brand" href="/~{{.}}/" target="_blank">
+    <span class="glyphicon glyphicon-user"></span> <span class="user">{{.}}</span>
   </a>
-  <a data-au="api.php?app=auth" data-ad="req=softwareupdate" class="ajax page navbar-brand" href="javascript:void(0);">
+  <a au="api.php?app=auth" ad="req=softwareupdate" class="ajax page navbar-brand" href="javascript:void(0);">
     <span class="glyphicon glyphicon-download"></span> Update
   </a>
-  <a data-au="api.php?app=auth" data-ad="req=logout" data-dg="home.html" data-dt="#tpl-login" class="ajax page navbar-brand pull-right" href="javascript:void(0);">
+  <a au="api.php?app=auth" ad="req=logout" dg="home.html" dt="#tpl-login" class="ajax page navbar-brand pull-right" href="javascript:void(0);">
     <span class="glyphicon glyphicon-log-out"></span> <span class="hidden-xs">Logout</span>
   </a>
 </nav>
@@ -155,7 +155,7 @@ object();
     <input type="hidden" name="req" value="import" />
     <textarea name="import" style="resize:none;margin:1em 0;" placeholder="Private Key" rows="10" class="form-control"></textarea>
   </form>
-  <a data-af="#form-import" data-au="api.php?app=home" data-dg="home.html" data-dt="#tpl-empty" data-dd="#app .import" class="ajax btn btn-primary btn-block" href="javascript:void(0);">Save</a>
+  <a af="#form-import" au="api.php?app=home" dg="home.html" dt="#tpl-empty" dd="#app .import" class="ajax btn btn-primary btn-block" href="javascript:void(0);">Save</a>
 </script>
 <script id="tpl-ssh" type="text/html">
 {{.}}
