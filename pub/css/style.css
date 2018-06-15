@@ -143,10 +143,6 @@ body.slide-active { overflow-x: hidden}
   border-top-right-radius: 0;
 }
 
-#e { position: fixed; right: 1em; z-index: 9000; max-width: 97%; }
-#e.alert-danger strong:before { content: "Error:"; } 
-#e.alert-success strong:before { content: "Success:"; } 
-
 #app > .home.jumbotron { margin-top:-20px; }
 #app > .home td, th { text-align:center; }
 #app > .home thead th a { display:block; }
@@ -189,21 +185,8 @@ body.slide-active { overflow-x: hidden}
 #app > .editor .list-group-item img { position:absolute; top:0; right:0; height: 100%; }
 #app > .editor .navbar-brand { cursor: pointer; }
 #app > .editor .btn-danger { position: absolute; top:0;right:0;bottom:0;border:0;border-radius:0; }
-@media (max-width: 767px) {
-  //body.body-edit { padding-top: 170px; }
-  //.list-group { padding-right: 0; }
-}
 #app > .editor #m { position: absolute; right: 2em; top: 0.5em; z-index: 100; }
 
-//.list-group:last-child { padding-right: 0; }
-//.list-group { margin-bottom: 0; }
-//.list-group a:last-child { margin-bottom: 20px; }
-//.list-group-item { cursor: pointer; overflow: hidden; white-space: nowrap; }
-//.list-group-item img { position:absolute; top:0; right:0; height: 100%; }
-//@media (max-width: 767px) {
-  //body { padding-top: 100px; }
-  //.list-group { padding-right: 0; }
-//}
 #overlay { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9000; background: rgba(0,0,0,0.5); padding: 3em; }
 #overlay .panel-body { overflow: auto; }
 #overlay .line { word-break: break-word; margin-bottom: 0.25em; }

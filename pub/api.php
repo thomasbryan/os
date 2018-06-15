@@ -268,6 +268,13 @@ class API {
         $rsa->setComment($this->req->User);
         $public = $rsa->getPublicKey(CRYPT_RSA_PUBLIC_FORMAT_OPENSSH);
         if($public) {
+          $config = $_SERVER['HOME'].'/.ssh/config';
+          if(!file_exists($config)) {
+            touch($config);
+            if(file_put_contents($config,'StrictHostKeyChecking no'."\n".'UserKnownHostsFile /dev/null')) {
+              chmod($config,0600);
+            }
+          }
           $ssh = $_SERVER['HOME'].'/.ssh/'.$this->req->User;
           $pub = $ssh.'.pub';
           if(file_put_contents($ssh,$_POST['import'])) {
