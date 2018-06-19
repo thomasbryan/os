@@ -245,7 +245,7 @@ function up() {
   }
 }
 function vol(req) {
-    mesg(true,"Volume "+($("#a").get(0).volume * 100)+"%");
+    msg(true,"Volume "+($("#a").get(0).volume * 100)+"%");
 }
 function prev() {
   var that=$("#r .active");
@@ -423,7 +423,7 @@ function createWorkflow() {
     err += "Action Required,";
   }
   if(err.length > 0) {
-    mesg(false,err.replace(/,\s*$/,""));
+    msg(false,err.replace(/,\s*$/,""));
   }else{
     var data = [];
     $.each($(".actions .action tr"),function(k,v) {
@@ -472,14 +472,14 @@ function createAction() {
     err += "Method Required,";
   }
   if(err.length > 0) {
-    mesg(false,err.replace(/,\s*$/,""));
+    msg(false,err.replace(/,\s*$/,""));
   }else{
     data = $("#method-"+method+" textarea").val();
     if(data === undefined) {
-      mesg(false,"Method Not Allowed");
+      msg(false,"Method Not Allowed");
     }else{
       if(data.length == 0) {
-        mesg(false,"Data Required");
+        msg(false,"Data Required");
       }else{
         ajx({"req":"createActions","n":name,"m":method,"d":data},"view");
       }
@@ -787,7 +787,7 @@ $(document).on("submit","form#userpass",function(e) {
     e = true;
   }
   if(e) {
-    mesg(false,"Required Fields");
+    msg(false,"Required Fields");
   }else{
     $.ajax({
       type: "POST",
@@ -796,7 +796,7 @@ $(document).on("submit","form#userpass",function(e) {
     }).done(function(res) {
       profile(res);
     }).fail(function() {
-      mesg(false,"Invalid Login");
+      msg(false,"Invalid Login");
     });
   }
 });
@@ -850,9 +850,9 @@ function update() {
     url: "api.php?app=auth",
     data: "req=softwareupdate"
   }).done(function(res) {
-    mesg(true,"Software Will Update");
+    msg(true,"Software Will Update");
   }).fail(function() {
-    mesg(false,"Software Not Updated");
+    msg(false,"Software Not Updated");
   });
 }
 function videoready() {
@@ -873,7 +873,7 @@ function videoready() {
       }
       function createfail() {
         $("#new .form-control").val("");
-        mesg(false,"Failed to Create File");
+        msg(false,"Failed to Create File");
         delete edit.n;
       }
       function search(req) {
@@ -918,7 +918,7 @@ function videoready() {
         }).done(function(res) {
           $(".list-group").find("[data-f='"+f+"']").remove();
         }).fail(function() {
-          mesg(false,"Failed to Delete '"+f+"'");
+          msg(false,"Failed to Delete '"+f+"'");
         });
         close();
       }
@@ -1192,7 +1192,7 @@ function ajx(data,done,fail) {
     data: data
   }).done(function(res) {
     if(done===undefined) {
-      mesg(true,res);
+      msg(true,res);
     }else{
       if($.isPlainObject(done)) {
         //$.each(done.req,function(k,v) {
@@ -1206,7 +1206,7 @@ function ajx(data,done,fail) {
     }
   }).fail(function(res) {
     if(fail===undefined) {
-      mesg(false,res.responseText);
+      msg(false,res.responseText);
     }else{
       window[fail]();
     }
@@ -1230,11 +1230,6 @@ function user() {
     }
   }
   return null;
-}
-function mesg(req,res) {
-  $("#e").removeClass("alert-success").addClass("alert-danger");
-  if(req) $("#e").removeClass("alert-danger").addClass("alert-success");
-  $("#e").html("<strong></strong> "+res+"!").show().removeClass("hidden").delay(5000).fadeOut(500);
 }
 /* New Framework */
 //$(document).ready(function() { ready(); });
