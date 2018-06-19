@@ -463,7 +463,8 @@
 			<ul class="list-group">
 			{{#projects}}
 				<li data-repo="{{r}}" class="list-group-item repo">
-					<strong>{{r}}</strong>&nbsp;<br />
+					<strong>{{r}}</strong>&nbsp;
+          <br />
 					<a href="javascript:void(0);" class="text-muted">{{b}}</a>
           <div class="pull-right">
 					<span class="label label-success">{{s.length}}</span>
@@ -472,6 +473,7 @@
           </div>
 					<hr />
 					<div class="status">
+            <a data-action="status" href="javascript:void(0);" class="action btn btn-success"><span class="glyphicon glyphicon-refresh"></span></a>
 						<a data-action="push" href="javascript:void(0);" class="action push-{{s.length}} btn btn-primary">
 							<span class="glyphicon glyphicon-upload"></span>
 							<span class="hidden-xs hidden-sm">PUSH</span>
