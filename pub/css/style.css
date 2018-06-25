@@ -167,7 +167,7 @@ body.slide-active { overflow-x: hidden}
 #app > .audio #controls { position: fixed; z-index: 50; background: white; }
 #app > .audio #lists { margin-top: 30px; }
 #app > .audio #lists .list-group { margin-bottom: 70px; }
-#app > .audio #lists .col-sm-4 { height: 85vh; overflow-y: scroll; }
+#app > .audio #lists .col-sm-4,#app > .audio #lists .col-sm-8 { height: 85vh; overflow-y: scroll; }
 #app > .audio #t { color: #9d9d9d; height: 100%; line-height: 50px; overflow: hidden; position: absolute; width: 0%; white-space: nowrap; }
 #app > .audio #tl { bottom:0; height: 50px; left:0; position: absolute; right:0; width: 100%; }
 #app > .audio .list-group-item img { position:absolute; top:0; right:0; height: 100%; }
