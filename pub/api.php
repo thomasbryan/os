@@ -624,6 +624,7 @@ class API {
         $path = dirname(__FILE__);
         chdir($path);
         chdir('../src/home/'.$user.'/');
+        //ssh-agent bash -c 'ssh-add .ssh/$user;
         exec('git clone --config core.fileMode=false '.$url.' 2>&1',$out,$ret);
         if($ret == 0) {
           chdir($path);
@@ -802,6 +803,7 @@ class API {
 				$len = strlen(dirname(getcwd()));
 				chdir($path);
 				chdir($prefix.$_POST['project']);
+        //ssh-agent bash -c 'ssh-add .ssh/$user;
 				exec('git branch -r',$branch);
         /*
         */
@@ -821,6 +823,7 @@ class API {
 				$len = strlen(dirname(getcwd()));
 				chdir($path);
 				chdir($prefix.$_POST['project']);
+        //ssh-agent bash -c 'ssh-add .ssh/$user;
 				exec('git fetch',$fetch);
 				$res = array('repo'=>$_POST['project'],'fetch'=>$fetch);
 				continue;
@@ -920,6 +923,7 @@ class API {
         $len = strlen(dirname(getcwd()));
         chdir($path);
         chdir($prefix.$_POST['project']);
+        //ssh-agent bash -c 'ssh-add .ssh/$user;
         exec('git pull origin '.$v['b']);
         $res = true;
         continue;
@@ -945,24 +949,8 @@ class API {
           }else{
             $msg .= str_replace('"','',$v['s'][0]);
           }
-          $cfg = '';
-          /*
-          if(isset($_POST['name'])) {
-            if(!empty($_POST['name'])) {
-              if(! preg_match('/[^a-zA-Z\ ]/', $_POST['name'])) {
-                $cfg .= '-c user.name="'.$_POST['name'].'" ';
-              }
-            }
-          }
-          if(isset($_POST['email'])) {
-            if(!empty($_POST['email'])) {
-              if(! preg_match('/[^a-zA-Z0-9\@\.]/', $_POST['email'])) {
-                $cfg .= '-c user.email='.$_POST['email'].' ';
-              }
-            }
-          }
-          */
-          $exec = 'git commit '.$cfg.' -m  "'.$msg.'" && git push origin '.$v['b'];
+          //ssh-agent bash -c 'ssh-add .ssh/$user;
+          $exec = 'git commit -m  "'.$msg.'" && git push origin '.$v['b'];
           exec($exec,$res);
           $res = true;
           //todo echo error 
@@ -1088,9 +1076,6 @@ class API {
     }
     return $res;
   }
-  
-  
-  
   # DEBUG MODE #
   private function debug() {
     set_time_limit(30);
@@ -1098,9 +1083,7 @@ class API {
     ini_set('error_reporting', E_ALL);
     ini_set('display_errors',1);
   }
-
 } #/API
-
 class AUDIO {
   private $d = '';
   private $m = 'meta';
@@ -1128,6 +1111,7 @@ class AUDIO {
     return $res;
   }
   public function update($f='',$l='') {
+    //m3u
     $res = false;
     if(isset($this->user->User)) {
       $u = $this->user->User.'/';
@@ -1153,13 +1137,13 @@ class AUDIO {
       if(!file_exists($new)) copy($k,$new);
     }
     */
-    
     return $res;
   }
   public function delete($req='') {
     $res = false;
     if(isset($this->user->User)) {
       $u = $this->user->User.'/';
+      //m3u
       if($req!=$this->l && !empty($req)) {
         unlink($this->p.$u.$req.'.json');
         $res = true;
@@ -1219,6 +1203,7 @@ class AUDIO {
     $res = false;
     if(isset($this->user->User)) {
       $u = $this->user->User.'/';
+      //m3u
       if(file_exists($this->p.$u.$this->l.'.json')) {
         $mp3=json_decode(file_get_contents($this->p.$u.$this->l.'.json'),true);
         if(isset($mp3[$f])) {
@@ -1242,7 +1227,6 @@ class AUDIO {
         $val = base64_encode($v);
         exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/'.$file.'.mp3')).' '.$key.' '.$val.' 2>&1',$out,$ret);
       }
-
       exec('python ../src/easyid3.py '.base64_encode(realpath($this->p.$this->user->User.'/')).' 2>&1',$out,$ret);
       if($ret == 0) {
         $res = true;
@@ -1256,6 +1240,7 @@ class AUDIO {
     $res = false;
     if(isset($this->user->User)) {
       $u = $this->user->User.'/';
+      //m3u
       if(!empty($req)) {
         $mp3 = json_decode(file_get_contents($this->p.$u.$this->l.'.json'),true);
         if(file_exists($this->p.$u.$this->m)) {
@@ -1276,6 +1261,7 @@ class AUDIO {
     if(isset($this->user->User)) {
       $u = $this->user->User.'/';
       if(empty($l)) $l = $this->l;
+      //m3u
       if(file_exists($this->p.$u.$l.'.json')) {
         $mp3=json_decode(file_get_contents($this->p.$u.$l.'.json'),true);
       }else{
@@ -1303,6 +1289,7 @@ class AUDIO {
         chdir($this->p.$u);
         if(!file_exists($id)) {
           unset($mp3[$id]);
+          //m3u
           file_put_contents($this->p.$u.$l.'.json',json_encode($mp3));
           return $this->fetch($req,$id,$l);
         }
@@ -1319,6 +1306,7 @@ class AUDIO {
       $u = $this->user->User.'/';
       chdir($this->p.$u);
       if(file_exists($req)) {
+        //m3u
         if(file_exists($this->l.'.json')) {
           $mp3=json_decode(file_get_contents($this->l.'.json'),true);
           if(file_exists($this->m)) $meta = json_decode(file_get_contents($this->m),true);
@@ -1368,6 +1356,7 @@ class AUDIO {
             $res[$file->getPathname()] = $file->getBasename('.mp3'); 
           }
         }else{
+          //m3u
           foreach($rii as $file) {
             if($file->isDir()|| $file->getExtension() != 'json') continue;
             $res[] = $file->getBasename('.json'); 
@@ -1384,6 +1373,7 @@ class AUDIO {
       $u = $this->user->User.'/';
       $req=$this->files();
       if($req) {
+        //m3u
         file_put_contents($this->p.$u.$this->l.'.json',json_encode($req));
         $res = $req;
       }else{
