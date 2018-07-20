@@ -753,7 +753,9 @@ class API {
         case ' ':break;
         case '#':
         $p = strpos($vv,'...');
-        $b = substr($vv,3,($p===false?strlen($vv):$p-3));
+        $i = strpos($vv,'Initial commit on ');
+        $o = 3+($i===false?0:18);
+        $b = substr($vv,$o,($p===false?strlen($vv):$p-$o));
         break;
         case '?': $u[] = substr($vv,3); break;
         default: if(strlen($vv) > 0 ) { $s[] = substr($vv,3); } break;
