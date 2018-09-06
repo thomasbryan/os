@@ -1274,11 +1274,15 @@ class AUDIO {
         $id = key($mp3);
       }else{
         if($req == 'true') {
-          $r = array_rand($mp3,2);
-          if($r[0]!=$id) {
-            $id = $r[0];
+          if(is_array($mp3)) {
+            $r = array_rand($mp3,2);
+            if($r[0]!=$id) {
+              $id = $r[0];
+            }else{
+              $id = $r[1];
+            }
           }else{
-            $id = $r[1];
+            $id = false;
           }
         }else{
           while(key($mp3) !== $id) next($mp3);
