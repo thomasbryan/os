@@ -15,7 +15,7 @@ $("form#edit").on("submit",function(e) {
                 url: "api.php?app=editor",
             data: $(this).serialize()
           }).fail(function() {
-            mesg(false,"Unable to Update");
+            msg(false,"Unable to Update");
           });
           */
       $(".edit").addClass("hidden");
@@ -96,7 +96,7 @@ $(document).on("click",".audio #r .y:not(.disabled)",function(e) {
     reset();
   }).fail(function() {
     //TODO check not returning something??
-    mesg(false,"Failed to Download");
+    msg(false,"Failed to Download");
     reset();
   });
 });
@@ -112,7 +112,7 @@ $(document).on("click",".audio #r .l button",function(e) {
   }).done(function(res) {
     div.remove();
   }).fail(function() {
-    mesg(false,"Unable to Delete '"+data.l+"' Playlist");
+    msg(false,"Unable to Delete '"+data.l+"' Playlist");
   });
   e.stopPropagation();
 });
@@ -171,7 +171,7 @@ function fodone(res) {
   }
 }
 function fofail() {
-  mesg(false,"Failed to Initialize");
+  msg(false,"Failed to Initialize");
   audio.p = false;
   ui();
 }
@@ -202,7 +202,7 @@ function audiolist() {
         $("#list-"+k).data("l",v);
       });
     }).fail(function() {
-      mesg(false,"Failed Playlist Retreival");
+      msg(false,"Failed Playlist Retreival");
     });
   }
 }
@@ -219,7 +219,7 @@ function trash() {
     $(".list-group").find("[data-f='"+$("#f").val()+"']").remove();
     close();
   }).fail(function() {
-    mesg(false,"Failed to Delete File");
+    msg(false,"Failed to Delete File");
   });
 }
 function playlist() {
