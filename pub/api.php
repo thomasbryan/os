@@ -1198,6 +1198,8 @@ class AUDIO {
         file_put_contents($p.$c,$data);
         chmod($p.$c,0755);
       }
+    }else{
+			exec($p.$c.' -U');
     }
     return $this->download($url,$n,$p);
   }
